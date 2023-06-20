@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faUser } from "@fortawesome/free-solid-svg-icons";
 import "./NavBar.css";
 import { Link, useNavigate } from "react-router-dom";
-import SearchBox from "Website/SharedUI/SearchBox/SearchBox";
 import { useEffect, useState, useRef } from "react";
 import { axiosInstance } from "./../../../Axios";
 

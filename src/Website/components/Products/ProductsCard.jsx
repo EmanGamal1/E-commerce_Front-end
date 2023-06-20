@@ -1,15 +1,15 @@
 import { Card, CardBody, CardImg, CardText, CardTitle, Col } from "reactstrap";
 import { Link } from "react-router-dom";
-import Buttons from "Website/SharedUI/Buttons/Buttons";
 import { useState } from "react";
 import { axiosInstance } from "./../../../Axios";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import ProtectedRouteHook from "../../hook/auth/ProtectedRouteHook";
 
 export const ProductsCard = ({ item }) => {
   const [quantity, setQuantity] = useState(1);
-  const quantityInStock = item.quantity;
+  const [isUser] = ProtectedRouteHook();
 
   const addToCart = () => {
     if (quantity > item.quantity) {
@@ -82,13 +82,15 @@ export const ProductsCard = ({ item }) => {
                   <div className="card-price">{item.price}</div>
                   <div className="card-currency mx-1">جنيه</div>
                 </div>
-                <button
-                  className="btn-sm btn-outline-primary"
-                  onClick={addToCart}
-                >
-                  <FontAwesomeIcon icon={faCartPlus} className="mx-1" />
-                  إضافة إلي العربة
-                </button>
+                {isUser && (
+                  <button
+                    className="btn-sm btn-outline-primary"
+                    onClick={addToCart}
+                  >
+                    <FontAwesomeIcon icon={faCartPlus} className="mx-1" />
+                    إضافة إلي العربة
+                  </button>
+                )}
               </div>
             </CardText>
           </CardBody>
