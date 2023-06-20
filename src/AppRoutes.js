@@ -1,18 +1,20 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import AdminLayout from "./Dashboard/Layouts/Admin";
+import { Route, Routes } from "react-router-dom";
+import loadable from "@loadable/component";
 import AuthLayout from "./Dashboard/Layouts/Auth";
-import Login from "./Dashboard/Pages/Login/Login";
+const Login = loadable(() => import("./Dashboard/Pages/Login/Login"));
 import NavBar from "./Website/components/NavBar/NavBar";
-import Home from "./Website/Pages/HomePage/HomePage";
+const Home = loadable(() => import("./Website/Pages/HomePage/HomePage"));
 import FooterSite from "./Website/components/Footer/FooterSite";
 import { AllCategoryPage } from "./Website/Pages/Categories/AllCategoryPage";
-import Products from "./Website/Pages/Products/Products";
-import Orders from "./Website/Pages/Orders/Orders";
-import OrderDetail from "./Website/Pages/Orders/OrderDetails/OrderDetail";
+const Products = loadable(() => import("./Website/Pages/Products/Products"));
+const Orders = loadable(() => import("./Website/Pages/Orders/Orders"));
+const OrderDetail = loadable(() =>
+  import("./Website/Pages/Orders/OrderDetails/OrderDetail")
+);
 import AboutUS from "./Website/Pages/AboutUs/AboutUs";
 import ContactUs from "./Website/Pages/ContactUS/ContactUs";
 import Cart from "./Website/Pages/Cart/Cart";
-import Checkout from "./Website/Pages/Checkout/Checkout";
+const Checkout = loadable(() => import("./Website/Pages/Checkout/Checkout"));
 import TermsAndConditions from "./Website/Pages/TermsAndConditions/TermsAndConditions";
 import Profile from "./Website/Pages/Profile/Profile";
 import Address from "./Website/Pages/Address/AddressList/AddressList";
@@ -25,10 +27,12 @@ import VerifyEmail from "./Website/Pages/verifyEmail/VerifyEmail";
 import { ForgetPassword } from "./Website/Pages/ForgetPassword/ForgetPassword";
 import ForgetPssword from "./Dashboard/Components/Forgot/ForgetPassword";
 import PageNotFound from "./SharedUi/PageNotFound";
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import ProtectedRoute from "./Website/components/Uitily/ProtectedRoute";
 import ProtectedRouteHook from "./Website/hook/auth/ProtectedRouteHook";
 import ProductsByCategory from "./Website/Pages/Products/ProductsByCategory";
+
+const AdminLayout = loadable(() => import("./Dashboard/Layouts/Admin"));
 
 const AppRoutes = () => {
   const [isUser, isAdmin, isGuest, userData] = ProtectedRouteHook();
