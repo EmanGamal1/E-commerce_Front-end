@@ -70,3 +70,9 @@
 .productPrice{
     font-size: 35px;
 }
+
+@media (width:567px){
+    .productImage{
+        width: 150px;
+    }
+}

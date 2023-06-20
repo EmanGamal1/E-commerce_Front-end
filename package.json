@@ -79,9 +79,11 @@
     "react-router-dom": "^6.13.0",
     "react-scripts": "5.0.1",
     "react-search-field": "^2.0.1",
+    "react-slick": "^0.29.0",
     "react-table": "^7.8.0",
     "reactstrap": "8.10.0",
     "sass": "1.62.1",
+    "slick-carousel": "^1.8.1",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.7.10",
     "yup": "^1.2.0"

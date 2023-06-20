@@ -5,11 +5,15 @@ import { axiosInstance } from "../../../../Axios";
 import Buttons from "Website/SharedUI/Buttons/Buttons";
 import './ProductDetails.css';
 import { useParams } from "react-router";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const ProductsDetails = () => {
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const { slug } = useParams();
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     axiosInstance.get(`/products/${slug}`)
@@ -76,22 +80,43 @@ const ProductsDetails = () => {
       <Card className="shadow">
         <CardHeader>
           <h1>تفاصيــل المنتــج</h1>
+          
         </CardHeader>
         <CardBody>
           <Row>
             <Col lg="7">
               <Row>
-                <Col lg="3">
-                  {product.images.map((image, index) => (
-                    <img key={index} src={image} alt={product.name_ar} className="productGallery" />
-                  ))}
-                </Col>
                 <Col lg="4">
-                  <img src={product.image} alt={product.name_ar} className="productImage shadow" />
+                  <img src={product.image} alt={product.name_ar} className="productImage shadow mr-4" />
+                </Col>
+              </Row>
+              <Row className="mt-3">
+              <Col lg="10">
+                <Slider
+                dots={false}
+                arrows={true}
+                infinite={true}
+                speed={500}
+                autoplay={true}
+                autoplaySpeed={3000}
+                slidesToShow={3}
+                slidesToScroll={1}
+                beforeChange={(current, next) => setActiveSlide(next)}
+              >
+                {product.images.map((image, index) => (
+                  <div key={index}>
+                    <img
+                      src={image}
+                      alt={product.name_ar}
+                      className={index === activeSlide ? "activeSlide productGallery" : "productGallery"}
+                    />
+                  </div>
+                ))}
+              </Slider>
                 </Col>
               </Row>
             </Col>
-            <Col lg="4" className="mr-3 mt-5">
+            <Col lg="4" className="mt-5">
               {quantityInStock > 0 ? (
                 <p className="available">
                   <i className="fa fa-check"></i>
@@ -104,7 +129,7 @@ const ProductsDetails = () => {
               )}
               <div className="details my-3">
                 <h1>{product.name_ar}</h1>
-                <h3><span className="font-weight-bold">القســـم: </span>{product.category_id.name_ar}</h3>
+                <h3><span className="font-weight-bold ml-2">القســـم: </span>{product.category_id.name_ar}</h3>
                 <p className="description row">
                   <span className="font-weight-bold mr-3">الـوصــــف: </span>
                  <span className="col"> {product.desc_ar}</span></p>
@@ -116,10 +141,10 @@ const ProductsDetails = () => {
                   </span>
                 </p>
                 <Row className="mt-5">
-                  <Col lg="3">
+                  <Col lg="4">
                     <p><span className="productPrice"><sub>{product.price}</sub></span><sup> ج.م</sup></p>
                   </Col>
-                  <Col lg="9" className="mt-4 text-left">
+                  <Col lg="8" className="mt-4 text-left">
                     {quantityInStock > 0 ? (
                       <Buttons
                         title="إضافــة إلي العـربة"
