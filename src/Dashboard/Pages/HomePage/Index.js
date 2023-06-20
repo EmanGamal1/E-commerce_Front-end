@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
 import classnames from "classnames";
 import Chart from "chart.js";
-import { Line, Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import {
-  Button,
   Card,
   CardHeader,
   CardBody,
   NavItem,
   NavLink,
   Nav,
-  Progress,
   Table,
   Container,
   Row,
   Col,
-  CardTitle,
 } from "reactstrap";
 
 // core components
@@ -23,7 +20,6 @@ import {
   chartOptions,
   parseOptions,
   chartExample1,
-  chartExample2,
 } from "../../Variables/Charts.js";
 
 import { axiosInstance } from "../../../Axios";
@@ -34,12 +30,95 @@ const Index = (props) => {
   const [ordersData, setOrdersData] = useState("data1");
   const [statistics, setStatistics] = useState({});
   const StaticsUrl = "api/v1/statics";
+  const newChart = chartExample1;
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchStatics = async () => {
     await axiosInstance
       .get(`${StaticsUrl}`)
       .then((res) => {
         setStatistics(res.data.data);
+        const completedMonths = Array.isArray(
+          res.data.data.completedOrdersInLastSixMonths
+        )
+          ? res.data.data.completedOrdersInLastSixMonths.map(
+              (item) => item.month
+            )
+          : "";
+        const completedCount = Array.isArray(
+          res.data.data.completedOrdersInLastSixMonths
+        )
+          ? res.data.data.completedOrdersInLastSixMonths.map(
+              (item) => item.count
+            )
+          : "";
+        const cancelledMonths = Array.isArray(
+          res.data.data.cancelledOrdersInLastSixMonths
+        )
+          ? res.data.data.cancelledOrdersInLastSixMonths.map(
+              (item) => item.month
+            )
+          : "";
+        const cancelledCount = Array.isArray(
+          res.data.data.cancelledOrdersInLastSixMonths
+        )
+          ? res.data.data.cancelledOrdersInLastSixMonths.map(
+              (item) => item.count
+            )
+          : "";
+        const processingMonths = Array.isArray(
+          res.data.data.processingOrdersFromLastSixMonths
+        )
+          ? res.data.data.processingOrdersFromLastSixMonths.map(
+              (item) => item.month
+            )
+          : "";
+        const processingCount = Array.isArray(
+          res.data.data.processingOrdersFromLastSixMonths
+        )
+          ? res.data.data.processingOrdersFromLastSixMonths.map(
+              (item) => item.count
+            )
+          : "";
+        if (completedMonths.length === 1) {
+          completedMonths.unshift("Start");
+          completedCount.unshift(0);
+        }
+        if (cancelledMonths.length === 1) {
+          cancelledMonths.unshift("Start");
+          cancelledCount.unshift(0);
+        }
+        if (processingMonths.length === 1) {
+          processingMonths.unshift("Start");
+          processingCount.unshift(0);
+        }
+        newChart["data1"] = {
+          labels: completedMonths,
+          datasets: [
+            {
+              label: "Completed",
+              data: completedCount,
+            },
+          ],
+        };
+        newChart["data2"] = {
+          labels: cancelledMonths,
+          datasets: [
+            {
+              label: "Cancelled",
+              data: cancelledCount,
+            },
+          ],
+        };
+        newChart["data3"] = {
+          labels: processingMonths,
+          datasets: [
+            {
+              label: "Processing",
+              data: processingCount,
+            },
+          ],
+        };
       })
       .catch((err) => {
         console.log(err);
@@ -47,7 +126,7 @@ const Index = (props) => {
   };
   useEffect(() => {
     fetchStatics();
-  });
+  }, []);
 
   if (window.Chart) {
     parseOptions(Chart, chartOptions());
@@ -122,8 +201,8 @@ const Index = (props) => {
                 Chart
                 <div className="chart">
                   <Line
-                    data={chartExample1[ordersData]}
-                    options={chartExample1.options}
+                    data={newChart[ordersData]}
+                    options={newChart.options}
                     getDatasetAtEvent={(e) => console.log(e)}
                   />
                 </div>
