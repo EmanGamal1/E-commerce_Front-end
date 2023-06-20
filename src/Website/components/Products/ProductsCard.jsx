@@ -4,9 +4,9 @@ import Buttons from "Website/SharedUI/Buttons/Buttons";
 import { useState } from "react";
 import { axiosInstance } from "./../../../Axios";
 import Swal from "sweetalert2";
+import Cards from "Website/SharedUI/Cards/Cards";
 
 export const ProductsCard = ({ item }) => {
-
   const [quantity, setQuantity] = useState(1);
   const quantityInStock = item.quantity;
 
@@ -27,7 +27,6 @@ export const ProductsCard = ({ item }) => {
       });
   };
 
-  
   const showSuccessAlert = () => {
     Swal.fire({
       icon: 'success',
@@ -46,9 +45,38 @@ export const ProductsCard = ({ item }) => {
     });
   };
 
-
   return (
     <>
+   <Cards
+  body={
+    <>
+      <div className="d-flex justify-content-center">
+        <Link
+          to={`/products/${item.slug}`}
+          style={{ textDecoration: "none" }}
+        >
+          <CardImg style={{ height: "228px", width: "280px" }} src={item.image} />
+        </Link>
+      </div>
+      <h3 className="mt-2">{item.name_ar}</h3>
+      <p style={{ width: "300px" }}>{item.desc_ar}</p>
+    </>
+  }
+  footer={
+    <div className="d-flex justify-content-between align-items-center">
+      <div className="d-flex align-items-center">
+        <div className="card-price">{item.price}</div>
+        <div className="card-currency mx-1">جنيه</div>
+      </div>
+      <Buttons
+        title="إضافة إلي العربة"
+        className="btn-sm btn-outline-dark"
+        onClick={addToCart}
+      />
+    </div>
+  }
+/>
+{/* 
       <Col xs="6" sm="6" md="4" lg="3" className="d-flex">
         <Card
           className="my-2"
@@ -83,7 +111,7 @@ export const ProductsCard = ({ item }) => {
             </CardText>
           </CardBody>
         </Card>
-      </Col>
+      </Col> */}
     </>
   );
 };
