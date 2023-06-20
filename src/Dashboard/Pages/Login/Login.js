@@ -57,7 +57,7 @@ const Login = () => {
       setuser("");
       setpassword("");
       setsuccess(true);
-      Navigate("/admin");
+      Navigate("/admin/index");
     } catch (err) {
       console.error(err.response.data.message);
       const erorr = err.response.data.message;
@@ -71,12 +71,10 @@ const Login = () => {
       {success ? (
         <section>
           <p> loged in success </p>
-          {Navigate("/admin")}
+          {Navigate("/admin/index")}
         </section>
       ) : (
-          <div className={"row text-center mt-5"} >
-        {/*<Col lg="5" md="7" >*/}
-
+        <div className={"row text-center mt-5"}>
           <Card className="bg-secondary shadow border-0 col-lg-5 col-md-7 mx-auto">
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center text-muted mb-4">
@@ -135,15 +133,17 @@ const Login = () => {
                 </div>
                 <Row className="mt-3">
                   <Col xs="6">
-                    <Link to="/auth/reset-password-token">Forget password? </Link>
+                    <Link to="/auth/reset-password-token">
+                      Forget password?{" "}
+                    </Link>
                   </Col>
                 </Row>
               </Form>
             </CardBody>
           </Card>
 
-       {/* </Col>*/}
-          </div>
+          {/* </Col>*/}
+        </div>
       )}
     </>
   );

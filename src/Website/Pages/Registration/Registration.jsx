@@ -7,10 +7,15 @@ import * as Yup from "yup";
 import { FormLabel } from "react-bootstrap";
 import { axiosInstance } from "../../../Axios";
 import MySwal from "sweetalert2";
+import { useEffect } from "react";
 
 const Registration = () => {
   const navigate = useNavigate();
   const RegistrationURL = "register";
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) navigate("/home");
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -112,83 +117,88 @@ const Registration = () => {
           <Col sm="12" className="d-flex flex-column ">
             <label className="mx-auto title-login">تسجيل حساب جديد</label>
             <Form onSubmit={formik.handleSubmit}>
-              <FormGroup>
+              <Col xs="6" className="mx-auto">
+                <FormGroup>
+                  <Input
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    name="name"
+                    placeholder="اسم المستخدم..."
+                    type="text"
+                    className="mt-3 text-center mx-auto"
+                  />
+                  {formik.touched.name && formik.errors.name && (
+                    <p className="text-danger">{formik.errors.name}</p>
+                  )}
+                </FormGroup>
                 <Input
-                  value={formik.values.name}
+                  value={formik.values.email}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  name="name"
-                  placeholder="اسم المستخدم..."
-                  type="text"
-                  className="mt-3 text-center mx-auto"
+                  name="email"
+                  placeholder="الايميل..."
+                  type="email"
+                  className="my-3 text-center mx-auto"
                 />
-                {formik.touched.name && formik.errors.name && (
+                {formik.touched.email && formik.errors.email && (
+                  <p className="text-danger">{formik.errors.email}</p>
+                )}
+                <Input
+                  value={formik.values.phone}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  name="phone"
+                  placeholder="الهاتف..."
+                  type="phone"
+                  className="text-center mx-auto"
+                />
+                {formik.touched.phone && formik.errors.phone && (
                   <p className="text-danger">{formik.errors.name}</p>
                 )}
-              </FormGroup>
-              <Input
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                name="email"
-                placeholder="الايميل..."
-                type="email"
-                className="my-3 text-center mx-auto"
-              />
-              {formik.touched.email && formik.errors.email && (
-                <p className="text-danger">{formik.errors.email}</p>
-              )}
-              <Input
-                value={formik.values.phone}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                name="phone"
-                placeholder="الهاتف..."
-                type="phone"
-                className="text-center mx-auto"
-              />
-              {formik.touched.phone && formik.errors.phone && (
-                <p className="text-danger">{formik.errors.name}</p>
-              )}
-              <Input
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                name="password"
-                placeholder="كلمه السر..."
-                type="password"
-                className="text-center mt-3 mx-auto"
-              />
-              {formik.touched.password && formik.errors.password && (
-                <p className="text-danger">{formik.errors.password}</p>
-              )}
-              <Input
-                value={formik.values.confirmPassword}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                name="confirmPassword"
-                placeholder="تاكيد كلمه السر..."
-                type="password"
-                className="text-center mt-3 mx-auto"
-              />
-              {formik.touched.confirmPassword &&
-                formik.errors.confirmPassword && (
-                  <p className="text-danger">{formik.errors.confirmPassword}</p>
+                <Input
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  name="password"
+                  placeholder="كلمه السر..."
+                  type="password"
+                  className="text-center mt-3 mx-auto"
+                />
+                {formik.touched.password && formik.errors.password && (
+                  <p className="text-danger">{formik.errors.password}</p>
                 )}
-              <Input
-                value={formik.values.bio}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                name="bio"
-                type="textarea"
-                placeholder="عن نفسك"
-                className="text-center mt-3 mx-auto"
-              />
-              {formik.touched.bio && formik.errors.bio && (
-                <p className="text-danger">{formik.errors.bio}</p>
-              )}
+                <Input
+                  value={formik.values.confirmPassword}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  name="confirmPassword"
+                  placeholder="تاكيد كلمه السر..."
+                  type="password"
+                  className="text-center mt-3 mx-auto"
+                />
+                {formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword && (
+                    <p className="text-danger">
+                      {formik.errors.confirmPassword}
+                    </p>
+                  )}
+                <Input
+                  value={formik.values.bio}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  name="bio"
+                  type="textarea"
+                  placeholder="عن نفسك"
+                  className="text-center mt-3 mx-auto"
+                />
+                {formik.touched.bio && formik.errors.bio && (
+                  <p className="text-danger">{formik.errors.bio}</p>
+                )}
+              </Col>
               <FormGroup>
                 <FormGroup>
+                  <FormLabel>الصوره الشخصيه </FormLabel>
                   <FormLabel
                     htmlFor="userImage"
                     className="btn btn-primary mt-2"

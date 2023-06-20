@@ -45,11 +45,6 @@ const Index = (props) => {
         console.log(err);
       });
   };
-  //     sales,
-  //     completedOrdersInLastSixMonths,
-  //     cancelledOrdersInLastSixMonths,
-  //     processingOrdersFromLastSixMonths,
-  //     topProducts,
   useEffect(() => {
     fetchStatics();
   });

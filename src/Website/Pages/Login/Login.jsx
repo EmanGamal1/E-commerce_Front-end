@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { axiosInstance } from "../../../Axios";
 import MySwal from "sweetalert2";
+import { useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -53,6 +54,10 @@ const Login = () => {
         });
     },
   });
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) navigate("/home");
+  }, []);
   return (
     <>
       <NavBar />
@@ -60,7 +65,7 @@ const Login = () => {
         <Row className="py-5 d-flex justify-content-center ">
           <Col sm="12" className="d-flex flex-column ">
             <label className="mx-auto title-login">تسجيل الدخول</label>
-            <Form onSubmit={formik.handleSubmit}>
+            <Form onSubmit={formik.handleSubmit} className="mx-auto">
               <FormGroup>
                 <input
                   value={formik.values.email}

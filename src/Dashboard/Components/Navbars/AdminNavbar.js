@@ -39,17 +39,17 @@ import NotificationIcon from "./NotificationIcon";
 const AdminNavbar = (props) => {
   const jwt = localStorage.getItem("token");
   const decodedToken = jwt ? jwtDecode(jwt) : null;
-  console.log(decodedToken)
+  console.log(decodedToken);
   const userName = decodedToken ? decodedToken.role : null;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    return <Navigate to="/auth/auth" />;
+    return <Navigate to="/admin/login" />;
   };
 
   // Redirect to login page if no token is found
   if (!jwt) {
-    return <Navigate to="/auth/auth" />;
+    return <Navigate to="/admin/login" />;
   }
 
   return (
@@ -59,7 +59,8 @@ const AdminNavbar = (props) => {
           <Container fluid>
             <Link
               className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"
-              to="/">
+              to="/"
+            >
               {props.brandText}
             </Link>
             <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">

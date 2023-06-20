@@ -178,28 +178,13 @@ var routes = [
     component: <Setting />,
     layout: "/admin",
   },
-  /*{
-    path: "/aboutus",
-    name: "About us",
-    icon: "fa fa-info text-blue",
-    component: <AboutUS />,
-    layout: "/admin",
-  },
-  {
-    path: "/contactus",
-    name: "Contact us",
-    icon: "fa fa-info text-blue",
-    component: <ContactUs />,
-    layout: "/admin",
-  },*/
-
-  {
-    path: "/login",
-    name: "New",
-    icon: "ni ni-key-25 text-info",
-    component: <Login />,
-    layout: "/auth",
-  },
+  // {
+  //   path: "/login",
+  //   name: "New",
+  //   icon: "ni ni-key-25 text-info",
+  //   component: <Login />,
+  //   layout: "/auth",
+  // },
   {
     path: "/OrderDetails/:id",
     name: "New",

@@ -14,7 +14,9 @@ const VerifyEmail = () => {
     axiosInstance
       .get(`${VerifyEmailURL}/${token}`)
       .then(() => {
-        navigate("/home");
+        setTimeout(() => {
+          navigate("/home");
+        }, 3000);
       })
       .catch((err) => {
         MySwal.fire({
