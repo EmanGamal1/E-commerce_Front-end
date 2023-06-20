@@ -1,20 +1,12 @@
 import { Route, Routes } from "react-router-dom";
 import loadable from "@loadable/component";
 import AuthLayout from "./Dashboard/Layouts/Auth";
-const Login = loadable(() => import("./Dashboard/Pages/Login/Login"));
 import NavBar from "./Website/components/NavBar/NavBar";
-const Home = loadable(() => import("./Website/Pages/HomePage/HomePage"));
 import FooterSite from "./Website/components/Footer/FooterSite";
 import { AllCategoryPage } from "./Website/Pages/Categories/AllCategoryPage";
-const Products = loadable(() => import("./Website/Pages/Products/Products"));
-const Orders = loadable(() => import("./Website/Pages/Orders/Orders"));
-const OrderDetail = loadable(() =>
-  import("./Website/Pages/Orders/OrderDetails/OrderDetail")
-);
 import AboutUS from "./Website/Pages/AboutUs/AboutUs";
 import ContactUs from "./Website/Pages/ContactUS/ContactUs";
 import Cart from "./Website/Pages/Cart/Cart";
-const Checkout = loadable(() => import("./Website/Pages/Checkout/Checkout"));
 import TermsAndConditions from "./Website/Pages/TermsAndConditions/TermsAndConditions";
 import Profile from "./Website/Pages/Profile/Profile";
 import Address from "./Website/Pages/Address/AddressList/AddressList";
@@ -32,6 +24,14 @@ import ProtectedRoute from "./Website/components/Uitily/ProtectedRoute";
 import ProtectedRouteHook from "./Website/hook/auth/ProtectedRouteHook";
 import ProductsByCategory from "./Website/Pages/Products/ProductsByCategory";
 
+const Checkout = loadable(() => import("./Website/Pages/Checkout/Checkout"));
+const Products = loadable(() => import("./Website/Pages/Products/Products"));
+const Orders = loadable(() => import("./Website/Pages/Orders/Orders"));
+const OrderDetail = loadable(() =>
+  import("./Website/Pages/Orders/OrderDetails/OrderDetail")
+);
+const Login = loadable(() => import("./Dashboard/Pages/Login/Login"));
+const Home = loadable(() => import("./Website/Pages/HomePage/HomePage"));
 const AdminLayout = loadable(() => import("./Dashboard/Layouts/Admin"));
 
 const AppRoutes = () => {
