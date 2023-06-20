@@ -1,15 +1,15 @@
-import ReactSearchField from 'react-search-field';
-import './SearchBox.css';
+import React from "react";
 
-const SearchBox = ({placeholder, onChange, onEnter, className}) => {
-    return (
-        <ReactSearchField
-          placeholder={placeholder}
-          onChange={onChange}
-          onEnter={onEnter}
-          classNames="search-box"
-        />
-    );
-  }
+const SearchBox = ({ searchQuery, onSearchQueryChange }) => {
+  return (
+    <input
+      type="text"
+      placeholder="Search"
+      value={searchQuery}
+      onChange={onSearchQueryChange}
+      className="form-control shadow w-25 m-auto" 
+    />
+  );
+};
 
-  export default SearchBox;
+export default SearchBox;

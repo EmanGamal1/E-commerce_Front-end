@@ -34,9 +34,9 @@ const SideBar = () => {
             <li className="text-danger text-center dangerTitles" onClick={logout}>
               تسجيل الخروج
             </li>
-            <li className="text-danger text-center font-weight-bold dangerTitles">
+            {/* <li className="text-danger text-center font-weight-bold dangerTitles">
               حذف الحســاب
-            </li>
+            </li> */}
           </ul>
         </CardBody>
       </Card>

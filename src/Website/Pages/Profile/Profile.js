@@ -13,6 +13,7 @@ import {
   ModalBody,
   ModalFooter,
   Alert,
+  Button,
 } from "reactstrap";
 import { axiosInstance } from "Axios.js";
 import Buttons from "Website/SharedUI/Buttons/Buttons";
@@ -49,7 +50,8 @@ const Profile = () => {
   const jwt = localStorage.getItem("token");
   const [currentPassword, setCurrentPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordChangeError, setPasswordChangeError] = useState(false);
+  // const [passwordChangeError, setPasswordChangeError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -112,12 +114,15 @@ const Profile = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+  
     if (name === "currentPassword") {
       setCurrentPassword(value);
     } else if (name === "newPassword") {
       setNewPassword(value);
+      setMatchError(false); // Reset the match error when the new password changes
     } else if (name === "confirmPassword") {
       setConfirmPassword(value);
+      setMatchError(false); // Reset the match error when the confirm password changes
     } else if (name === "phone") {
       // Validate mobile number format
       if (/^\d+$/.test(value) || value === "") {
@@ -136,7 +141,7 @@ const Profile = () => {
       }));
     }
   };
-
+  
   const handleModalOk = async () => {
     if (newPassword === "" || confirmPassword === "") {
       setMatchError(false);
@@ -145,50 +150,67 @@ const Profile = () => {
     } else if (newPassword !== confirmPassword) {
       setMatchError(true);
       setErrorEmpty(false);
+    } else if (newPassword.length < 8) {
+      setPasswordError(true);
+      setMatchError(false);
+      setErrorEmpty(false);
     } else {
+      // // Verify current password on the client-side
+      // if (currentPassword !== originalProfileData.password) {
+      //   setPasswordChangeError(true);
+      //   return;
+      // }
+  
       setMatchError(false);
       setShowModal(false);
       setErrorEmpty(false);
+      setPasswordError(false);
       try {
         await axiosInstance.patch("/update-password", {
           currentPassword,
           password: newPassword,
           confirmPassword,
         });
-        console.log("login again");
+        // Password successfully changed
+        Swal.fire({
+          title: "Password Changed",
+          text: "Your password has been changed successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
       } catch (error) {
-        setPasswordChangeError(true);
+        // setPasswordChangeError(true);
         console.error(error);
       }
     }
   };
+   
+  // const handleAddressChange = (e, index) => {
+  //   const { name, value } = e.target;
+  //   const updatedAddresses = [...profileData.address];
+  //   updatedAddresses[index] = {
+  //     ...updatedAddresses[index],
+  //     [name]: value,
+  //   };
+  //   setProfileData((prevState) => ({
+  //     ...prevState,
+  //     address: updatedAddresses,
+  //   }));
+  // };
 
-  const handleAddressChange = (e, index) => {
-    const { name, value } = e.target;
-    const updatedAddresses = [...profileData.address];
-    updatedAddresses[index] = {
-      ...updatedAddresses[index],
-      [name]: value,
-    };
-    setProfileData((prevState) => ({
-      ...prevState,
-      address: updatedAddresses,
-    }));
-  };
+  // const handleAddAddress = () => {
+  //   const updatedAddresses = [...profileData.address, ""];
+  //   setProfileData({ ...profileData, address: updatedAddresses });
+  // };
 
-  const handleAddAddress = () => {
-    const updatedAddresses = [...profileData.address, ""];
-    setProfileData({ ...profileData, address: updatedAddresses });
-  };
-
-  const handleRemoveAddress = (index) => {
-    const updatedAddresses = [...profileData.address];
-    updatedAddresses.splice(index, 1);
-    setProfileData((prevState) => ({
-      ...prevState,
-      address: updatedAddresses,
-    }));
-  };
+  // const handleRemoveAddress = (index) => {
+  //   const updatedAddresses = [...profileData.address];
+  //   updatedAddresses.splice(index, 1);
+  //   setProfileData((prevState) => ({
+  //     ...prevState,
+  //     address: updatedAddresses,
+  //   }));
+  // };
 
   const saveProfileData = async () => {
     if (profileData.name.trim() === "" || profileData.phone.trim() === "") {
@@ -415,7 +437,7 @@ const Profile = () => {
                             <Col lg="12">
                               {editMode ? (
                                 <>
-                                  {profileData.address.map((address, index) => (
+                                  {/* {profileData.address.map((address, index) => (
                                     <div
                                       className="row"
                                       key={`address-${index}`}
@@ -489,7 +511,9 @@ const Profile = () => {
                                         </button>
                                       )}
                                     </div>
-                                  ))}
+                                  ))} */}
+
+                                  <Link to="/address"><Buttons title="الذهاب للعناوين" className="btn-sm btn-outline-warning"/></Link>
                                 </>
                               ) : (
                                 <>
@@ -570,15 +594,14 @@ const Profile = () => {
                                   &times;
                                 </span>
                                 <h2>تغيير كلمة المرور</h2>
-                                {passwordChangeError && (
+                                {/* {passwordChangeError && (
                                   <Alert
                                     color="danger"
                                     className="alert-transparent"
                                   >
-                                    Failed to update the password. Please try
-                                    again.
+                                    كلمة المرور الحاليــة غير صحيحة
                                   </Alert>
-                                )}
+                                )} */}
                                 <Input
                                   type="password"
                                   name="currentPassword"
@@ -602,8 +625,7 @@ const Profile = () => {
                                 />
                                 {matchError && (
                                   <span className="text-danger">
-                                    New password and confirm password do not
-                                    match.
+                                    كلمة المرور وتأكيد كلمة المرور غير متطابقين
                                   </span>
                                 )}{" "}
                                 {errorEmpty && (
@@ -611,9 +633,15 @@ const Profile = () => {
                                     className="alert alert-danger mt-3 alert-transparent"
                                     role="alert"
                                   >
-                                    Please fill in all the fields.
+                                    جميع الحقــول مطلوبة
                                   </div>
                                 )}
+                                {passwordError && (
+                                  <span className="text-danger">
+                                    Password must be at least 8 characters long
+                                  </span>
+                                )}
+
                               </ModalBody>
                               <ModalFooter>
                                 <Buttons
