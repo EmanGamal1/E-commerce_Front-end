@@ -30,11 +30,11 @@ export const SideFilter = ({
 
   return (
     <>
-      <Card className="shadow mt-3 w-100" style={{height:500}}>
+      <Card className="shadow w-100" style={{height:"100%"}}>
         <CardBody>
         <Row>
           <div className="mt-2">
-            <div className="filter-title font-weight-bold">الفئة</div>
+            <div className="filter-title font-weight-bold">الفئــة</div>
             <div className="mt-3 d-flex">
               <input
               className="mx-2"
@@ -43,7 +43,7 @@ export const SideFilter = ({
                 value="0"
                 checked={localStorage.getItem("catChecked") === "0"}
               />
-              <div className="filter-sub">الكل</div>
+              <div className="filter-sub">الكــل</div>
             </div>
             {category ? (
               category.map((item, index) => {
@@ -64,7 +64,7 @@ export const SideFilter = ({
               <h6>لا يوجد تصنيفات</h6>
             )}
 <hr/>
-<div className="filter-title mb-3 mt-5 font-weight-bold">السعر</div>
+<div className="filter-title mb-3 mt-5 font-weight-bold">السعــر</div>
           <div className="d-flex">
             <p className="filter-sub my-2">من:</p>
             <input
@@ -72,17 +72,17 @@ export const SideFilter = ({
               onChange={handlePriceFromChange}
               className="m-2 text-center form-control"
               type="number"
-              style={{ width: "50px", height: "25px" }}
+              style={{ width: "80px", height: "25px" }}
             />
           </div>
           <div className="d-flex">
-            <p className="filter-sub my-2">الـي:</p>
+            <p className="filter-sub my-2">إلـي:</p>
             <input
               onChange={handlePriceToChange}
               value={localTo}
               className="m-2 text-center form-control"
               type="number"
-              style={{ width: "50px", height: "25px" }}
+              style={{ width: "80px", height: "25px" }}
             />
           </div>
           </div>

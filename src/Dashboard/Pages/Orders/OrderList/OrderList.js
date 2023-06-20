@@ -131,6 +131,12 @@ const Orders = () => {
     setRows(event.rows);
   };
 
+  const setSortBy = async (event) => {
+    setPage(1);
+    setRows(5);
+    setSearch(event.target.value);
+  };
+
   return (
     <>
       <DataTable
@@ -147,6 +153,8 @@ const Orders = () => {
         loading={loading}
         pagination={pagination}
         onPageChange={handlePageChange}
+        onSort={setSortBy}
+        setSearch={setSearch}
         columns={[
           { header: "Order Id", field: "id" },
           {

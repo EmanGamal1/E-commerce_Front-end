@@ -273,7 +273,7 @@ function chartOptions() {
       beginAtZero: true,
       padding: 10,
       callback: function (value) {
-        if (!(value % 10)) {
+        if (!(value % 2)) {
           return value;
         }
       },
@@ -318,7 +318,7 @@ let chartExample1 = {
           },
           ticks: {
             callback: function (value) {
-              if (!(value % 10)) {
+              if (!(value % 2)) {
                 return value;
               }
             },
@@ -343,74 +343,35 @@ let chartExample1 = {
       },
     },
   },
-  data1: (canvas) => {
+  data1: () => {
     return {
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      labels: [],
       datasets: [
         {
           label: "Completed",
-          data: [0, 20, 10, 30, 15, 40, 20, 60, 60, 10, 22, 115],
+          data: [],
         },
       ],
     };
   },
-  data2: (canvas) => {
+  data2: () => {
     return {
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      labels: [],
       datasets: [
         {
           label: "Cancelled",
-          data: [0, 20, 10, 30, 15, 40, 20, 60, 60, 10, 22, 115],
+          data: [],
         },
       ],
     };
   },
-  data3: (canvas) => {
+  data3: () => {
     return {
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      labels: [],
       datasets: [
         {
           label: "Processing",
-          data: [0, 20, 10, 30, 15, 40, 20, 60, 60, 10, 22, 115],
+          data: [],
         },
       ],
     };
@@ -425,7 +386,7 @@ let chartExample2 = {
         {
           ticks: {
             callback: function (value) {
-              if (!(value % 10)) {
+              if (!(value % 2)) {
                 //return '$' + value + 'k'
                 return value;
               }

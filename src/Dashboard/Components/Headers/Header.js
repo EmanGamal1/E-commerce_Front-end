@@ -132,6 +132,30 @@ const Header = (data) => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
+                          Employees
+                        </CardTitle>
+                        <span className="h2 font-weight-bold mb-0">
+                          {statistics.numberOfEmployees}
+                        </span>
+                      </div>
+                      <Col className="col-auto">
+                        <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
+                          <i className="fas fa-users" />
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg="6" xl="4">
+                <Card className="card-stats mb-4 mb-xl-2">
+                  <CardBody>
+                    <Row>
+                      <div className="col">
+                        <CardTitle
+                          tag="h5"
+                          className="text-uppercase text-muted mb-0"
+                        >
                           Sales
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
