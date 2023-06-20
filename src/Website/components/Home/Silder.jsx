@@ -3,6 +3,7 @@ import Carousel from "react-bootstrap/Carousel";
 import { axiosInstance } from "../../../Axios";
 import MySwal from "sweetalert2";
 import "./Home.css";
+import { Link } from "react-router-dom";
 
 const Silder = () => {
   const [banners, setBanners] = useState([]);
@@ -39,11 +40,13 @@ const Silder = () => {
       {banners &&
         banners.map((banner) => (
           <Carousel.Item interval={2000}>
-            <img
-              className="d-block w-100 banners"
-              src={banner.image}
-              alt={banner.alt}
-            />
+            <Link to="/products">
+              <img
+                className="d-block w-100 banners"
+                src={banner.image}
+                alt={banner.alt}
+              />
+            </Link>
           </Carousel.Item>
         ))}
     </Carousel>
