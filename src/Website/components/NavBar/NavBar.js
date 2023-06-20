@@ -23,8 +23,8 @@ const NavBar = () => {
   }, []);
 
   const fetchInfo = () => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+    const user = localStorage.getItem("user");
+    setIsLoggedIn(!!user);
     axiosInstance
       .get("/info")
       .then((response) => {
