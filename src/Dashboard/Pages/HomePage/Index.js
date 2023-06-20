@@ -38,6 +38,15 @@ const Index = (props) => {
       .get(`${StaticsUrl}`)
       .then((res) => {
         setStatistics(res.data.data);
+        res.data.data.completedOrdersInLastSixMonths.sort(
+          (a, b) => a.no - b.no
+        );
+        res.data.data.cancelledOrdersInLastSixMonths.sort(
+          (a, b) => a.no - b.no
+        );
+        res.data.data.processingOrdersFromLastSixMonths.sort(
+          (a, b) => a.no - b.no
+        );
         const completedMonths = Array.isArray(
           res.data.data.completedOrdersInLastSixMonths
         )
