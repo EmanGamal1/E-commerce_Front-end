@@ -23,6 +23,7 @@ const Tables = ({
   pagination,
   onPageChange,
   setSearch,
+  onSort,
 }) => {
   return (
     <>
@@ -61,6 +62,7 @@ const Tables = ({
                   dataKey="id"
                   paginator
                   lazy
+                  onSort={onSort}
                   first={(pagination.currentPage - 1) * pagination.limit}
                   rows={pagination.limit}
                   totalRecords={pagination.total}
@@ -82,6 +84,8 @@ const Tables = ({
                       field={column.field}
                       body={column.body}
                       header={column.header}
+                      sortable={column.sortable}
+                      filter={column.filter}
                     />
                   ))}
                 </DataTable>
