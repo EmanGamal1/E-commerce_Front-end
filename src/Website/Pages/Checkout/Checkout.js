@@ -57,12 +57,12 @@ const Checkout = () => {
                   };
               await axiosInstance.post("/orders", orderData);
               console.log(orderData);
-              Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "نجاح ");
+              Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "success");
               // Redirect to the orders page
               
             } catch (error) {
               console.log(error.message);
-              Swal.fire("فشل", " حدث خطأ برجاء المحاولة مرة أخرى.", "فشل");
+              Swal.fire("عذرا", " حدث خطأ برجاء المحاولة مرة أخرى.", "error");
             }
           };
         
