@@ -29,7 +29,8 @@ export const validation = Yup.object({
     .min(10, "product description must be at least 10 character")
     .matches(/^[\u0600-\u06ff\s\-,]+$/, "accepts arabic character only")
     .required("product description in arabic required"),
-  image: Yup.array().min(1, "Please select Cover image"),
+  image: Yup.mixed().required("Please select image image"),
+  // image: Yup.array().min(1, "Please select at least one image"),
   images: Yup.array().min(1, "Please select at least one image"),
   category: Yup.string().required("product category required"),
   price: Yup.string()

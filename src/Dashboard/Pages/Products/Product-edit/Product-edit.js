@@ -14,7 +14,7 @@ const UpdateProduct = () => {
   const navigate = useNavigate();
 
   const ProductsURL = "api/v1/products";
-  const CategoriesURL = "api/v1/categories";
+  const CategoriesURL = "api/v1/categories?limit=1000";
 
   const formik = useFormik({
     initialValues: initValues,
