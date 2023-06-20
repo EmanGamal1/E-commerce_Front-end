@@ -10,7 +10,7 @@ export const NewArrivedProductsHook = () => {
   }, []);
   const getNewArrivedProducts = (page = 1) => {
     axiosInstance
-      .get(`${NewArrivedProductsURL}?page=${page}&limit=4`)
+      .get(`${NewArrivedProductsURL}?page=${page}&limit=4&sort=-createdAt`)
       .then((products) => {
         console.log("products", products.data.data);
         setProducts(products.data.data);

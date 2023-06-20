@@ -3,9 +3,10 @@ import { ProductsCard } from "../Products/ProductsCard";
 import { SubTiltle } from "../Uitily/SubTiltle";
 import { ViewHomeProductsHook } from "../../hook/Products/ViewHomeProductsHook";
 import { useEffect } from "react";
+import { NewArrivedProductsHook } from "../../hook/Products/NewArrivedProductsHook";
 
 export const NewArrivedProducts = ({ title, btntitle, pathText }) => {
-  const [products, loading] = ViewHomeProductsHook();
+  const [products, loading] = NewArrivedProductsHook();
   useEffect(() => {
     if (products.length > 0) {
       console.log("products", products, loading);
