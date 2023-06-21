@@ -1,6 +1,7 @@
 import { FormGroup, Input } from "reactstrap";
 import { FormLabel, FormSelect } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import React from "react";
 
 export const ProductsForm = ({
   formik,
@@ -91,6 +92,18 @@ export const ProductsForm = ({
         </FormGroup>
 
         <FormGroup>
+          {formik.values.image != "" && (
+            <>
+              <img
+                src={formik.values.image}
+                alt="category"
+                width="200"
+                height="200"
+                style={{ objectFit: "cover" }}
+              />
+              <br />
+            </>
+          )}
           <FormLabel
             htmlFor="coverImage"
             className="btn btn-primary"
@@ -112,6 +125,19 @@ export const ProductsForm = ({
           )}
         </FormGroup>
         <FormGroup>
+          {formik.values.images &&
+            formik.values.images.map((image, index) => (
+              <img
+                className={"m-2"}
+                key={index}
+                src={image}
+                alt="product"
+                width="200"
+                height="200"
+                style={{ objectFit: "cover" }}
+              />
+            ))}
+          <br />
           <FormLabel
             htmlFor="images"
             className="btn btn-primary"

@@ -1,13 +1,17 @@
 import React from "react";
 
 const SearchBox = ({ searchQuery, onSearchQueryChange }) => {
+  const handleSearchQueryChange = (event) => {
+    onSearchQueryChange(event.target.value);
+  };
+
   return (
     <input
       type="text"
-      placeholder="Search"
+      placeholder="بحـث عن المنتجــات..."
       value={searchQuery}
-      onChange={onSearchQueryChange}
-      className="form-control shadow w-25 m-auto" 
+      onChange={handleSearchQueryChange}
+      className="form-control shadow m-auto" 
     />
   );
 };

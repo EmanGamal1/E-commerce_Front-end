@@ -1,64 +1,88 @@
+import { useEffect, useState } from "react";
 import { Col, Container, Row } from "reactstrap";
 import { CardProductsContainer } from "../../components/Products/CardProductsContainer";
-import { AllProductsHook } from "../../hook/Products/AllProductsHook";
 import { SideFilter } from "../../components/Uitily/SideFilter";
-import React, { useState } from "react";
-import SearchBox from "./../../SharedUI/SearchBox/SearchBox";
+import { axiosInstance } from "../../../Axios";
+import SearchBox from "Website/SharedUI/SearchBox/SearchBox";
 
 const Products = () => {
-  const [products, loading] = AllProductsHook();
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const [priceFrom, setPriceFrom] = useState("");
   const [priceTo, setPriceTo] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  
+  const handleSearchQueryChange = (query) => {
+    setSearchQuery(query);
+  };
 
-  const updateCategory = (categoryId) => {
-    setSelectedCategory(categoryId === "0" ? null : categoryId);
+  const handleCategoryChange = (categoryId) => {
+    if (categoryId === "0") {
+      setSelectedCategory("");
+      window.history.pushState(null, null, "/products");
+    } else {
+      setSelectedCategory(categoryId);
+    }
   };
   
-
-  const updatePriceFrom = (value) => {
-    setPriceFrom(value);
+  const handlePriceRangeChange = (from, to) => {
+    setPriceFrom(from);
+    setPriceTo(to);
   };
 
-  const updatePriceTo = (value) => {
-    setPriceTo(value);
-  };
+  useEffect(() => {
+    let query = "";
+    if (searchQuery) {
+      query += `keyword=${searchQuery}&`;
+    }
+    if (priceFrom) {
+      query += `price[gt]=${priceFrom}&`;
+    }
+    else if (priceTo) {
+      query += `price[lt]=${priceTo}&`;
+    }
+    else if (priceFrom && priceTo) {
+      query += `price[gt]=${priceFrom}&price[lt]=${priceTo}&`;
+    }
+    if (selectedCategory) {
+      query += `category_id=${selectedCategory}&`;
+    }
+    query = query.slice(0, -1); // Remove'&' from the query
 
-  const handleSearchQueryChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory =
-      !selectedCategory || product.category_id._id === selectedCategory;
-    const matchesPrice =
-      (!priceFrom || product.price >= parseInt(priceFrom)) &&
-      (!priceTo || product.price <= parseInt(priceTo));
-
-    const matchesSearch =
-      product.name_ar.toLowerCase().includes(searchQuery.toLowerCase()) 
-      // product.category_id.name_ar.toLowerCase().includes(searchQuery.toLowerCase());    ****to search by category also
-
-    return matchesCategory && matchesPrice && matchesSearch;
-  });
+    axiosInstance
+      .get(`products?${query}`)
+      .then((response) => {
+        console.log("products", response.data.data);
+        setProducts(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  }, [searchQuery, priceFrom, priceTo, selectedCategory]);
 
   return (
     <>
-      <div >
+      <div>
         <Container fluid className="mt-4">
           <Row className="d-flex flex-row">
             <Col sm="4" xs="4" md="2" className="d-flex">
               <SideFilter
-                updateCategory={updateCategory}
-                updatePriceFrom={updatePriceFrom}
-                updatePriceTo={updatePriceTo}
+                updateCategory={handleCategoryChange}
+                updatePriceRange={handlePriceRangeChange}
               />
             </Col>
             <Col sm="6" xs="8" md="10">
-              <SearchBox searchQuery={searchQuery} onSearchQueryChange={handleSearchQueryChange} 
-              className="form-control" />
-              <CardProductsContainer products={filteredProducts} title="" btntitle="" />
+              <Col md="4" className="m-auto">
+                <SearchBox
+                  searchQuery={searchQuery}
+                  onSearchQueryChange={handleSearchQueryChange}
+                  className="form-control"
+                />
+              </Col>
+              <CardProductsContainer products={products} title="" btntitle="" />
             </Col>
           </Row>
         </Container>

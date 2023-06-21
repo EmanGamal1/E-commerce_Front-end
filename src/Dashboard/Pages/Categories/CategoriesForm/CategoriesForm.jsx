@@ -36,6 +36,18 @@ export const CategoriesForm = ({ formik, handleImageFile }) => {
           )}
         </FormGroup>
         <FormGroup>
+          {formik.values.image != "" && (
+            <>
+              <img
+                src={formik.values.image}
+                alt="category"
+                width="200"
+                height="200"
+                style={{ objectFit: "cover" }}
+              />
+              <br />
+            </>
+          )}
           <FormLabel
             htmlFor="coverImage"
             className="btn btn-primary"

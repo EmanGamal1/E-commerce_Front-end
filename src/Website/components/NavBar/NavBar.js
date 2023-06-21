@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faUser } from "@fortawesome/free-solid-svg-icons";
 import "./NavBar.css";
 import { Link, useNavigate } from "react-router-dom";
-import SearchBox from "Website/SharedUI/SearchBox/SearchBox";
 import { useEffect, useState, useRef } from "react";
 import { axiosInstance } from "./../../../Axios";
 
@@ -24,8 +23,8 @@ const NavBar = () => {
   }, []);
 
   const fetchInfo = () => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+    const user = localStorage.getItem("user");
+    setIsLoggedIn(!!user);
     axiosInstance
       .get("/info")
       .then((response) => {
@@ -61,11 +60,12 @@ const NavBar = () => {
     }
   };
 
- const handleLogout = async () => {
+  const handleLogout = async () => {
     try {
       await axiosInstance.delete("/logout");
       localStorage.removeItem("token");
-      navigate("/auth/login");
+      localStorage.removeItem("user");
+      navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -96,16 +96,17 @@ const NavBar = () => {
       {/* <li>
         <SearchBox placeholder="البحث عن المنتجــات..." />
       </li> */}
+
       {!isLoggedIn ? (
         <ul>
           <li>
-            <Link to="/auth/login">
+            <Link to="/login">
               <FontAwesomeIcon icon={faUser} className="Icons" />
               تسجيل الدخول
             </Link>
           </li>
           <li>
-            <Link to="/signup">
+            <Link to="/register">
               <FontAwesomeIcon icon={faUser} className="Icons" />
               حســـاب جديـد
             </Link>

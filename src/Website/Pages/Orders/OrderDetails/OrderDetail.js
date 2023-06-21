@@ -227,7 +227,11 @@ const OrderDetail = () => {
                         <div key={product.product_id}>
                           <Row>
                             <Col xs="3">
-                              <img src={getProductImageById(product.product_id)} alt="Product" style={{ width: "100%", height: "100%" }} />
+                            <img
+  src={getProductImageById(product.product_id)}
+  alt="Product"
+  style={{ width: "100%", height: "100%" }}
+/>
                             </Col>
                             <Col xs="9" className="text-right">
                               <p>{product.product_id}</p>

@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Card, CardBody, Col, InputGroup, InputGroupAddon, Button} from "reactstrap";
+import {
+  Container,
+  Row,
+  Card,
+  CardBody,
+  Col,
+  InputGroup,
+  InputGroupAddon,
+  Button,
+} from "reactstrap";
 import { axiosInstance } from "Axios.js";
 import "../Orders/Orders.css";
 import { Link } from "react-router-dom";
@@ -18,17 +27,18 @@ const Orders = () => {
 
   useEffect(() => {
     axiosInstance
-      .get("/orders")
+      .get("/orders?limit=70")
       .then((res) => {
-        const fetchedOrders = res.data.data; // Fetch the orders from the API response
+        const fetchedOrders = res.data.data;
         const filteredOrders = fetchedOrders.filter((order) => {
           const orderDate = new Date(order.createdAt).setHours(0, 0, 0, 0);
           return (
-            (!selectedStartDate || orderDate >= selectedStartDate.getTime()) &&
+            (!selectedStartDate ||
+              orderDate >= selectedStartDate.getTime()) &&
             (!selectedEndDate || orderDate <= selectedEndDate.getTime())
           );
         });
-  
+
         setOrderData(filteredOrders);
         fetchProductData(filteredOrders);
       })
@@ -36,7 +46,6 @@ const Orders = () => {
         console.log(err.message);
       });
   }, [selectedStartDate, selectedEndDate]);
-  
 
   const fetchProductData = async (orders) => {
     const productIds = orders.flatMap((order) =>
@@ -84,15 +93,39 @@ const Orders = () => {
   };
 
   // Pagination logic
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = orderData.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalOrders = orderData.length;
+  const totalPages = Math.ceil(totalOrders / ordersPerPage);
+  const maxPageLinks = 7;
+  let startPage = currentPage - Math.floor(maxPageLinks / 2);
+  let endPage = currentPage + Math.floor(maxPageLinks / 2);
+
+  if (startPage < 1) {
+    startPage = 1;
+    endPage = Math.min(maxPageLinks, totalPages);
+  }
+
+  if (endPage > totalPages) {
+    endPage = totalPages;
+    startPage = Math.max(1, totalPages - maxPageLinks + 1);
+  }
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const hasOrders = orderData.length > 0;
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  const hasOrders = totalOrders > 0;
 
   return (
     <Container fluid className="mt-4">
@@ -138,10 +171,17 @@ const Orders = () => {
           {!hasOrders && selectedStartDate && selectedEndDate && (
             <div className="text-center mt-4 mb-4">
               <h2>لا توجد طلبات في هذا النطاق</h2>
-              <img src={imageSrc} alt="No Orders" style={{ width: "250px", height: "250px" }} />
+              <img
+                src={imageSrc}
+                alt="No Orders"
+                style={{ width: "250px", height: "250px" }}
+              />
             </div>
           )}
-          {currentOrders.map((order) => (
+          {orderData.slice(
+            (currentPage - 1) * ordersPerPage,
+            currentPage * ordersPerPage
+          ).map((order) => (
             <Card key={order._id} className="m-2 shadow">
               <CardBody className="hover-border-primary">
                 {order.products.map((product) => (
@@ -149,14 +189,17 @@ const Orders = () => {
                     <Col>
                       <h3>{order._id}</h3>
                       <p>
-                        <i className="fa fa-hourglass-end ml-2"></i>تم الطلب يوم{" "}
+                        <i className="fa fa-hourglass-end ml-2"></i>تم الطلب
+                        يوم{" "}
                         {new Date(order.createdAt).toLocaleDateString("ar", {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
                         })}
                       </p>
-                      <h3 className={getStatusColor(order.status)}>{order.status}</h3>
+                      <h3 className={getStatusColor(order.status)}>
+                        {order.status}
+                      </h3>
                     </Col>
                     <Col lg="3" xs="5" className="separator" />
 
@@ -184,17 +227,40 @@ const Orders = () => {
           <Row>
             <nav>
               <ul className="pagination justify-content-center">
-                {Array.from({ length: Math.ceil(orderData.length / ordersPerPage) }, (_, i) => (
-                  <li key={i + 1} className="page-item">
+                <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                  <button
+                    className="page-link"
+                    onClick={goToPreviousPage}
+                    style={{ cursor: "pointer" }}
+                  >
+                     &lt;
+                  </button>
+                </li>
+                {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+                  <li
+                    key={startPage + i}
+                    className={`page-item ${
+                      currentPage === startPage + i ? "active" : ""
+                    }`}
+                  >
                     <button
                       className="page-link"
-                      onClick={() => paginate(i + 1)}
+                      onClick={() => paginate(startPage + i)}
                       style={{ cursor: "pointer" }}
                     >
-                      {i + 1}
+                      {startPage + i}
                     </button>
                   </li>
                 ))}
+                <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+                  <button
+                    className="page-link"
+                    onClick={goToNextPage}
+                    style={{ cursor: "pointer" }}
+                  >
+                     &gt;
+                  </button>
+                </li>
               </ul>
             </nav>
           </Row>

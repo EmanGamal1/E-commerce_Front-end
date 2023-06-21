@@ -15,8 +15,18 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import {Link} from "react-router-dom"; // reactstrap components
-import {Col, Container, Nav, Navbar, NavbarBrand, NavItem, NavLink, Row, UncontrolledCollapse,} from "reactstrap";
+import { Link } from "react-router-dom"; // reactstrap components
+import {
+  Col,
+  Container,
+  Nav,
+  Navbar,
+  NavbarBrand,
+  NavItem,
+  NavLink,
+  Row,
+  UncontrolledCollapse,
+} from "reactstrap";
 
 const AdminNavbar = () => {
   return (
@@ -53,7 +63,7 @@ const AdminNavbar = () => {
             </div>
             <Nav className="ml-auto" navbar>
               <NavItem>
-                <NavLink className="nav-link-icon" to="/auth/login" tag={Link}>
+                <NavLink className="nav-link-icon" to="/admin/login" tag={Link}>
                   <i className="ni ni-key-25" />
                   <span className="nav-link-inner--text">Login</span>
                 </NavLink>

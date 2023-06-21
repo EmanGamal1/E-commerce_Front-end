@@ -6,6 +6,15 @@ import { useFormik } from "formik";
 import MySwal from "sweetalert2";
 import { initValues, validation } from "../Products-form/validation";
 import handleErrors from "../../../../Errors";
+import {
+  CardHeader,
+  Navbar,
+  Card,
+  Col,
+  Row,
+  Container,
+  CardBody,
+} from "reactstrap";
 
 const UpdateProduct = () => {
   const [categories, setCategories] = useState(null);
@@ -14,7 +23,7 @@ const UpdateProduct = () => {
   const navigate = useNavigate();
 
   const ProductsURL = "api/v1/products";
-  const CategoriesURL = "api/v1/categories";
+  const CategoriesURL = "api/v1/categories?limit=1000";
 
   const formik = useFormik({
     initialValues: initValues,
@@ -99,20 +108,30 @@ const UpdateProduct = () => {
   }, [product]);
 
   return (
-    <div>
-      <div className="row">
-        <div className="offset-lg-3 col-lg-6">
-          {product && categories && (
-            <ProductsForm
-              formik={formik}
-              handleImageFile={handleImageFile}
-              handleFileChange={handleFileChange}
-              categories={categories}
-            />
-          )}
-        </div>
-      </div>
-    </div>
+    <>
+      <Navbar />
+      <Container className="mt--7" fluid>
+        <Row>
+          <div className="col">
+            <Card className="shadow">
+              <CardHeader className="border-0">
+                <div className=" btntitleproduct row col-12">
+                  <h3 className="col-6 mb-0">Edit Product</h3>
+                </div>
+              </CardHeader>
+              {product && categories && (
+                <ProductsForm
+                  formik={formik}
+                  handleImageFile={handleImageFile}
+                  handleFileChange={handleFileChange}
+                  categories={categories}
+                />
+              )}
+            </Card>
+          </div>
+        </Row>
+      </Container>
+    </>
   );
 };
 
