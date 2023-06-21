@@ -4,6 +4,7 @@ import { CardProductsContainer } from "../../components/Products/CardProductsCon
 import { SideFilter } from "../../components/Uitily/SideFilter";
 import { axiosInstance } from "../../../Axios";
 import SearchBox from "Website/SharedUI/SearchBox/SearchBox";
+import Pagination from "@mui/material/Pagination";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -12,7 +13,7 @@ const Products = () => {
   const [priceFrom, setPriceFrom] = useState("");
   const [priceTo, setPriceTo] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  
+
   const handleSearchQueryChange = (query) => {
     setSearchQuery(query);
   };
@@ -25,7 +26,7 @@ const Products = () => {
       setSelectedCategory(categoryId);
     }
   };
-  
+
   const handlePriceRangeChange = (from, to) => {
     setPriceFrom(from);
     setPriceTo(to);
@@ -38,11 +39,9 @@ const Products = () => {
     }
     if (priceFrom) {
       query += `price[gt]=${priceFrom}&`;
-    }
-    else if (priceTo) {
+    } else if (priceTo) {
       query += `price[lt]=${priceTo}&`;
-    }
-    else if (priceFrom && priceTo) {
+    } else if (priceFrom && priceTo) {
       query += `price[gt]=${priceFrom}&price[lt]=${priceTo}&`;
     }
     if (selectedCategory) {
@@ -84,6 +83,11 @@ const Products = () => {
               </Col>
               <CardProductsContainer products={products} title="" btntitle="" />
             </Col>
+          </Row>
+          <Row>
+            <div className="mt-2 mx-auto" dir="ltr">
+              <Pagination count={10} color="primary" size="large" />
+            </div>
           </Row>
         </Container>
       </div>

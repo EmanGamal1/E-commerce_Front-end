@@ -93,9 +93,6 @@ const NavBar = () => {
           <Link to="/contactus">تواصل معنا</Link>
         </li>
       </ul>
-      {/* <li>
-        <SearchBox placeholder="البحث عن المنتجــات..." />
-      </li> */}
 
       {!isLoggedIn ? (
         <ul>
