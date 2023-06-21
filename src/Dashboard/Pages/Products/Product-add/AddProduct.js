@@ -12,7 +12,7 @@ const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
 
-  const CategoriesURL = "api/v1/categories";
+  const CategoriesURL = "api/v1/categories?limit=1000";
   const ProductsURL = "api/v1/products";
   const formik = useFormik({
     initialValues: initValues,
@@ -74,7 +74,7 @@ const AddProduct = () => {
   return (
     <>
       <Navbar />
-      <Container className="mt-7" fluid>
+      <Container className="mt--7" fluid>
         <Row>
           <Col>
             <Card className="shadow">

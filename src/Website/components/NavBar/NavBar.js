@@ -96,6 +96,7 @@ const NavBar = () => {
       {/* <li>
         <SearchBox placeholder="البحث عن المنتجــات..." />
       </li> */}
+
       {!isLoggedIn ? (
         <ul>
           <li>
