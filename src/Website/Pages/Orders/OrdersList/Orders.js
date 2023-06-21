@@ -10,12 +10,12 @@ import {
   Button,
 } from "reactstrap";
 import { axiosInstance } from "Axios.js";
-import "../Orders/Orders.css";
 import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
+import "./Orders.css"
 import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt } from "react-icons/fa";
-import imageSrc from "../../Assets/img/OIUFKQ0.jpg";
+import imageSrc from "../../../Assets/img/OIUFKQ0.jpg";
 
 const Orders = () => {
   const [orderData, setOrderData] = useState([]);
@@ -62,20 +62,7 @@ const Orders = () => {
     setProductData(productDataWithImage);
   };
 
-  const getProductImageById = (productId) => {
-    const product = productData.find((product) => product._id === productId);
-    return product ? product.image : "";
-  };
-
-  const getProductNameById = (productId) => {
-    const product = productData.find((product) => product.id === productId);
-    return product ? product.name_ar : "";
-  };
-
-  const getProductDescById = (productId) => {
-    const product = productData.find((product) => product.id === productId);
-    return product ? product.desc_ar : "";
-  };
+ 
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -135,36 +122,32 @@ const Orders = () => {
             <Col>
               <h1 className="mr-3 mb-3">طلباتى</h1>
             </Col>
-            <Col lg="5" className="text-left">
-              <InputGroup className="mb-3 ml-3">
-                <DatePicker
-                  selected={selectedStartDate}
-                  onChange={(date) => setSelectedStartDate(date)}
-                  selectsStart
-                  startDate={selectedStartDate}
-                  endDate={selectedEndDate}
-                  dateFormat="dd/MM/yyyy"
-                  className="form-control"
-                  placeholderText="تاريخ البداية"
-                />
-                <DatePicker
-                  selected={selectedEndDate}
-                  onChange={(date) => setSelectedEndDate(date)}
-                  selectsEnd
-                  startDate={selectedStartDate}
-                  endDate={selectedEndDate}
-                  dateFormat="dd/MM/yyyy"
-                  className="form-control"
-                  placeholderText="تاريخ النهاية"
-                  minDate={selectedStartDate}
-                  disabled={!selectedStartDate}
-                />
-                <InputGroupAddon addonType="append">
-                  <Button color="warning">
-                    <FaCalendarAlt />
-                  </Button>
-                </InputGroupAddon>
-              </InputGroup>
+            <Col lg="6">
+                <div className="d-flex">
+                  <DatePicker
+                    selected={selectedStartDate}
+                    onChange={(date) => setSelectedStartDate(date)}
+                    selectsStart
+                    startDate={selectedStartDate}
+                    endDate={selectedEndDate}
+                    dateFormat="dd/MM/yyyy"
+                    className="form-control mr-2"
+                    placeholderText="تاريخ البداية"
+                  />
+                  <div className="ml-4"></div>
+                  <DatePicker
+                    selected={selectedEndDate}
+                    onChange={(date) => setSelectedEndDate(date)}
+                    selectsEnd
+                    startDate={selectedStartDate}
+                    endDate={selectedEndDate}
+                    dateFormat="dd/MM/yyyy"
+                    className="form-control"
+                    placeholderText="تاريخ النهاية"
+                    minDate={selectedStartDate}
+                    disabled={!selectedStartDate}
+                  />
+                </div>
             </Col>
           </Row>
 
@@ -174,7 +157,6 @@ const Orders = () => {
               <img
                 src={imageSrc}
                 alt="No Orders"
-                style={{ width: "250px", height: "250px" }}
               />
             </div>
           )}
@@ -182,9 +164,11 @@ const Orders = () => {
             (currentPage - 1) * ordersPerPage,
             currentPage * ordersPerPage
           ).map((order) => (
-            <Card key={order._id} className="m-2 shadow">
-              <CardBody className="hover-border-primary">
-                {order.products.map((product) => (
+            <Card key={order._id} className="m-2 shadow"
+              
+            >
+              <CardBody className="hover-border-primary" >
+                {order.products.slice(0, 1).map((product) => (
                   <Row key={product.product_id}>
                     <Col>
                       <h3>{order._id}</h3>
@@ -201,69 +185,73 @@ const Orders = () => {
                         {order.status}
                       </h3>
                     </Col>
-                    <Col lg="3" xs="5" className="separator" />
 
-                    <Col xs="3">
+                    <Col  lg ="3" md="6" xs="12" >
                       <img
-                        src={getProductImageById(product.product_id)}
+                        src={product.image}
                         alt="Product"
-                        style={{ width: "70%", height: "80%" }}
+                        style={{ width: "70%", height: "100%" }}
                       />
                     </Col>
-                    <Col>
-                      <p>{getProductNameById(product.product_id)}</p>
-                      <p>{getProductDescById(product.product_id)}</p>
-                    </Col>
-                    <Col className="d-flex align-items-center justify-content-center">
-                      <Link to={`/orders/OrderDetail/${order._id}`}>
-                        <i className="fa fa-chevron-left mr-5"></i>
+                    <Col lg ="3" md="6" xs="12" >
+                      <h3>{product.name_ar}</h3>
+                      <p>{product.desc_ar}</p>
+                      <Link to={`/orders/OrderDetail/${order._id}`} className="btn btn-primary">
+                        تفاصيل الطلب 
                       </Link>
+                    </Col>
+                    
+                    <Col className="d-flex align-items-center justify-content-center">
+                      
                     </Col>
                   </Row>
                 ))}
               </CardBody>
             </Card>
           ))}
-          <Row>
-            <nav>
-              <ul className="pagination justify-content-center">
+
+          {hasOrders && (
+            <nav className="d-flex justify-content-center mt-4">
+              <ul className="pagination">
                 <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
                   <button
                     className="page-link"
                     onClick={goToPreviousPage}
-                    style={{ cursor: "pointer" }}
+                    tabIndex="-1"
                   >
-                     &lt;
+                   &lt;
                   </button>
                 </li>
-                {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
-                  <li
-                    key={startPage + i}
-                    className={`page-item ${
-                      currentPage === startPage + i ? "active" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => paginate(startPage + i)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      {startPage + i}
-                    </button>
-                  </li>
-                ))}
+
+                {Array(endPage - startPage + 1)
+                  .fill()
+                  .map((_, index) => {
+                    const pageNumber = startPage + index;
+                    return (
+                      <li
+                        key={pageNumber}
+                        className={`page-item ${
+                          pageNumber === currentPage ? "active" : ""
+                        }`}
+                      >
+                        <button
+                          className="page-link"
+                          onClick={() => paginate(pageNumber)}
+                        >
+                          {pageNumber}
+                        </button>
+                      </li>
+                    );
+                  })}
+
                 <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                  <button
-                    className="page-link"
-                    onClick={goToNextPage}
-                    style={{ cursor: "pointer" }}
-                  >
-                     &gt;
+                  <button className="page-link" onClick={goToNextPage}>
+             &gt;
                   </button>
                 </li>
               </ul>
             </nav>
-          </Row>
+          )}
         </Card>
       </Row>
     </Container>
