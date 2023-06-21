@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { axiosInstance } from "Axios.js";
 import Swal from "sweetalert2";
-import { Container, Row, Card, CardBody, Col , Button } from "reactstrap";
+import { Container, Row, Card, CardBody, Col , Button , Input} from "reactstrap";
 
 
 const Checkout = () => {
@@ -9,6 +9,8 @@ const Checkout = () => {
         const [cartData, setCartData] = useState([]);
         const [userData, setUserData] = useState({});
         const [addressData, setAddressData] = useState({});
+        const [selectedAddress, setSelectedAddress] = useState([]);
+        const [userAddresses, setUserAddresses] = useState([]);
         const [totalPrice, setTotalPrice] = useState(0);
         // Other necessary state variables
         // ...
@@ -31,6 +33,7 @@ const Checkout = () => {
                 const response = await axiosInstance.get("/profile");
                 setUserData(response.data.data);
                 setAddressData(response.data.data.address[0]);
+                setUserAddresses(response.data.data.address);
               } catch (error) {
                 console.log(error.message);
                 // Handle error
@@ -52,20 +55,27 @@ const Checkout = () => {
             try {
               
                 const orderData = {
-                    address_id:addressData._id,
+                    address_id:selectedAddress,
                     
                   };
               await axiosInstance.post("/orders", orderData);
               console.log(orderData);
-              Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "نجاح ");
+              Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "success");
               // Redirect to the orders page
               
             } catch (error) {
               console.log(error.message);
-              Swal.fire("فشل", " حدث خطأ برجاء المحاولة مرة أخرى.", "فشل");
+              Swal.fire("عذرا", " حدث خطأ برجاء المحاولة مرة أخرى.", "error");
             }
           };
-        
+          const handleAddressSelect = (event) => {
+            const selectedValue = event.target.value;
+            setSelectedAddress(selectedValue);
+          
+            // Use the selectedValue as needed
+            console.log(selectedValue);
+            // You can pass the selectedValue to any function or perform any other logic here
+          };    
     return (
       <Container className="mt-4">
         <Row>
@@ -77,7 +87,7 @@ const Checkout = () => {
                   <h3>{userData.name}</h3>
                 </Col>
               </Row>
-              <Row>
+              {/* <Row>
                 <Col>
                   <p>المنطقة: {addressData.area}</p>
                 </Col>
@@ -92,15 +102,40 @@ const Checkout = () => {
                 <Col>
                   <p>الدولة: {addressData.country}</p>
                 </Col>
-              </Row>
+              </Row> */}
               <Row>
                 <Col>
                 <p><i className="fa-solid fa-phone text-success ml-2"></i>{userData.phone}</p> 
                 </Col>
-                
               </Row>
+              <Row>
+                <Col>
+                  <hr></hr>
+                  <p>اختيار العنوان</p>
+                  <Input
+                      type="select"
+                      name="address"
+                      id="address"
+                      value={selectedAddress}
+                      onChange={handleAddressSelect}
+                      className="mb-3"
+                    >
+                      <option value="">اختر العنوان</option>
+                      {userAddresses.length > 0 ? (
+                        userAddresses.map((address) => (
+                          <option key={address._id} value={address._id}>
+                            {address.area}, {address.city}, {address.governorate}, {address.country}
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled> لا يوجد عنوان </option>
+                      )}
+                  </Input>
+                </Col>
+              </Row>
+              <Row>
 
-              
+              </Row>
             </Card>
           </Col>
           <Col xs="4">
@@ -114,7 +149,6 @@ const Checkout = () => {
                 <p><i className="fa-solid fa-money-bill text-success ml-2"></i>كاش عند الاستلام</p>
                 </Col>
               </Row>
-              
               <Row>
                 <Col>
                   <h2>السعر الكلى:</h2>
@@ -124,18 +158,18 @@ const Checkout = () => {
                 </Col>
               </Row>
               <Row>
+                
+              </Row> 
+              <Row>
                   <Button className="btn btn-success w-100" onClick={handlePlaceOrder}>
                       اتمام الشراء
                   </Button>
               </Row>
-               
-              
             </Card>
           </Col>
           
         </Row>
         <Row>
-
           <Col xs="8">
           <h1 className="mb-3 mt-3">مراجعة الطلب </h1>
             <Card className="container shadow text-right p-4">
@@ -160,6 +194,7 @@ const Checkout = () => {
             </Card>
           </Col>
         </Row>
+        
       </Container>
     );
 }

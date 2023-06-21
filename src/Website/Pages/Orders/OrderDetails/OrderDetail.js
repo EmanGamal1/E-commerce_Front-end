@@ -90,10 +90,10 @@ const OrderDetail = () => {
   const handleStatusChange = async () => {
     try {
       const { value } = await Swal.fire({
-        title: 'Are you sure?',
-        text: `Do you want to ${
-          orderdata.status === 'Completed' ? 'reorder' : 'cancel'
-        } this order?`,
+        title: 'هل انت متأكد?',
+        text: `هل تريد ${
+          orderdata.status === 'Completed' ? 'اعادة شراء': 'الغاء'
+        } هذا الطلب?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -107,17 +107,17 @@ const OrderDetail = () => {
           // Update order status to 'Pending'
           await axiosInstance.post(`/orders/${orderdata._id}/reorder`, { status: 'Pending' });
           setOrderData((prevOrderData) => ({ ...prevOrderData, status: 'Pending' }));
-          Swal.fire('Order Reordered!', 'The order status has been changed to Pending.', 'success');
+          Swal.fire('تم الطلب!', 'تمت اعادة الطلب بنجاح', 'success');
         }  if (orderdata.status === 'Pending') {
           // Update order status to 'Cancelled'
           await axiosInstance.delete(`/orders/${orderdata._id}`, { status: 'Cancelled' });
           setOrderData((prevOrderData) => ({ ...prevOrderData, status: 'Cancelled' }));
-          Swal.fire('Order Cancelled!', 'The order has been cancelled.', 'success');
+          Swal.fire('تم الغاء الطلب بنجاح', 'success');
         }
       }
     } catch (error) {
       console.log(error);
-      Swal.fire('Error', 'An error occurred while updating the order status.', 'error');
+      Swal.fire('عذرا', 'لقد حدث خطأ ما ', 'error');
     }
   };
   
@@ -227,7 +227,11 @@ const OrderDetail = () => {
                         <div key={product.product_id}>
                           <Row>
                             <Col xs="3">
-                              <img src={getProductImageById(product.product_id)} alt="Product" style={{ width: "100%", height: "100%" }} />
+                            <img
+  src={getProductImageById(product.product_id)}
+  alt="Product"
+  style={{ width: "100%", height: "100%" }}
+/>
                             </Col>
                             <Col xs="9" className="text-right">
                               <p>{product.product_id}</p>
@@ -324,7 +328,7 @@ const OrderDetail = () => {
                                       </h4>
                                     </>
                                   ) : (
-                                    <p>No address found</p>
+                                    <p>لا يوجد عنوان</p>
                                   )}
                                 </Col>
                               </Row>
@@ -365,7 +369,7 @@ const OrderDetail = () => {
         </option>
       ))
     ) : (
-      <option disabled>No address found</option>
+      <option disabled> لا يوجد عنوان </option>
     )}
   </Input>
 </FormGroup>
