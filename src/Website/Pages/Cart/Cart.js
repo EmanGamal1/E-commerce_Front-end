@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { Container, Row, Card, CardBody, Col, CardHeader } from "reactstrap";
 import { Link } from "react-router-dom";
 import imageSrc from "../../Assets/img/OIUFKQ0.jpg";
+import handleErrors from "../../../Errors";
 const Cart = () => {
   const [cartData, setCartData] = useState([]);
   const [userData, setUserData] = useState({});
@@ -11,6 +12,31 @@ const Cart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   // Other necessary state variables
   // ...
+
+  const convertCurrency = (currency) => {
+    return Intl.NumberFormat("ar-EG", {
+      style: "currency",
+      currency: "EGP",
+    }).format(currency);
+  };
+  const updateQuantity = async (quantity, productId) => {
+    try {
+      const response = await axiosInstance.patch(`/profile/cart/update`, {
+        product_id: productId,
+        quantity: quantity,
+      });
+      fetchCartData();
+      Swal.fire({
+        icon: "success",
+        title: "تم تحديث الكمية",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      handleErrors(error);
+    }
+  };
+
   const fetchCartData = async () => {
     try {
       const response = await axiosInstance.get("/profile/cart");
@@ -70,7 +96,9 @@ const Cart = () => {
             <CardHeader className="border-0 ">
               <div className="d-flex justify-content-around">
                 <h1 className="mb-0">عربة التسوق</h1>
-                <h2 className="mb-0">السعر الكلي: {totalPrice.toFixed(2)}$</h2>
+                <h2 className="mb-0">
+                  السعر الكلي: {convertCurrency(totalPrice)}
+                </h2>
                 {totalPrice !== 0 ? (
                   <Link to={`/checkout`}>
                     <h3 className={"text-light btn btn-primary"}>
@@ -107,15 +135,44 @@ const Cart = () => {
                             <p> اسم المنتج: {product.product_id.name.ar}</p>
                             <p>الكمية: {product.quantity}</p>
                             <p>
+                              <label>الكمية: </label>
+                              <select
+                                className="form-control"
+                                onChange={(e) => {
+                                  console.log(e.target.value);
+                                  updateQuantity(
+                                    e.target.value,
+                                    product.product_id._id
+                                  );
+                                }}
+                              >
+                                {Array.from(
+                                  {
+                                    length: product.product_id.quantity,
+                                  },
+                                  (_, index) => (
+                                    <option
+                                      key={index + 1}
+                                      value={index + 1}
+                                      selected={index + 1 == product.quantity}
+                                    >
+                                      {index + 1}
+                                    </option>
+                                  )
+                                )}
+                              </select>
+                            </p>
+
+                            <p>
                               {" "}
-                              سعر الوحدة: {product.product_id.price.toFixed(2)}$
+                              سعر الوحدة:{" "}
+                              {convertCurrency(product.product_id.price)}
                             </p>
                             <p>
                               السعر الكلي:{" "}
-                              {(
+                              {convertCurrency(
                                 product.quantity * product.product_id.price
-                              ).toFixed(2)}
-                              $
+                              )}
                             </p>
                           </Col>
                           <Col xs="2">
@@ -149,7 +206,7 @@ const Cart = () => {
                     </div>
                   )}
 
-                  <h2>السعر الكلي: {totalPrice.toFixed(2)}$</h2>
+                  <h2>السعر الكلي: {convertCurrency(totalPrice)}</h2>
                   <button className="btn btn-primary w-100">
                     {totalPrice !== 0 ? (
                       <Link to={`/checkout`}>
