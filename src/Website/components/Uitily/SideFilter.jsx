@@ -21,13 +21,24 @@ export const SideFilter = ({
     setPriceFrom(value);
     updatePriceRange(value, priceTo);
   };
-
+  
   const handleChangePriceTo = (event) => {
     const value = event.target.value;
     setPriceTo(value);
     updatePriceRange(priceFrom, value);
   };
-
+  
+  const handlePriceChange = (event, isFrom) => {
+    const value = event.target.value;
+    if (isFrom) {
+      setPriceFrom(value);
+      updatePriceRange(value, priceTo);
+    } else {
+      setPriceTo(value);
+      updatePriceRange(priceFrom, value);
+    }
+  };
+  
   return (
     <>
       <Card className="shadow w-100" style={{height:"100%"}}>

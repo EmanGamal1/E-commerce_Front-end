@@ -36,7 +36,13 @@ const Products = () => {
     if (searchQuery) {
       query += `keyword=${searchQuery}&`;
     }
-    if (priceFrom && priceTo) {
+    if (priceFrom) {
+      query += `price[gt]=${priceFrom}&`;
+    }
+    else if (priceTo) {
+      query += `price[lt]=${priceTo}&`;
+    }
+    else if (priceFrom && priceTo) {
       query += `price[gt]=${priceFrom}&price[lt]=${priceTo}&`;
     }
     if (selectedCategory) {
