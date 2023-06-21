@@ -15,7 +15,7 @@ export const HomeCategories = () => {
   return (
     <>
       <Container>
-        <SubTiltle title="التصنيفات" btntitle="المزيد" pathText="/categories" />
+        <SubTiltle title="الاقسام" btntitle="المزيد" pathText="/categories" />
         <Row className="my-2 d-flex justify-content-between">
           {loading === false ? (
             categories ? (

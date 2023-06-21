@@ -18,6 +18,7 @@ import Btn from "Dashboard/SharedUI/Btn/Btn";
 
 const Login_URL = "admin/auth";
 const Login = () => {
+  const navigate = useNavigate();
   const { setAuthUser, setUserToken } = useContext(AuthContext);
   const userRef = useRef();
   const errRef = useRef();
@@ -25,9 +26,6 @@ const Login = () => {
   const [user, setuser] = useState("");
   const [password, setpassword] = useState("");
   const [errmsg, seterrmsg] = useState("");
-  const [success, setsuccess] = useState(false);
-
-  const Navigate = useNavigate();
 
   useEffect(() => {
     userRef.current.focus();
@@ -51,13 +49,14 @@ const Login = () => {
       console.log(response?.data.data.user);
       const authUser = response?.data.data.user;
       const accessToken = response?.data.data.token;
-      localStorage.setItem("token", accessToken);
       setAuthUser(authUser);
+      localStorage.setItem("token", accessToken);
       setUserToken(accessToken);
       setuser("");
       setpassword("");
-      setsuccess(true);
-      Navigate("/admin/index");
+      setTimeout(() => {
+        navigate("/admin/index");
+      }, 500);
     } catch (err) {
       console.error(err.response.data.message);
       const erorr = err.response.data.message;
@@ -68,83 +67,68 @@ const Login = () => {
 
   return (
     <>
-      {success ? (
-        <section>
-          <p> loged in success </p>
-          {Navigate("/admin/index")}
-        </section>
-      ) : (
-        <div className={"row text-center mt-5"}>
-          <Card className="bg-secondary shadow border-0 col-lg-5 col-md-7 mx-auto">
-            <CardBody className="px-lg-5 py-lg-5">
-              <div className="text-center text-muted mb-4">
-                <p ref={errRef} className="text-danger" aria-live="assertive">
-                  {errmsg}
-                </p>
-                <small>Sign in</small>
-              </div>
-              <Form role="form" onSubmit={handelSubmit}>
-                <FormGroup className="mb-3">
-                  <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-email-83" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      placeholder="Email"
-                      type="email"
-                      id="email"
-                      autoComplete="off"
-                      ref={userRef}
-                      onChange={(e) => {
-                        setuser(e.target.value);
-                      }}
-                      value={user}
-                      required
-                    />
-                  </InputGroup>
-                </FormGroup>
-                <FormGroup>
-                  <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-lock-circle-open" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      placeholder="Password"
-                      type="password"
-                      id="email"
-                      onChange={(e) => {
-                        setpassword(e.target.value);
-                      }}
-                      value={password}
-                      required
-                    />
-                  </InputGroup>
-                </FormGroup>
-                <div className="text-center">
-                  <Btn
-                    className="btn btn-info"
-                    type="submit"
-                    title=" Sign in "
+      <div className={"row text-center mt-5"}>
+        <Card className="bg-secondary shadow border-0 col-lg-5 col-md-7 mx-auto">
+          <CardBody className="px-lg-5 py-lg-5">
+            <div className="text-center text-muted mb-4">
+              <p ref={errRef} className="text-danger" aria-live="assertive">
+                {errmsg}
+              </p>
+              <small>Sign in</small>
+            </div>
+            <Form role="form" onSubmit={handelSubmit}>
+              <FormGroup className="mb-3">
+                <InputGroup className="input-group-alternative">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="ni ni-email-83" />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    placeholder="Email"
+                    type="email"
+                    id="email"
+                    autoComplete="off"
+                    ref={userRef}
+                    onChange={(e) => {
+                      setuser(e.target.value);
+                    }}
+                    value={user}
+                    required
                   />
-                </div>
-                <Row className="mt-3">
-                  <Col xs="6">
-                    <Link to="/auth/reset-password-token">
-                      Forget password?{" "}
-                    </Link>
-                  </Col>
-                </Row>
-              </Form>
-            </CardBody>
-          </Card>
-
-          {/* </Col>*/}
-        </div>
-      )}
+                </InputGroup>
+              </FormGroup>
+              <FormGroup>
+                <InputGroup className="input-group-alternative">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="ni ni-lock-circle-open" />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    placeholder="Password"
+                    type="password"
+                    id="password"
+                    onChange={(e) => {
+                      setpassword(e.target.value);
+                    }}
+                    value={password}
+                    required
+                  />
+                </InputGroup>
+              </FormGroup>
+              <div className="text-center">
+                <Btn className="btn btn-info" type="submit" title=" Sign in " />
+              </div>
+              <Row className="mt-3">
+                <Col xs="6">
+                  <Link to="/auth/reset-password-token"></Link>
+                </Col>
+              </Row>
+            </Form>
+          </CardBody>
+        </Card>
+      </div>
     </>
   );
 };

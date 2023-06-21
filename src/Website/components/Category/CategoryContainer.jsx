@@ -13,7 +13,7 @@ export const CategoryContainer = ({ data, loading }) => {
                 return (
                   <CategoryCard
                     key={index}
-                    id={item._id}
+                    slug={item.slug}
                     title={item.name_ar}
                     img={item.image}
                   />

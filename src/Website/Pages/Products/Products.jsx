@@ -2,8 +2,9 @@ import { Col, Container, Row } from "reactstrap";
 import { CardProductsContainer } from "../../components/Products/CardProductsContainer";
 import { AllProductsHook } from "../../hook/Products/AllProductsHook";
 import { SideFilter } from "../../components/Uitily/SideFilter";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBox from "./../../SharedUI/SearchBox/SearchBox";
+import { axiosInstance } from "./../../../Axios";
 
 const Products = () => {
   const [products, loading] = AllProductsHook();
@@ -11,22 +12,40 @@ const Products = () => {
   const [priceFrom, setPriceFrom] = useState("");
   const [priceTo, setPriceTo] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(() => {
+    console.log(searchQuery);
+    if (searchQuery !== "") {
+      axiosInstance
+        .get(`/products?keyword=${searchQuery}`)
+        .then(
+          (response) => {
+            setSearchResults(response.data);
+            console.log(response.data);
+          }
+          )
+        .catch((error) => console.error(error));
+    } else {
+      setSearchResults([]);
+      console.log("no");
+    }
+  }, [searchQuery]);
+
+  const handleSearchQueryChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   const updateCategory = (categoryId) => {
     setSelectedCategory(categoryId === "0" ? null : categoryId);
   };
   
-
   const updatePriceFrom = (value) => {
     setPriceFrom(value);
   };
 
   const updatePriceTo = (value) => {
     setPriceTo(value);
-  };
-
-  const handleSearchQueryChange = (event) => {
-    setSearchQuery(event.target.value);
   };
 
   const filteredProducts = products.filter((product) => {
@@ -57,8 +76,11 @@ const Products = () => {
             </Col>
             <Col sm="6" xs="8" md="10">
               <Col md="4" className="m-auto">
-              <SearchBox searchQuery={searchQuery} onSearchQueryChange={handleSearchQueryChange} 
-              className="form-control" />
+              <SearchBox
+                  className="form-control"
+                  value={searchQuery}
+                  searchQuery={searchQuery} onSearchQueryChange={handleSearchQueryChange} 
+                />
               </Col>
               <CardProductsContainer products={filteredProducts} title="" btntitle="" />
             </Col>

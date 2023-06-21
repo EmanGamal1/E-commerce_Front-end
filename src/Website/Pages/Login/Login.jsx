@@ -104,7 +104,7 @@ const Login = () => {
             </Form>
             <label className="mx-auto my-4">
               ليس لديك حساب ؟{" "}
-              <Link to="/auth/register" style={{ textDecoration: "none" }}>
+              <Link to="/register" style={{ textDecoration: "none" }}>
                 <span style={{ cursor: "pointer" }} className="text-danger">
                   اضغط هنا
                 </span>

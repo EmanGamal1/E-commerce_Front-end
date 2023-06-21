@@ -1,23 +1,5 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.3
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import jwtDecode from "jwt-decode";
-import { Link, Navigate } from "react-router-dom";
-// reactstrap components
+import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownItem,
@@ -37,20 +19,22 @@ import {
 import NotificationIcon from "./NotificationIcon";
 
 const AdminNavbar = (props) => {
+  const navigate = useNavigate();
+
   const jwt = localStorage.getItem("token");
   const decodedToken = jwt ? jwtDecode(jwt) : null;
-  console.log(decodedToken);
   const userName = decodedToken ? decodedToken.role : null;
 
   const handleLogout = () => {
+    localStorage.removeItem("admin-user");
     localStorage.removeItem("token");
-    return <Navigate to="/admin/login" />;
+    navigate("/admin/login");
   };
 
-  // Redirect to login page if no token is found
-  if (!jwt) {
-    return <Navigate to="/admin/login" />;
-  }
+  // // Redirect to login page if no token is found
+  // if (!jwt) {
+  //   navigate("/admin/login");
+  // }
 
   return (
     <>
@@ -107,7 +91,7 @@ const AdminNavbar = (props) => {
                     <span>Settings</span>
                   </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem href="#pablo" onClick={handleLogout}>
+                  <DropdownItem onClick={handleLogout}>
                     <i className="ni ni-user-run" />
                     <span>Logout</span>
                   </DropdownItem>

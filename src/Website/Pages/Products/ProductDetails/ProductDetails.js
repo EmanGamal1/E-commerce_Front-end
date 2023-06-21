@@ -108,7 +108,7 @@ const ProductsDetails = () => {
                     <img
                       src={image}
                       alt={product.name_ar}
-                      className=" productGallery"
+                      className={index === activeSlide ? " productGallery" : "productGallery"}
                     />
                   </div>
                 ))}

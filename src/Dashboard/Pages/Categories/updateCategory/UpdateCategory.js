@@ -6,6 +6,15 @@ import MySwal from "sweetalert2";
 import { useFormik } from "formik";
 import { initValues, validation } from "../CategoriesForm/validation";
 import handleErrors from "../../../../Errors";
+import {
+  CardHeader,
+  Navbar,
+  Container,
+  Row,
+  Col,
+  Card,
+  CardBody,
+} from "reactstrap";
 
 const UpdateCategory = () => {
   const categoryId = useParams().id;
@@ -68,15 +77,28 @@ const UpdateCategory = () => {
   };
 
   return (
-    <div>
-      <div className="row">
-        <div className="offset-lg-3 col-lg-6">
-          {category && (
-            <CategoriesForm formik={formik} handleImageFile={handleImageFile} />
-          )}
-        </div>
-      </div>
-    </div>
+    <>
+      <Navbar />
+      <Container className="mt--7" fluid>
+        <Row>
+          <div className="col">
+            <Card className="shadow">
+              <CardHeader className="border-0">
+                <div className=" btntitleproduct row col-12">
+                  <h3 className="col-6 mb-0">Edit Category</h3>
+                </div>
+              </CardHeader>
+              {category && (
+                <CategoriesForm
+                  formik={formik}
+                  handleImageFile={handleImageFile}
+                />
+              )}
+            </Card>
+          </div>
+        </Row>
+      </Container>
+    </>
   );
 };
 

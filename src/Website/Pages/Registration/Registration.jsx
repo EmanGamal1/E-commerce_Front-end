@@ -303,7 +303,7 @@ const Registration = () => {
             </Form>
             <label className="mx-auto my-4">
               لديك حساب بالفعل؟{" "}
-              <Link to="/auth/login" style={{ textDecoration: "none" }}>
+              <Link to="/login" style={{ textDecoration: "none" }}>
                 <span style={{ cursor: "pointer" }} className="text-danger">
                   اضغط هنا
                 </span>
