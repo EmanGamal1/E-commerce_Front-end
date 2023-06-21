@@ -17,20 +17,34 @@ const Products = () => {
   useEffect(() => {
     console.log(searchQuery);
     if (searchQuery !== "") {
+      const url = selectedCategory
+        ? `/products?keyword=${searchQuery}&category_id=${selectedCategory}`
+        : `/products?keyword=${searchQuery}`;
+
       axiosInstance
-        .get(`/products?keyword=${searchQuery}`)
-        .then(
-          (response) => {
-            setSearchResults(response.data);
-            console.log(response.data);
-          }
-          )
+        .get(url)
+        .then((response) => {
+          setSearchResults(response.data);
+          console.log(response.data);
+        })
         .catch((error) => console.error(error));
-    } else {
+    } 
+     else if (searchQuery === "") {
+     const url = `/products?category_id=${selectedCategory}`;
+     
+     axiosInstance
+     .get(url)
+     .then((response) => {
+       setSearchResults(response.data);
+       console.log(response.data);
+     })
+     .catch((error) => console.error(error));
+    }
+    else {
       setSearchResults([]);
       console.log("no");
     }
-  }, [searchQuery]);
+  }, [searchQuery, selectedCategory]);
 
   const handleSearchQueryChange = (event) => {
     setSearchQuery(event.target.value);
@@ -39,7 +53,7 @@ const Products = () => {
   const updateCategory = (categoryId) => {
     setSelectedCategory(categoryId === "0" ? null : categoryId);
   };
-  
+
   const updatePriceFrom = (value) => {
     setPriceFrom(value);
   };
@@ -47,42 +61,45 @@ const Products = () => {
   const updatePriceTo = (value) => {
     setPriceTo(value);
   };
-
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
-      !selectedCategory || product.category_id._id === selectedCategory;
+      !selectedCategory || product.category_id.id === selectedCategory;
     const matchesPrice =
       (!priceFrom || product.price >= parseInt(priceFrom)) &&
       (!priceTo || product.price <= parseInt(priceTo));
-
     const matchesSearch =
-      product.name_ar.toLowerCase().includes(searchQuery.toLowerCase()) 
-      // product.category_id.name_ar.toLowerCase().includes(searchQuery.toLowerCase());    ****to search by category also
-
+      searchQuery === "" ||
+      product.name_ar.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesPrice && matchesSearch;
   });
+  
 
   return (
     <>
-      <div >
+      <div>
         <Container fluid className="mt-4">
           <Row className="d-flex flex-row">
             <Col sm="4" xs="4" md="2" className="d-flex">
-              <SideFilter
-                updateCategory={updateCategory}
-                updatePriceFrom={updatePriceFrom}
-                updatePriceTo={updatePriceTo}
-              />
+            <SideFilter
+  updatePriceFrom={updatePriceFrom}
+  updatePriceTo={updatePriceTo}
+  updateCategory={updateCategory}
+/>
             </Col>
             <Col sm="6" xs="8" md="10">
               <Col md="4" className="m-auto">
-              <SearchBox
+                <SearchBox
                   className="form-control"
                   value={searchQuery}
-                  searchQuery={searchQuery} onSearchQueryChange={handleSearchQueryChange} 
+                  searchQuery={searchQuery}
+                  onSearchQueryChange={handleSearchQueryChange}
                 />
               </Col>
-              <CardProductsContainer products={filteredProducts} title="" btntitle="" />
+              <CardProductsContainer
+                products={filteredProducts}
+                title=""
+                btntitle=""
+              />
             </Col>
           </Row>
         </Container>
