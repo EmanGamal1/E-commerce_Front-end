@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Card, CardBody, Col, InputGroup, InputGroupAddon, Button , image } from "reactstrap";
+import { Container, Row, Card, CardBody, Col, InputGroup, InputGroupAddon, Button} from "reactstrap";
 import { axiosInstance } from "Axios.js";
 import "../Orders/Orders.css";
 import { Link } from "react-router-dom";
@@ -8,33 +8,35 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt } from "react-icons/fa";
 import imageSrc from "../../Assets/img/OIUFKQ0.jpg";
 
-
-
 const Orders = () => {
   const [orderData, setOrderData] = useState([]);
   const [productData, setProductData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
   const ordersPerPage = 3;
 
   useEffect(() => {
     axiosInstance
       .get("/orders")
       .then((res) => {
-        const filteredOrders = selectedDate
-          ? res.data.data.filter((order) => {
-              const orderDate = new Date(order.createdAt).setHours(0, 0, 0, 0);
-              return orderDate === selectedDate.getTime();
-            })
-          : res.data.data;
-
+        const fetchedOrders = res.data.data; // Fetch the orders from the API response
+        const filteredOrders = fetchedOrders.filter((order) => {
+          const orderDate = new Date(order.createdAt).setHours(0, 0, 0, 0);
+          return (
+            (!selectedStartDate || orderDate >= selectedStartDate.getTime()) &&
+            (!selectedEndDate || orderDate <= selectedEndDate.getTime())
+          );
+        });
+  
         setOrderData(filteredOrders);
         fetchProductData(filteredOrders);
       })
       .catch((err) => {
         console.log(err.message);
       });
-  }, [selectedDate]);
+  }, [selectedStartDate, selectedEndDate]);
+  
 
   const fetchProductData = async (orders) => {
     const productIds = orders.flatMap((order) =>
@@ -89,23 +91,40 @@ const Orders = () => {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
   const hasOrders = orderData.length > 0;
+
   return (
     <Container fluid className="mt-4">
       <Row>
         <Card className="container shadow text-right p-2">
-        <Row className="d-flex justify-content-between mt-3">
+          <Row className="d-flex justify-content-between mt-3">
             <Col>
               <h1 className="mr-3 mb-3">طلباتى</h1>
             </Col>
             <Col lg="5" className="text-left">
-            <InputGroup className="mb-3 ml-3">
+              <InputGroup className="mb-3 ml-3">
                 <DatePicker
-                  selected={selectedDate}
-                  onChange={(date) => setSelectedDate(date)}
+                  selected={selectedStartDate}
+                  onChange={(date) => setSelectedStartDate(date)}
+                  selectsStart
+                  startDate={selectedStartDate}
+                  endDate={selectedEndDate}
                   dateFormat="dd/MM/yyyy"
                   className="form-control"
-                  placeholderText="تاريخ البحث"
+                  placeholderText="تاريخ البداية"
+                />
+                <DatePicker
+                  selected={selectedEndDate}
+                  onChange={(date) => setSelectedEndDate(date)}
+                  selectsEnd
+                  startDate={selectedStartDate}
+                  endDate={selectedEndDate}
+                  dateFormat="dd/MM/yyyy"
+                  className="form-control"
+                  placeholderText="تاريخ النهاية"
+                  minDate={selectedStartDate}
+                  disabled={!selectedStartDate}
                 />
                 <InputGroupAddon addonType="append">
                   <Button color="warning">
@@ -115,10 +134,10 @@ const Orders = () => {
               </InputGroup>
             </Col>
           </Row>
-          
-          {!hasOrders && selectedDate && (
+
+          {!hasOrders && selectedStartDate && selectedEndDate && (
             <div className="text-center mt-4 mb-4">
-              <h2>لا توجد طلبات في هذا اليوم</h2>
+              <h2>لا توجد طلبات في هذا النطاق</h2>
               <img src={imageSrc} alt="No Orders" style={{ width: "250px", height: "250px" }} />
             </div>
           )}

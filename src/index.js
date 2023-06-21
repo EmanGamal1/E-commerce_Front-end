@@ -33,6 +33,7 @@ import Address from "Website/Pages/Address/AddressList/AddressList";
 import AddressEdit from "Website/Pages/Address/AddressEdit/AddressEdit";
 import AddressAdd from "Website/Pages/Address/AddressAdd/AddressAdd";
 import { AllCategoryPage } from "./Website/Pages/Categories/AllCategoryPage";
+import CategoryProducts from "Website/Pages/Categories/CategoryProdusts";
 import ProductDetails from "Website/Pages/Products/ProductDetails/ProductDetails";
 import Registration from "./Website/Pages/Registration/Registration";
 import { ForgetPassword } from "./Website/Pages/ForgetPassword/ForgetPassword";
@@ -84,6 +85,16 @@ root.render(
             <div dir="rtl" className="websitePages">
               <NavBar />
               <AllCategoryPage />
+              <FooterSite />
+            </div>
+          }
+        />
+        <Route
+          path="/categories/:slug/products"
+          element={
+            <div dir="rtl" className="websitePages">
+              <NavBar />
+              <CategoryProducts />
               <FooterSite />
             </div>
           }
