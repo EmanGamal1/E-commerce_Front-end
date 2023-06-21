@@ -62,15 +62,7 @@ const OrderDetail = () => {
     setProductData(productDataWithImage);
   };
   
-  const getProductImageById = (productId) => {
-    const product = productData.find((product) => product.id === productId);
-    return product ? product.image : "";
-  };
-
-  const getProductNameById = (productId) => {
-    const product = productData.find((product) => product.id === productId);
-    return product ? product.name_ar : "";
-  };
+ 
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -165,7 +157,9 @@ const OrderDetail = () => {
     try {
       const response = await axiosInstance.post(`/orders/${orderdata._id}/reorder`, {
         address_id: selectedAddress,
+        
       });
+      console.log(response);
       if (response.data.status === "success") {
         Swal.fire({
           title: 'Success!',
@@ -228,14 +222,14 @@ const OrderDetail = () => {
                           <Row>
                             <Col xs="3">
                             <img
-  src={getProductImageById(product.product_id)}
-  alt="Product"
-  style={{ width: "100%", height: "100%" }}
-/>
+                              src={product.image}
+                              alt="Product"
+                              style={{ width: "100%", height: "100%" }}
+                            />
                             </Col>
                             <Col xs="9" className="text-right">
                               <p>{product.product_id}</p>
-                              <p>{getProductNameById(product.product_id)}</p>
+                              <p>{product.name_ar}</p>
                               <p>الكمية: {product.quantity}</p>
                               <p> {product.price.toFixed(2)}$</p>
                             </Col>
@@ -299,7 +293,7 @@ const OrderDetail = () => {
                                     {orderdata.products?.map((product) => (
                                       <tr key={product.product_id}>
                                         <td>{product.product_id}</td>
-                                        <td>{getProductNameById(product.product_id)}</td>
+                                        <td>{product.name_ar}</td>
                                         <td>{product.quantity}</td>
                                         <td>{product.price.toFixed(2)}$</td>
                                       </tr>

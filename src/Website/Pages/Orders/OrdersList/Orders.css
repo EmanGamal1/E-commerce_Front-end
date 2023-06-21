@@ -52,7 +52,7 @@
 
 .react-datepicker__day--keyboard-selected {
   background-color: #007bff;
-  color: #fff;
+  color:red;
 }
 
 .react-datepicker__day:hover {
@@ -64,3 +64,6 @@
   height:50% !important;
   
 } */
+.order_img{
+  height: 265px !important;
+}

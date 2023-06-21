@@ -26,7 +26,7 @@ import ProductsByCategory from "./Website/Pages/Products/ProductsByCategory";
 
 const Checkout = loadable(() => import("./Website/Pages/Checkout/Checkout"));
 const Products = loadable(() => import("./Website/Pages/Products/Products"));
-const Orders = loadable(() => import("./Website/Pages/Orders/Orders"));
+const Orders = loadable(() => import("./Website/Pages/Orders/OrdersList/Orders"));
 const OrderDetail = loadable(() =>
   import("./Website/Pages/Orders/OrderDetails/OrderDetail")
 );
