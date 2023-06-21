@@ -21,7 +21,11 @@ const ProtectedRouteHook = () => {
       setIsAdmin(true);
       setIsGuest(false);
     }
-    if (userData === null && adminData === null) setIsGuest(true);
+    if (userData === null && adminData === null) {
+      setIsGuest(true);
+      setIsAdmin(false);
+      setIsUser(false);
+    }
   }, []);
   return [isUser, isAdmin, isGuest, userData];
 };
