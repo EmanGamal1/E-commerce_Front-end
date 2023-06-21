@@ -166,8 +166,9 @@ const Orders = () => {
           },
           { header: "Quantity", field: "products.length" },
           { header: "Total Price", field: "total_price" },
-          { header: "Status", field: "status" },
           { header: "Payment Status", field: "payment_status" },
+          { header: "Payment Method", field: "payment_method" },
+          { header: "Status", field: "status" },
           {
             header: "Actions",
             body: (order) => {
@@ -182,16 +183,34 @@ const Orders = () => {
                   <button
                     title={"Confirm order"}
                     onClick={() => confirmOrder(order._id, order.status)}
-                    style={{ opacity: order.status !== "Pending" ? 0.5 : 1 }}
-                    disabled={order.status !== "Pending"}
+                    style={{
+                      opacity:
+                        order.status !== "Pending" ||
+                        order.payment_method !== "Cash"
+                          ? 0.5
+                          : 1,
+                    }}
+                    disabled={
+                      order.status !== "Pending" ||
+                      order.payment_method !== "Cash"
+                    }
                     className="btn-success btn fa fa-circle-check"
                   />
                   <button
                     title={"Cancel order"}
                     className={"btn-danger btn fa fa-ban"}
-                    style={{ opacity: order.status !== "Pending" ? 0.5 : 1 }}
+                    style={{
+                      opacity:
+                        order.status !== "Pending" ||
+                        order.payment_method !== "Cash"
+                          ? 0.5
+                          : 1,
+                    }}
+                    disabled={
+                      order.status !== "Pending" ||
+                      order.payment_method !== "Cash"
+                    }
                     onClick={() => handleCancelOrder(order._id, order.status)}
-                    disabled={order.status !== "Pending"}
                   />
                 </div>
               );

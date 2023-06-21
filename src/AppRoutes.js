@@ -30,6 +30,7 @@ const Orders = loadable(() => import("./Website/Pages/Orders/Orders"));
 const OrderDetail = loadable(() =>
   import("./Website/Pages/Orders/OrderDetails/OrderDetail")
 );
+
 const Login = loadable(() => import("./Dashboard/Pages/Login/Login"));
 const Home = loadable(() => import("./Website/Pages/HomePage/HomePage"));
 const AdminLayout = loadable(() => import("./Dashboard/Layouts/Admin"));
