@@ -91,7 +91,7 @@ const ProductsDetails = () => {
                 </Col>
               </Row>
               <Row className="mt-3">
-              <Col lg="10">
+              <Col lg="10" className="">
                 <Slider
                 dots={false}
                 arrows={true}
@@ -108,7 +108,7 @@ const ProductsDetails = () => {
                     <img
                       src={image}
                       alt={product.name_ar}
-                      className={index === activeSlide ? "activeSlide productGallery" : "productGallery"}
+                      className=" productGallery"
                     />
                   </div>
                 ))}

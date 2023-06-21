@@ -56,8 +56,10 @@ const Products = () => {
               />
             </Col>
             <Col sm="6" xs="8" md="10">
+              <Col md="4" className="m-auto">
               <SearchBox searchQuery={searchQuery} onSearchQueryChange={handleSearchQueryChange} 
               className="form-control" />
+              </Col>
               <CardProductsContainer products={filteredProducts} title="" btntitle="" />
             </Col>
           </Row>

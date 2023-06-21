@@ -4,10 +4,10 @@ const SearchBox = ({ searchQuery, onSearchQueryChange }) => {
   return (
     <input
       type="text"
-      placeholder="Search"
+      placeholder="بحـث عن المنتجــات..."
       value={searchQuery}
       onChange={onSearchQueryChange}
-      className="form-control shadow w-25 m-auto" 
+      className="form-control shadow m-auto" 
     />
   );
 };
