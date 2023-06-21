@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useNavigation } from "react-router-dom";
 import { Stack } from "react-bootstrap";
 
 const PageNotFound = () => {
+  const navigate = useNavigate();
+  navigate("/");
   return (
     <>
       <div className="d-flex align-items-center justify-content-center vh-100 bg-primary">
@@ -11,7 +13,7 @@ const PageNotFound = () => {
           <h1 className="display-1 h1 fw-bold text-white align-self-center">
             404
           </h1>
-          <Link to="/home">
+          <Link to="/">
             <button className="btn btn-dark">Back To Home </button>
           </Link>
         </Stack>

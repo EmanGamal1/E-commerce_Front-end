@@ -15,7 +15,7 @@ const VerifyEmail = () => {
       .get(`${VerifyEmailURL}/${token}`)
       .then(() => {
         setTimeout(() => {
-          navigate("/home");
+          navigate("/");
         }, 3000);
       })
       .catch((err) => {
@@ -28,9 +28,9 @@ const VerifyEmail = () => {
   });
   return (
     <>
-      <NavBar />
+      {/*<NavBar />*/}
 
-      <FooterSite />
+      {/*<FooterSite />*/}
     </>
   );
 };

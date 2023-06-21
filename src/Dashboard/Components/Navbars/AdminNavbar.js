@@ -16,7 +16,7 @@ const AdminNavbar = (props) => {
   const navigate = useNavigate();
 
   const jwt = localStorage.getItem("token");
-  const userName = JSON.parse(localStorage.getItem("admin-user")).name;
+  const userName = JSON.parse(localStorage.getItem("admin-user"))?.name;
 
   const handleLogout = () => {
     localStorage.removeItem("admin-user");

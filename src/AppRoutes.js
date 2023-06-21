@@ -37,9 +37,9 @@ const AdminLayout = loadable(() => import("./Dashboard/Layouts/Admin"));
 
 const AppRoutes = () => {
   const [isUser, isAdmin, isGuest, userData] = ProtectedRouteHook();
-  console.log("g", isGuest);
-  console.log("u", isUser);
-  console.log("a", isAdmin);
+  console.log("guest", isGuest);
+  console.log("user", isUser);
+  console.log("admin", isAdmin);
 
   return (
     <>
@@ -86,7 +86,7 @@ const AppRoutes = () => {
           />
         </Route>
         <Route
-          path="/home"
+          path="/"
           element={
             <div dir="rtl" className="websitePages">
               <NavBar />

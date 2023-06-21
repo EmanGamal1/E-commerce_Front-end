@@ -73,12 +73,12 @@ const NavBar = () => {
 
   return (
     <nav id="navBar">
-      <Link to="/home">
+      <Link to="/">
         <img src={navbarData.logo} className="logoNav" alt="logo" />
       </Link>
       <ul>
         <li>
-          <Link to="/home">الرئيسيـــة</Link>
+          <Link to="/">الرئيسيـــة</Link>
         </li>
         <li>
           <Link to="/categories">الأقســام</Link>

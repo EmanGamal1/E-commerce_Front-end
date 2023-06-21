@@ -46,7 +46,7 @@ export const ForgetPassword = () => {
 
   return (
     <>
-      <NavBar />
+      {/*<NavBar />*/}
       <Container style={{ minHeight: "690px" }}>
         <Row className="py-5 d-flex justify-content-center ">
           <Col sm="12" className="d-flex flex-column ">
@@ -72,7 +72,7 @@ export const ForgetPassword = () => {
           </Col>
         </Row>
       </Container>
-      <FooterSite />
+      {/*<FooterSite />*/}
     </>
   );
 };

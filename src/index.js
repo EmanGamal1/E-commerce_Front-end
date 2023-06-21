@@ -13,7 +13,8 @@ import { Authentication } from "Context/Authentication ";
 
 import "@fontsource/almarai";
 import "./website.css";
-import AppRoutes from "./AppRoutes";
+// import AppRoutes from "./AppRoutes";
+import AppRoutes from "./AppRoutes2";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

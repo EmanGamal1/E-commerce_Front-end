@@ -106,7 +106,7 @@ const Cart = () => {
                     </h3>
                   </Link>
                 ) : (
-                  <Link to={`/home`}>
+                  <Link to={`/`}>
                     <h3 className={"text-light btn btn-primary"}>
                       تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
                     </h3>
@@ -198,7 +198,7 @@ const Cart = () => {
                         style={{ width: "250px", height: "250px" }}
                       />
 
-                      {/*<Link to={`/home`}>
+                      {/*<Link to={`/`}>
                         <h3 className={"text-light btn btn-primary"}>
                           تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
                         </h3>
@@ -215,7 +215,7 @@ const Cart = () => {
                         </h3>
                       </Link>
                     ) : (
-                      <Link to={`/home`}>
+                      <Link to={`/`}>
                         <h3 className={"text-light"}>
                           تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
                         </h3>
