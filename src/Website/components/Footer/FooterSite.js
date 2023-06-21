@@ -59,8 +59,8 @@ const FooterSite = () => {
               <br />
               <Row>
                 {Array.isArray(footerData.social_media) &&
-                  footerData.social_media.map((item) => (
-                    <div key={item.id}>
+                  footerData.social_media.map((item, index) => (
+                    <div key={index}>
                       <a
                         href={item.url}
                         target="_blank"
