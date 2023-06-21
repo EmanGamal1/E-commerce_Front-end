@@ -4,8 +4,6 @@ import { AllCategoriesHook } from "../Categories/AllCategoriesHook";
 const SidebarSearchHook = () => {
   const [categories, loading] = AllCategoriesHook();
 
-  //to get state from redux
-
   //to get category
   let category = [];
   try {

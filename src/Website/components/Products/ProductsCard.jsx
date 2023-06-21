@@ -49,12 +49,12 @@ export const ProductsCard = ({ item }) => {
 
   return (
     <>
-      <Col xs="6" sm="6" md="4" lg="3" className="d-flex">
+      <Col xs="12" sm="6" md="4" lg="3" className="d-flex">
         <Card
           className="my-2"
           style={{
+            display: "flex",
             width: "100%",
-            height: "365px",
             borderRadius: "8px",
             border: "none",
             backgroundColor: "#FFFFFF",
@@ -85,7 +85,6 @@ export const ProductsCard = ({ item }) => {
                     onClick={addToCart}
                   >
                     <FontAwesomeIcon icon={faCartPlus} className="mx-1" />
-                    إضافة إلي العربة
                   </button>
                 )}
               </div>
