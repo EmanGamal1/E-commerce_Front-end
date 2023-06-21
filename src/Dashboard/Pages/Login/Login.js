@@ -18,7 +18,7 @@ import Btn from "Dashboard/SharedUI/Btn/Btn";
 
 const Login_URL = "admin/auth";
 const Login = () => {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const { setAuthUser, setUserToken } = useContext(AuthContext);
   const userRef = useRef();
   const errRef = useRef();
@@ -54,7 +54,9 @@ const Login = () => {
       setUserToken(accessToken);
       setuser("");
       setpassword("");
-      Navigate("admin/index");
+      setTimeout(() => {
+        navigate("/admin/index");
+      }, 500);
     } catch (err) {
       console.error(err.response.data.message);
       const erorr = err.response.data.message;

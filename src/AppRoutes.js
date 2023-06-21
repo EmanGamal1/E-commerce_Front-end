@@ -84,9 +84,7 @@ const AppRoutes = () => {
             }
           />
         </Route>
-
         <Route
-          index
           path="/home"
           element={
             <div dir="rtl" className="websitePages">
