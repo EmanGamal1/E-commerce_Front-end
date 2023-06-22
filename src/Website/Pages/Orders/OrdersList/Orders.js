@@ -10,7 +10,7 @@ import {
   Button,
 } from "reactstrap";
 import { axiosInstance } from "Axios.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "./Orders.css"
 import "react-datepicker/dist/react-datepicker.css";
@@ -24,8 +24,13 @@ const Orders = () => {
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
   const ordersPerPage = 3;
-
+  const user = localStorage.getItem('user');
+  const navigate = useNavigate();
+  
   useEffect(() => {
+    if(!user){
+      navigate("/login");
+    }
     axiosInstance
       .get("/orders?limit=70")
       .then((res) => {

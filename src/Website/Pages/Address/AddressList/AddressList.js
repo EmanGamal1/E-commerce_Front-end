@@ -3,13 +3,18 @@ import Swal from "sweetalert2";
 import SideBar from "Website/SharedUI/SideBar/SideBar";
 import { Card, CardHeader, Col, Container, Row } from "reactstrap";
 import { axiosInstance } from "../../../../Axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./AddressList.css";
 import Buttons from "Website/SharedUI/Buttons/Buttons";
 
 const Address = () => {
   const [addresses, setAddresses] = useState([]);
-
+  const user = localStorage.getItem('user');
+  const navigate = useNavigate();
+  
+  if(!user){
+    navigate("/login");
+  }
   useEffect(() => {
     fetchAddress();
   }, []);

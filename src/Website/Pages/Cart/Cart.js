@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { axiosInstance } from "Axios.js";
 import Swal from "sweetalert2";
 import { Container, Row, Card, CardBody, Col, CardHeader } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import imageSrc from "../../Assets/img/OIUFKQ0.jpg";
 import handleErrors from "../../../Errors";
 const Cart = () => {
@@ -12,6 +12,12 @@ const Cart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   // Other necessary state variables
   // ...
+  const user = localStorage.getItem('user');
+  const navigate = useNavigate();
+  
+  if(!user){
+    navigate("/login");
+  }
 
   const convertCurrency = (currency) => {
     return Intl.NumberFormat("ar-EG", {

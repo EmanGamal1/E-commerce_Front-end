@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody, CardFooter, Container, Col, Row, Navbar, Table, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input } from "reactstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { axiosInstance } from "Axios.js";
 import "./OrderDetail";
@@ -16,8 +16,13 @@ const OrderDetail = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState([]);
   const [userAddresses, setUserAddresses] = useState([]);
-
+  const user = localStorage.getItem('user');
+  const navigate = useNavigate();
+  
   useEffect(() => {
+    if(!user){
+      navigate("/login");
+    }
     axiosInstance
       .get(`/orders/${id}`)
       .then((res) => {

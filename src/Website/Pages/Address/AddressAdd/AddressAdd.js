@@ -11,7 +11,11 @@ import './AddressAdd.css';
 const Address = () => {
   const [addresses, setAddresses] = useState([]);
   const navigate = useNavigate();
-
+  const user = localStorage.getItem('user');
+  
+  if(!user){
+    navigate("/login");
+  }
   useEffect(() => {
     axiosInstance
       .get("profile/address")

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { axiosInstance } from "Axios.js";
 import Swal from "sweetalert2";
 import { Container, Row, Card, CardBody, Col , Button , Input} from "reactstrap";
+import { useNavigate } from "react-router";
 
 
 const Checkout = () => {
@@ -14,9 +15,13 @@ const Checkout = () => {
         const [totalPrice, setTotalPrice] = useState(0);
         // Other necessary state variables
         // ...
-
+        const user = localStorage.getItem('user');
+        const navigate = useNavigate();
        
         useEffect(() => {
+          if(!user){
+            navigate("/login");
+          }
             const fetchCartData = async () => {
               try {
                 const response = await axiosInstance.get("/profile/cart");

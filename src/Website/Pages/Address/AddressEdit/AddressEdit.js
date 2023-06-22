@@ -11,6 +11,11 @@ import addressIMG from '../../../../Website/Assests/travel.png';
 const AddressEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const user = localStorage.getItem('user');
+  
+  if(!user){
+    navigate("/login");
+  }
 
   useEffect(() => {
     const fetchOldValues = async () => {
