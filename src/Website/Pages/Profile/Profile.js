@@ -65,7 +65,7 @@ const Profile = () => {
       setOriginalProfileData(res.data.data);
     } catch (err) {
       if (err.response.data.error.includes("Please login first")) {
-        navigate("/auth/login");
+        navigate("/login");
       }
       else if (
         err.response.data.error.includes(

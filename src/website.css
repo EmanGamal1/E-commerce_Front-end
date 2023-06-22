@@ -10,13 +10,13 @@
 
 .settingBanner{
     width: 100%;   
-    position: relative; 
+    position: relative;
 }
 
 .settingTitle{
     position: absolute;
-    top: 30%;
     right: 70%;
+    padding-top: 10%;
 }
 
 .settingContent{
@@ -26,4 +26,5 @@
     font-size: 18px;
     text-align: justify;
     text-align-last: right;
+    min-width:400px;
 }

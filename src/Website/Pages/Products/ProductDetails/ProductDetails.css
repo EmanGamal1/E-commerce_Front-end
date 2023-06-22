@@ -71,8 +71,9 @@
     font-size: 35px;
 }
 
-@media (width:567px){
-    .productImage{
-        width: 150px;
-    }
+@media (max-width:600px){
+    
+.productImage{
+    width: 350px;
+}
 }

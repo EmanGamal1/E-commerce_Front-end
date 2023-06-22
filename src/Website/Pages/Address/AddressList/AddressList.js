@@ -88,7 +88,7 @@ const Address = () => {
             </CardHeader>
             <div className="row">
             {addresses.map((address, index) => (
-              <div className="addressDetails shadow col-4 ml-auto" key={index}>
+              <div className="addressDetails shadow col-lg-4 col-xs-12 ml-auto" key={index}>
                 <h4>{address.area}</h4>
                 <p>
                   {address.city}, {address.governorate}, {address.country}

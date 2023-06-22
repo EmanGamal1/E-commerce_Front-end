@@ -56,11 +56,10 @@ const Login = () => {
   });
   useEffect(() => {
     const user = localStorage.getItem("user");
-    if (user) navigate("/");
+    if (user){ navigate("/");}
   }, []);
   return (
     <>
-      {/*<NavBar />*/}
       <Container style={{ minHeight: "690px" }}>
         <Row className="py-5 d-flex justify-content-center ">
           <Col sm="12" className="d-flex flex-column ">

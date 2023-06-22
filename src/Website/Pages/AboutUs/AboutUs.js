@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Container, Row } from "reactstrap";
 import { axiosInstance } from "../../../Axios";
-import "./AboutUs.css";
 
 const AboutUS = () => {
   const [aboutus, setAboutus] = useState([]);
