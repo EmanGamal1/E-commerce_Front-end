@@ -5,9 +5,7 @@ import {
   Card,
   CardBody,
   Col,
-  InputGroup,
-  InputGroupAddon,
-  Button,
+  FormGroup,
 } from "reactstrap";
 import { axiosInstance } from "Axios.js";
 import { Link } from "react-router-dom";
@@ -82,7 +80,7 @@ const Orders = () => {
   // Pagination logic
   const totalOrders = orderData.length;
   const totalPages = Math.ceil(totalOrders / ordersPerPage);
-  const maxPageLinks = 7;
+  const maxPageLinks = 5;
   let startPage = currentPage - Math.floor(maxPageLinks / 2);
   let endPage = currentPage + Math.floor(maxPageLinks / 2);
 
@@ -123,7 +121,9 @@ const Orders = () => {
               <h1 className="mr-3 mb-3">طلباتى</h1>
             </Col>
             <Col lg="6">
-                <div className="d-flex">
+            <div className="d-flex">
+             
+            <i class="fa-solid fa-magnifying-glass mt-2 ml-2"></i>
                   <DatePicker
                     selected={selectedStartDate}
                     onChange={(date) => setSelectedStartDate(date)}
@@ -131,9 +131,10 @@ const Orders = () => {
                     startDate={selectedStartDate}
                     endDate={selectedEndDate}
                     dateFormat="dd/MM/yyyy"
-                    className="form-control mr-2"
-                    placeholderText="تاريخ البداية"
+                    className="form-control mr-2 fa fa-search" 
+                    placeholderText="من"
                   />
+                  
                   <div className="ml-4"></div>
                   <DatePicker
                     selected={selectedEndDate}
@@ -143,7 +144,7 @@ const Orders = () => {
                     endDate={selectedEndDate}
                     dateFormat="dd/MM/yyyy"
                     className="form-control"
-                    placeholderText="تاريخ النهاية"
+                    placeholderText="حتى"
                     minDate={selectedStartDate}
                     disabled={!selectedStartDate}
                   />
@@ -196,7 +197,7 @@ const Orders = () => {
                     <Col lg ="3" md="6" xs="12" >
                       <h3>{product.name_ar}</h3>
                       <p>{product.desc_ar}</p>
-                      <Link to={`/orders/OrderDetail/${order._id}`} className="btn btn-primary">
+                      <Link to={`/orders/OrderDetail/${order._id}`} className="btn btn-sm" style={{backgroundColor:"orange" ,color:"#fff"}}>
                         تفاصيل الطلب 
                       </Link>
                     </Col>

@@ -79,7 +79,7 @@ const Checkout = () => {
     return (
       <Container className="mt-4">
         <Row>
-        <Col xs="8">
+        <Col lg="8" md="8" xs="12">
             <h1 className="mb-3">معلومات التوصيل</h1>
             <Card className="shadow p-3">
               <Row>
@@ -138,7 +138,7 @@ const Checkout = () => {
               </Row>
             </Card>
           </Col>
-          <Col xs="4">
+          <Col xs="12" lg="4">
             <h1 className="mb-3">معلومات الدفع </h1>
             <Card className="container shadow text-right p-4 ">
               <Row>
@@ -170,16 +170,16 @@ const Checkout = () => {
           
         </Row>
         <Row>
-          <Col xs="8">
+          <Col xs="12">
           <h1 className="mb-3 mt-3">مراجعة الطلب </h1>
             <Card className="container shadow text-right p-4">
              {cartData?.map((product) => (
                                     <div key={product.product_id._id}>
                                         <Row>
-                                            <Col xs="3">
+                                            <Col xs="6" lg="3">
                                                 <img src={product.product_id.image} alt="Product" style={{ width: "100%", height: "100%" }} />
                                             </Col>
-                                            <Col xs="7" className="text-right">
+                                            <Col xs="6" lg="7" className="text-right">
                                                 {/*<p>{product.product_id._id}</p>*/}
                                                 <p> اسم المنتج: {product.product_id.name.ar}</p>
                                                 <p>الكمية: {product.quantity}</p>

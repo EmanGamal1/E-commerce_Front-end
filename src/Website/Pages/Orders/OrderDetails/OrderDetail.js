@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardBody, CardFooter, Container, Col, Row, Navbar, Table, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input } from "reactstrap";
+import { Card, CardHeader, CardBody, CardFooter, Container, Col, Row, Navbar, Table, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input , Responsive } from "reactstrap";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { axiosInstance } from "Axios.js";
@@ -200,10 +200,13 @@ const OrderDetail = () => {
                 </CardHeader>
                 <div className="container">
                   <CardBody className="border-0 shadow">
-                    <div className=" d-flex justify-content-around">
+                    <Row className="text-center">
+                    {/* <Col  className=" d-flex justify-content-around">
                     <p>
                       رقم الطلب :  <b>{orderdata._id}</b>
                     </p>
+                    </Col> */}
+                    <Col xs="12" md="6"  lg="6">
                     <p>
                         تم الطلب يوم{" "}
                         {new Date(orderdata.createdAt).toLocaleDateString("ar", {
@@ -212,22 +215,26 @@ const OrderDetail = () => {
                             day: "numeric",
                         })}
                     </p>
+                    </Col>
+                    <Col xs="12" md="6"  lg="6">
                     <h3 className={getStatusColor(orderdata.status)}>{orderdata.status}</h3>
-                    </div>
+                    </Col>
+                    </Row>
                     
                     <div>
                       <h2 >المنتجات المطلوبة</h2>
                       {orderdata.products?.map((product) => (
                         <div key={product.product_id}>
                           <Row>
-                            <Col xs="3">
+                            <Col xs="12" md="6"  lg="3" className="mt-3">
                             <img
                               src={product.image}
                               alt="Product"
                               style={{ width: "100%", height: "100%" }}
                             />
                             </Col>
-                            <Col xs="9" className="text-right">
+                            <Col xs="12" md="6"  lg="9"  className="text-right mt-3">
+                              <p style={{color:"blue"}}>معلومات المنتج : </p>
                               <p>{product.product_id}</p>
                               <p>{product.name_ar}</p>
                               <p>الكمية: {product.quantity}</p>
@@ -278,28 +285,27 @@ const OrderDetail = () => {
                                   </Col>
                               </Row>
                               <Row>
-                                {/* table */}
-                                    <Table striped  style={{ fontSize: '22px' }}>
-                                  <thead>
-                                    <tr>
-                                      <th>رقم المنتج</th>
-                                      <th>اسم المنتج</th>
-                                      <th>الكمية</th>
-                                      <th>السعر</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {/* Render table rows dynamically */}
-                                    {orderdata.products?.map((product) => (
-                                      <tr key={product.product_id}>
-                                        <td>{product.product_id}</td>
-                                        <td>{product.name_ar}</td>
-                                        <td>{product.quantity}</td>
-                                        <td>{product.price.toFixed(2)}$</td>
+                                <Col xs="12" sm="12" md="12" lg="12" xl="12">
+                                  <Table striped style={{ fontSize: '22px' }}>
+                                    <thead>
+                                      <tr>
+                                        <th>اسم المنتج</th>
+                                        <th>الكمية</th>
+                                        <th>السعر</th>
                                       </tr>
-                                    ))}
-                                  </tbody>
-                                </Table>
+                                    </thead>
+                                    <tbody>
+                                      {/* Render table rows dynamically */}
+                                      {orderdata.products?.map((product) => (
+                                        <tr key={product.product_id}>
+                                          <td>{product.name_ar}</td>
+                                          <td>{product.quantity}</td>
+                                          <td>{product.price.toFixed(2)}$</td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </Table>
+                                </Col>
                               </Row>
                               <Row>
                                 <Col className="text-center mt-3"><h2>الاجمالى :  <b>{orderdata.total_price}$</b></h2></Col>
