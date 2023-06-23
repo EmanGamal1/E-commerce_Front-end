@@ -14,7 +14,7 @@ import {
   ModalFooter,
   Row,
 } from "reactstrap";
-import { axiosInstance } from "Axios.js";
+import { axiosDashboard } from "Axios.js";
 import Btn from "Dashboard/SharedUI/Btn/Btn.js";
 import "./Profile.css";
 import jwtDecode from "jwt-decode";
@@ -37,7 +37,7 @@ const Profile = () => {
   const [originalProfileData, setOriginalProfileData] = useState(null);
   const [phoneError, setPhoneError] = useState(false);
   const [errorEmpty, setErrorEmpty] = useState(false);
-  const [jwt, setJWT] = useState(localStorage.getItem("token"));
+  const [jwt, setJWT] = useState(localStorage.getItem("admin"));
   const [decodedToken, setDecodedToken] = useState(jwtDecode(jwt));
   const userId = decodedToken.id;
 
@@ -47,7 +47,7 @@ const Profile = () => {
 
   const fetchProfileData = async () => {
     try {
-      const res = await axiosInstance.get(`/api/v1/employees/${userId}`);
+      const res = await axiosDashboard.get(`/api/v1/employees/${userId}`);
       setProfileData(res.data.data);
       setOriginalProfileData(res.data.data);
     } catch (err) {
@@ -116,7 +116,7 @@ const Profile = () => {
       setErrorEmpty(false);
       console.log(newPassword);
       try {
-        await axiosInstance
+        await axiosDashboard
           .patch(`/api/v1/employees/update-password`, {
             password: password,
             new_password: newPassword,
@@ -124,8 +124,8 @@ const Profile = () => {
           })
           .then((res) => {
             console.log(res.data.data);
-            localStorage.setItem("token", res.data.data.token);
-            setJWT(localStorage.getItem("token"));
+            localStorage.setItem("admin", res.data.data.token);
+            setJWT(localStorage.getItem("admin"));
             setDecodedToken(jwtDecode(jwt));
             setOriginalProfileData(res.data.data.user);
             setProfileData(res.data.data.user);
@@ -169,7 +169,7 @@ const Profile = () => {
       updatedProfileData.password = newPassword;
     }
     try {
-      await axiosInstance.patch(`/api/v1/employees/${userId}`, {
+      await axiosDashboard.patch(`/api/v1/employees/${userId}`, {
         name: updatedProfileData.name,
         phone: updatedProfileData.phone,
       });

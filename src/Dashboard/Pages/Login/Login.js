@@ -12,7 +12,7 @@ import {
 } from "reactstrap";
 import { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "Context/Authentication ";
-import { axiosInstance } from "Axios.js";
+import { axiosDashboard } from "Axios.js";
 import { Link, useNavigate } from "react-router-dom";
 import Btn from "Dashboard/SharedUI/Btn/Btn";
 
@@ -39,7 +39,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axiosInstance.post(
+      const response = await axiosDashboard.post(
         Login_URL,
         { email: user, password },
         {
@@ -50,7 +50,7 @@ const Login = () => {
       const authUser = response?.data.data.user;
       const accessToken = response?.data.data.token;
       setAuthUser(authUser);
-      localStorage.setItem("token", accessToken);
+      localStorage.setItem("admin", accessToken);
       setUserToken(accessToken);
       setuser("");
       setpassword("");

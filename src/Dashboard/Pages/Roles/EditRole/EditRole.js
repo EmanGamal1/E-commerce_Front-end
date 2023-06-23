@@ -11,7 +11,7 @@ import {
 import * as Yup from "yup";
 import MySwal from "sweetalert2";
 import Btn from "Dashboard/SharedUI/Btn/Btn";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import { Navigate, useNavigate } from "react-router";
 import { useFormik } from "formik";
 import { Checkbox } from "primereact/checkbox";
@@ -31,7 +31,7 @@ const CreateRole = () => {
 
   const fetchRoutes = async () => {
     try {
-      const response = await axiosInstance.get("/api/v1/routes");
+      const response = await axiosDashboard.get("/api/v1/routes");
       const { routes: route } = response.data.data;
       setRoutes(route);
     } catch (error) {
@@ -40,7 +40,7 @@ const CreateRole = () => {
   };
   const fetchRoleData = async () => {
     try {
-      const response = await axiosInstance.get(`/api/v1/roles/${id}`);
+      const response = await axiosDashboard.get(`/api/v1/roles/${id}`);
       const role = response.data.data;
       console.log(role);
       if (role) {
@@ -74,7 +74,7 @@ const CreateRole = () => {
       .required("Role name is required")
       .test("unique", "Role name must be unique", async (value) => {
         try {
-          const response = await axiosInstance.get(
+          const response = await axiosDashboard.get(
             `/api/v1/roles?name=${value}`
           );
           const roles = response.data.data;
@@ -118,7 +118,7 @@ const CreateRole = () => {
         };
         // console.log("roleData:", roleData);
         // return;
-        const response = await axiosInstance.patch(
+        const response = await axiosDashboard.patch(
           `/api/v1/roles/${id}`,
           roleData
         );

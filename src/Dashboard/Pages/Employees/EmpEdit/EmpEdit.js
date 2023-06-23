@@ -12,7 +12,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import MySwal from "sweetalert2";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import handleErrors from "../../../../Errors";
 
 const EmpEdit = () => {
@@ -21,7 +21,7 @@ const EmpEdit = () => {
   const [roles, setRoles] = useState([]);
 
   useEffect(() => {
-    axiosInstance
+    axiosDashboard
       .get("/api/v1/roles?fields=name&limit=1000")
       .then((res) => {
         setRoles(res.data.data); // Assuming the response contains an array of roles
@@ -30,7 +30,7 @@ const EmpEdit = () => {
   }, []);
   useEffect(() => {
     // Fetch the user data based on the ID and populate the form fields
-    axiosInstance
+    axiosDashboard
       .get(`/api/v1/employees/${id}`)
       .then((res) => {
         const EmpData = res.data.data;
@@ -75,7 +75,7 @@ const EmpEdit = () => {
         role_id: values.role,
       };
 
-      axiosInstance
+      axiosDashboard
         .patch(`/api/v1/employees/${id}`, empData, {
           headers: {
             "Content-Type": "application/json",

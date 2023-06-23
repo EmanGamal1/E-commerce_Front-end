@@ -20,12 +20,12 @@ const NavBar = () => {
     fetchProfileData();
     document.addEventListener("click", handleOutsideClickNav);
     return () => {
-    document.addEventListener("click", handleOutsideClickNav);
+      document.addEventListener("click", handleOutsideClickNav);
     };
-  }, []);
-
+  }, [navbarData, profileData]);
+  
   const fetchInfo = () => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem("token");
     setIsLoggedIn(!!user);
     axiosInstance
       .get("/info")
@@ -114,22 +114,7 @@ const NavBar = () => {
         </li> */}
       </ul>
       <div style={{ display: "flex", marginRight:"auto" }}>
-      {!isLoggedIn ? (
-        <ul className="navbar-nav mt--3">
-          <li className="nav-item">
-            <Link to="/login">
-              <FontAwesomeIcon icon={faUser} className="Icons" />
-              تسجيل الدخول
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/register">
-              <FontAwesomeIcon icon={faUser} className="Icons" />
-              حســـاب جديـد
-            </Link>
-          </li>
-        </ul>
-      ) : (
+      {isLoggedIn ? (
         <ul className="navbar-nav">
           <li className="nav-item">
             <Link to="/orders">طلباتـي</Link>
@@ -159,6 +144,21 @@ const NavBar = () => {
                  </p>
                 </li>           
          </ul>
+      ):(
+        <ul className="navbar-nav mt--3">
+          <li className="nav-item">
+            <Link to="/login">
+              <FontAwesomeIcon icon={faUser} className="Icons" />
+              تسجيل الدخول
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/register">
+              <FontAwesomeIcon icon={faUser} className="Icons" />
+              حســـاب جديـد
+            </Link>
+          </li>
+        </ul>
       )}
       </div>
       </div>

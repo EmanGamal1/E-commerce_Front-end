@@ -3,7 +3,7 @@ import Btn from "Dashboard/SharedUI/Btn/Btn";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import PaginationAdmin from "../../../SharedUI/PaginationAdmin/PaginationAdmin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -30,7 +30,7 @@ const Users = () => {
   }, [rows, page, search]);
 
   const fetch = async () => {
-    await axiosInstance
+    await axiosDashboard
       .get(`/api/v1/users?page=${page}&limit=${rows}`, {
         params: {
           keyword: search,
@@ -65,7 +65,7 @@ const Users = () => {
       });
 
       if (result.isConfirmed) {
-        await axiosInstance
+        await axiosDashboard
           .delete(`/api/v1/users/${id}`)
           .then((res) => {
             console.log(res);
@@ -81,7 +81,7 @@ const Users = () => {
     }
   };
   const handleActivate = async (userId) => {
-    await axiosInstance
+    await axiosDashboard
       .post(`/api/v1/users/${userId}/ban`)
       .then((res) => {
         // Update the user data
@@ -104,7 +104,7 @@ const Users = () => {
   };
 
   const handleDeactivate = async (userId) => {
-    await axiosInstance
+    await axiosDashboard
       .post(`/api/v1/users/${userId}/unban`)
       .then((res) => {
         // Update the user data

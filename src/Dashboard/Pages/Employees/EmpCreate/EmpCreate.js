@@ -12,7 +12,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import MySwal from "sweetalert2";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import handleErrors from "../../../../Errors";
 
 const EmpCreate = () => {
@@ -20,7 +20,7 @@ const EmpCreate = () => {
   const [roles, setRoles] = useState([]);
 
   useEffect(() => {
-    axiosInstance
+    axiosDashboard
       .get("/api/v1/roles?fields=name&limit=1000")
       .then((res) => {
         setRoles(res.data.data); // Assuming the response contains an array of roles
@@ -74,7 +74,7 @@ const EmpCreate = () => {
         role_id: values.role_id,
       };
 
-      axiosInstance
+      axiosDashboard
         .post("/api/v1/employees", empData)
         .then((res) => {
           MySwal.fire({

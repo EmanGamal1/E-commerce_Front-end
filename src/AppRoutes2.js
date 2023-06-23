@@ -49,14 +49,6 @@ const AppRoutes = () => {
     <>
       <Routes>
         
-        <Route
-          path="/admin/*"
-          element={
-            <ProtectedRoute auth={isAdmin} path="login" redirect="index">
-              <AdminLayout />
-            </ProtectedRoute>
-          }
-        />
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin/ForgetPssword" element={<ForgetPssword />} />
         <Route path="/auth/reset-password/:token" element={<ConfirmNewPassword />} />
@@ -69,7 +61,15 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />*/}
-
+   <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute auth={isAdmin} path="login" redirect="index">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        />
+        
         {/*for Website*/}
 
         <Route

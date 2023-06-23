@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import { CategoriesForm } from "../CategoriesForm/CategoriesForm";
 import MySwal from "sweetalert2";
 import { useFormik } from "formik";
@@ -31,7 +31,7 @@ const UpdateCategory = () => {
       categoryData.append("image", values.image[0]);
 
       console.log(formik.values);
-      axiosInstance
+      axiosDashboard
         .patch(`${CategoriesURL}/${categoryId}`, categoryData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -51,7 +51,7 @@ const UpdateCategory = () => {
 
   useEffect(() => {
     const fetchCategory = async () => {
-      axiosInstance
+      axiosDashboard
         .get(`${CategoriesURL}/${categoryId}`)
         .then((res) => {
           console.log(res.data.data);

@@ -11,7 +11,7 @@ import {
 } from "reactstrap";
 import React, { useEffect } from "react";
 import Btn from "Dashboard/SharedUI/Btn/Btn";
-import { axiosInstance } from "Axios.js";
+import { axiosDashboard } from "Axios.js";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router";
@@ -32,7 +32,7 @@ const ForgetPssword = () => {
     }),
     onSubmit: function (values) {
       const { email } = values;
-      axiosInstance
+      axiosDashboard
         .post(ResetPassword_URL, { email })
         .then((res) => {
           Swal.fire({

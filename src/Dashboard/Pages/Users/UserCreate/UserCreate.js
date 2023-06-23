@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import MySwal from 'sweetalert2';
 import Btn from "Dashboard/SharedUI/Btn/Btn";
 import input from "Dashboard/SharedUI/Input/Input";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import {FormLabel} from "react-bootstrap";
 import handleError from "../../../../Errors";
 const UserCreate = () => {
@@ -75,7 +75,7 @@ const UserCreate = () => {
           
         };
   
-        axiosInstance
+        axiosDashboard
         .post("/api/v1/users", userData, {
           headers: {
             "Content-Type": "multipart/form-data",

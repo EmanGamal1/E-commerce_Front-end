@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "../../../Assets/css/project.css";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import handleErrors from "../../../../Errors";
 
 const UserDetail = () => {
@@ -26,7 +26,7 @@ const UserDetail = () => {
   }, [id]);
 
   const fetchContactUsData = async () => {
-    await axiosInstance
+    await axiosDashboard
       .get(`/api/v1/users/${id}`)
       .then((res) => {
         setUserData(res.data.data);

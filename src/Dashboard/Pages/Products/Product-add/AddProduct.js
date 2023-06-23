@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardHeader, Col, Container, Navbar, Row } from "reactstrap";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import { useFormik } from "formik";
 import MySwal from "sweetalert2";
 import { ProductsForm } from "../Products-form/ProductsForm";
@@ -32,7 +32,7 @@ const AddProduct = () => {
       productData.append("price", values.price);
       productData.append("quantity", values.quantity);
       console.log(productData);
-      axiosInstance
+      axiosDashboard
         .post(ProductsURL, productData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -60,7 +60,7 @@ const AddProduct = () => {
 
   async function getCategories() {
     try {
-      const res = await axiosInstance.get(CategoriesURL);
+      const res = await axiosDashboard.get(CategoriesURL);
       console.log(res.data);
       setCategories(res.data.data);
     } catch (error) {

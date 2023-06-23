@@ -15,12 +15,12 @@ import NotificationIcon from "./NotificationIcon";
 const AdminNavbar = (props) => {
   const navigate = useNavigate();
 
-  const jwt = localStorage.getItem("token");
+  const jwt = localStorage.getItem("admin");
   const userName = JSON.parse(localStorage.getItem("admin-user"))?.name;
 
   const handleLogout = () => {
     localStorage.removeItem("admin-user");
-    localStorage.removeItem("token");
+    localStorage.removeItem("admin");
     navigate("/admin/login");
   };
 

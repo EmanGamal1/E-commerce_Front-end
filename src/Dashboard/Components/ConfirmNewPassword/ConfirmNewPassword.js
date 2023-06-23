@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Card, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Row, Col } from "reactstrap";
 import Btn from "Dashboard/SharedUI/Btn/Btn";
-import { axiosInstance } from "./../../../Axios";
+import { axiosDashboard } from "./../../../Axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
@@ -40,7 +40,7 @@ const ConfirmNewPassword = () => {
 
         // Send a request to update the password
         const g_recaptcha_response = recaptchaValue;
-        const response = await axiosInstance.post("/admin/reset-password", {
+        const response = await axiosDashboard.post("/admin/reset-password", {
           email: values.email,
           token,
           password: values.password,

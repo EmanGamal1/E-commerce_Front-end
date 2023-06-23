@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import { ProductsForm } from "../Products-form/ProductsForm";
 import { useFormik } from "formik";
 import MySwal from "sweetalert2";
@@ -43,7 +43,7 @@ const UpdateProduct = () => {
       productData.append("price", values.price);
       productData.append("quantity", values.quantity);
       console.log(productData);
-      axiosInstance
+      axiosDashboard
         .patch(`${ProductsURL}/${productID}`, productData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -69,7 +69,7 @@ const UpdateProduct = () => {
     console.log(formik.values.images);
   };
   const fetchProduct = async () => {
-    axiosInstance
+    axiosDashboard
       .get(`${ProductsURL}/${productID}`)
       .then((response) => {
         console.log(response.data.data);
@@ -78,7 +78,7 @@ const UpdateProduct = () => {
       .catch((error) => handleErrors(error));
   };
   const fetchCategories = async () => {
-    axiosInstance
+    axiosDashboard
       .get(CategoriesURL)
       .then((response) => {
         setCategories(response.data.data);

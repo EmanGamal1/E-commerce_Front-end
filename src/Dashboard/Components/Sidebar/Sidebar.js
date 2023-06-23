@@ -51,7 +51,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import { axiosInstance } from "../../../Axios";
+import { axiosDashboard } from "../../../Axios";
 import AdminNavbar from "../Navbars/AdminNavbar";
 
 var ps;
@@ -65,7 +65,7 @@ const Sidebar = (props) => {
   }, []);
 
   const fetchTermsAndConditionsData = async () => {
-    await axiosInstance
+    await axiosDashboard
       .get("/api/v1/settings")
       .then((res) => {
         console.log(res.data);
