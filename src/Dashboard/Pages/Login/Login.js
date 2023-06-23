@@ -115,6 +115,7 @@ const Login = () => {
                   />
                 </InputGroup>
               </FormGroup>
+              <Link to="/admin/ForgetPssword"><p>Forgot Password?</p></Link>
               <div className="text-center">
                 <Btn className="btn btn-info" type="submit" title=" Sign in " />
               </div>

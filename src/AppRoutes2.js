@@ -16,13 +16,15 @@ import ProductDetails from "./Website/Pages/Products/ProductDetails/ProductDetai
 import LoginSite from "./Website/Pages/Login/Login";
 import Registration from "./Website/Pages/Registration/Registration";
 import VerifyEmail from "./Website/Pages/verifyEmail/VerifyEmail";
-import { ForgetPassword } from "./Website/Pages/ForgetPassword/ForgetPassword";
+import ForgetPasswordSite from "./Website/Pages/ForgetPassword/ForgetPassword";
 import ForgetPssword from "./Dashboard/Components/Forgot/ForgetPassword";
 import PageNotFound from "./SharedUi/PageNotFound";
 import React from "react";
 import ProtectedRoute from "./Website/components/Uitily/ProtectedRoute";
 import ProtectedRouteHook from "./Website/hook/auth/ProtectedRouteHook";
 import ProductsByCategory from "./Website/Pages/Products/ProductsByCategory";
+import ConfirmNewPassword from "Dashboard/Components/ConfirmNewPassword/ConfirmNewPassword";
+import ResetPasswordSite from "./Website/Pages/ResetPasswordSite/ResetPasswordSite";
 
 const Checkout = loadable(() => import("./Website/Pages/Checkout/Checkout"));
 const Products = loadable(() => import("./Website/Pages/Products/Products"));
@@ -57,6 +59,7 @@ const AppRoutes = () => {
         />
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin/ForgetPssword" element={<ForgetPssword />} />
+        <Route path="/auth/reset-password/:token" element={<ConfirmNewPassword />} />
 
         {/*<Route
           path="/auth/*"
@@ -79,7 +82,8 @@ const AppRoutes = () => {
             </div>
           }
         >
-          <Route path="/forgot-password" element={<ForgetPassword />} />
+          <Route path="/forgot-password" element={<ForgetPasswordSite />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordSite />} />
           <Route path="/login" element={<LoginSite />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />

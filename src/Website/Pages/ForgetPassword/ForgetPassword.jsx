@@ -1,78 +1,108 @@
-import NavBar from "../../components/NavBar/NavBar";
-import FooterSite from "../../components/Footer/FooterSite";
-import { Col, Container, Form, Row } from "reactstrap";
-import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardBody,
+  Col,
+  Container,
+  Form,
+  FormGroup,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Row,
+} from "reactstrap";
+import React, { useEffect } from "react";
+import { axiosInstance } from "Axios.js";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { axiosInstance } from "../../../Axios";
-import MySwal from "sweetalert2";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
+import Buttons from "Website/SharedUI/Buttons/Buttons";
 
-export const ForgetPassword = () => {
+const ForgetPassword = () => {
   const navigate = useNavigate();
-  const ForgetPasswordURL = "forgot-password";
 
+  const ResetPassword_URL = "/forgot-password";
   const formik = useFormik({
     initialValues: {
       email: "",
     },
-    validationSchema: Yup.object().shape({
+    validationSchema: Yup.object({
       email: Yup.string()
-        .email("Must be a valid email")
-        .required("Email is required"),
+        .email("Invalid email format")
+        .required("Email required"),
     }),
-    onSubmit: (values) => {
-      console.log(values);
-      const forgetPasswordData = new FormData();
-      forgetPasswordData.append("email", values.email);
+    onSubmit: function (values) {
+      const { email } = values;
       axiosInstance
-        .post(ForgetPasswordURL, forgetPasswordData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post(ResetPassword_URL, { email })
         .then((res) => {
-          navigate("/reset-password");
+          Swal.fire({
+            title: "Success",
+            text: "Password reset email sent!",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
         })
         .catch((err) => {
-          console.log(err);
-          MySwal.fire({
-            icon: "error",
-            title: "error!",
-            text: err.response.data.error,
-          });
+          console.error(err);
         });
-    },
+    },    
   });
 
-  return (
-    <>
-      {/*<NavBar />*/}
-      <Container style={{ minHeight: "690px" }}>
-        <Row className="py-5 d-flex justify-content-center ">
-          <Col sm="12" className="d-flex flex-column ">
-            <label className="mx-auto title-login">نسيت كلمة السر</label>
-            <Form>
-              <input
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                name="email"
-                placeholder="ادخل الايميل..."
-                type="email"
-                className="user-input my-3 text-center mx-auto"
-              />
+  useEffect(() => {
+    if (formik.touched.email && formik.errors.email) {
+      navigate("/error-page");
+    }
+  }, [formik.touched.email, formik.errors.email, navigate]);
 
-              <button
-                onClick={formik.handleChange}
-                className="btn-login mx-auto mt-2"
-              >
-                ارسال الكود
-              </button>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
-      {/*<FooterSite />*/}
-    </>
+  return (
+    <Container fluid>
+      <Row className="mt-5">
+    <Col lg="5" md="5" className="m-auto">
+      <Card className=" shadow border-0" style={{height:"300px"}}>
+        <CardBody className="px-lg-5 py-lg-5">
+          <div className="text-center text-muted mb-4">
+            <h2>نسيـت كلمـة المـرور</h2>
+          </div>
+          <Form role="form" onSubmit={formik.handleSubmit}>
+            <FormGroup className="mb-5 mt-5">
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-email-83" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="البريد الالكترونــي"
+                  type="email"
+                  id="email"
+                  autoComplete="off"
+                  value={formik.values.email}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                />
+              </InputGroup>
+              {formik.errors.email && formik.touched.email && (
+                <span className="text-danger">{formik.errors.email}</span>
+              )}
+            </FormGroup>
+            <div className="text-center">
+              <div className="text-center">
+                <Buttons
+                  className="btn btn-outline-primary"
+                  title="ارســال"
+                  type="submit"
+                />
+              </div>
+            </div>
+          </Form>
+        </CardBody>
+      </Card>
+    </Col>
+    </Row>
+    </Container>
   );
 };
+
+export default ForgetPassword;

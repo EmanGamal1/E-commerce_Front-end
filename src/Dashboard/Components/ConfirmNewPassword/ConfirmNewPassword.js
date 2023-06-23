@@ -1,62 +1,70 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Card, CardBody, FormGroup, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Row, Col } from "reactstrap";
 import Btn from "Dashboard/SharedUI/Btn/Btn";
+import { axiosInstance } from "./../../../Axios";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import Swal from "sweetalert2";
 
 const ConfirmNewPassword = () => {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [recaptchaValue, setRecaptchaValue] = useState("");
   const recaptchaRef = React.createRef();
+  const navigate = useNavigate();
 
+  const { token } = useParams();
 
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      password_confirm: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Invalid email address").required("Email is required"),
+      password: Yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
+      password_confirm: Yup.string()
+        .oneOf([Yup.ref("password"), null], "Passwords must match")
+        .required("Confirm Password is required")
+        .min(8, "Confirm Password must be at least 8 characters"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        // Verify the reCAPTCHA response
+        if (!recaptchaValue) {
+          setErrorMsg("Please complete the reCAPTCHA verification.");
+          return;
+        }
 
-  const UpdatePassword_URL="reset-password"
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (password !== confirmPassword) {
-      setErrorMsg("Passwords do not match.");
-      return;
-    }
-     // Verify the reCAPTCHA response
-     if (!recaptchaValue) {
-      
-      setErrorMsg("Please complete the reCAPTCHA verification.");
-      return;
-     }
-
-    try {
-      // Send a request to update the password
-      const g_recaptcha_response = recaptchaValue;
-      const response = await axios.post(UpdatePassword_URL, { email , token , password , confirmPassword , g_recaptcha_response  });
-
-      //AccessToken 
-      const token= response?.data?.accessToken
-      const email=response?.data?.email
-      // Display success message
-      setSuccess(true);
-    } catch (err) {
-      if (!err.response) {
-        setErrorMsg("No server response.");
-      } else if (err.response.status === 400) {
-        setErrorMsg("Invalid request.");
-      } else if (err.response.status === 401) {
-        setErrorMsg("Unauthorized.");
-      } else {
-        setErrorMsg("Failed to update password.");
+        // Send a request to update the password
+        const g_recaptcha_response = recaptchaValue;
+        const response = await axiosInstance.post("/admin/reset-password", {
+          email: values.email,
+          token,
+          password: values.password,
+          password_confirm: values.password_confirm,
+          g_recaptcha_response,
+        });
+        Swal.fire({
+          title: "Success",
+          text: "Password Changed Successfully",
+          icon: "success",
+          confirmButtonText: "Login",
+        }).then(() => {
+          navigate("/admin/login");
+        });
+      } catch (err) {
+        // Error handling
       }
-    }
-  };
+    },
+  });
+
   const handleRecaptchaChange = (value) => {
-  
-    setRecaptchaValue(value)
-    
+    setRecaptchaValue(value);
   };
+
   return (
     <Col lg="5" md="7">
       <Card className="bg-secondary shadow border-0">
@@ -64,7 +72,25 @@ const ConfirmNewPassword = () => {
           <div className="text-center text-muted mb-4">
             <small>Confirm New Password</small>
           </div>
-          <Form role="form" onSubmit={handleSubmit}>
+          <Form role="form" onSubmit={formik.handleSubmit}>
+            <FormGroup className="mb-3">
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-email-83" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder="Email"
+                  type="email"
+                  {...formik.getFieldProps("email")}
+                  autoComplete="off"
+                />
+              </InputGroup>
+              {formik.touched.email && formik.errors.email && (
+                <div className="error text-danger">{formik.errors.email}</div>
+              )}
+            </FormGroup>
             <FormGroup className="mb-3">
               <InputGroup className="input-group-alternative">
                 <InputGroupAddon addonType="prepend">
@@ -75,12 +101,13 @@ const ConfirmNewPassword = () => {
                 <Input
                   placeholder="New Password"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  {...formik.getFieldProps("password")}
                   autoComplete="off"
-                  required
                 />
               </InputGroup>
+              {formik.touched.password && formik.errors.password && (
+                <div className="error text-danger">{formik.errors.password}</div>
+              )}
             </FormGroup>
             <FormGroup className="mb-3">
               <InputGroup className="input-group-alternative">
@@ -92,29 +119,30 @@ const ConfirmNewPassword = () => {
                 <Input
                   placeholder="Confirm Password"
                   type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  {...formik.getFieldProps("password_confirm")}
                   autoComplete="off"
-                  required
                 />
               </InputGroup>
+              {formik.touched.password_confirm && formik.errors.password_confirm && (
+                <div className="error text-danger">{formik.errors.password_confirm}</div>
+              )}
             </FormGroup>
             <FormGroup>
               <ReCAPTCHA
                 ref={recaptchaRef}
-                sitekey="6Lc-uVomAAAAAInllmf4UdvfH3SEQBK95_GWzpwc"
+                sitekey="6Lf-I8AmAAAAAKea9mqOXIxiwQ851MY396G8RVeX"
                 onChange={handleRecaptchaChange}
               />
             </FormGroup>
             <div className="text-center">
-              {success ? (
-                <p>Password updated successfully.</p>
-              ) : (
-                <>
                   {errorMsg && <p>{errorMsg}</p>}
-                  <Btn className="btn btn-info" title="Confirm Password" type="submit" />
-                </>
-              )}
+                  <Btn
+                    className="btn btn-info"
+                    title="Confirm Password"
+                    type="submit"
+                    disabled={formik.isSubmitting}
+                  />
+             
             </div>
           </Form>
         </CardBody>
