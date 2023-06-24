@@ -436,79 +436,80 @@ const OrderDetail = () => {
           </div>
         </Row>
       </Container>
-      <Modal isOpen={modalOpen} toggle={handleModalClose}>
-        <ModalHeader toggle={handleModalClose}>اختر عنوانًا</ModalHeader>
-        <ModalBody>
-          <FormGroup>
-            <Label for="address">العنوان</Label>
-            <Input
-              type="select"
-              name="address"
-              id="address"
-              value={selectedAddress}
-              onChange={handleAddressSelect}
-            >
-              <option value="">اختر العنوان</option>
-              {userAddresses.length > 0 ? (
-                userAddresses.map((address) => (
-                  <option key={address._id} value={address._id}>
-                    {address.area}, {address.city}, {address.governorate},{" "}
-                    {address.country}
-                  </option>
-                ))
-              ) : (
-                <option disabled> لا يوجد عنوان </option>
-              )}
-            </Input>
-          </FormGroup>
-          <Row>
-              <Col xs="4">
-                <p> طريقة الدفع :</p>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <div className="d-flex">
-                  <input
-                    type="radio"
-                    id="Cash"
-                    name="payment_method"
-                    value="Cash"
-                    onChange={handlePaymentMethodChange}
-                  />
+      <Modal isOpen={modalOpen} toggle={handleModalClose} className="d-flex justify-content-end">
+  <ModalHeader toggle={handleModalClose}>اختر عنوانًا</ModalHeader>
+  <ModalBody className="text-right">
+   
+      <Label for="address">العنوان</Label>
+      <Input
+        type="select"
+        name="address"
+        id="address"
+        value={selectedAddress}
+        onChange={handleAddressSelect}
+      >
+        <option value=""  className="text-right">اختر العنوان</option>
+        {userAddresses.length > 0 ? (
+          userAddresses.map((address) => (
+            <option key={address._id} value={address._id}>
+              {address.area}, {address.city}, {address.governorate},{" "}
+              {address.country}
+            </option>
+          ))
+        ) : (
+          <option disabled> لا يوجد عنوان </option>
+        )}
+      </Input>
+   
+    <Row>
+      <Col  className="text-right" xs="12">
+        <p>: طريقة الدفع </p>
+      </Col>
+    </Row>
+    <Row>
+      <Col >
+        <div className="d-flex justify-content-end">
+        <label htmlFor="Cash">
+           
+           كاش عند الاستلام
+           <i className="fa-solid fa-money-bill text-success m-3"></i>
+         </label>
+          <input
+            type="radio"
+            id="Cash"
+            name="payment_method"
+            value="Cash"
+            onChange={handlePaymentMethodChange}
+          />
+        </div>
+      </Col>
+      <Col>
+        <div className="d-flex">
+        <label htmlFor="Credit Card" className="mr-2">
+            بطاقة الائتمان
+            <img src={VisaSrc} style={{ width: "40px" }}></img>
+          </label>
+          <input
+            type="radio"
+            id="Credit Card"
+            name="payment_method"
+            value="Credit Card"
+            onChange={handlePaymentMethodChange}
+          />
+        </div>
+      </Col>
+    </Row>
+  </ModalBody>
+  <ModalFooter className="text-right">
+    <Button style={{ backgroundColor: "orange", color: "#fff" }} onClick={handleReorderConfirm}>
+      اعادة الشراء
+    </Button>
+    <Button color="secondary" onClick={handleModalClose}>
+      الغاء
+    </Button>
+  </ModalFooter>
+</Modal>
 
-                  <label htmlFor="Cash">
-                    <i className="fa-solid fa-money-bill text-success m-3"></i>
-                    كاش عند الاستلام
-                  </label>
-                </div>
-                </Col><Col>
-                <div className="d-flex">
-                  <input
-                    type="radio"
-                    id="Credit Card"
-                    name="payment_method"
-                    value="Credit Card"
-                    onChange={handlePaymentMethodChange}
-                  />
-                  <label htmlFor="Credit Card" className="mr-2">
-                    <img src={VisaSrc} style={{ width: "40px" }}></img>بطاقة
-                    الائتمان
-                  </label>
-                </div>
-              </Col>
-            </Row>
-
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={handleReorderConfirm}>
-            Reorder
-          </Button>
-          <Button color="secondary" onClick={handleModalClose}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
     </>
   );
 };
