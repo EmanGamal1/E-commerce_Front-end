@@ -85,8 +85,8 @@ const Registration = () => {
         .then((res) => {
           MySwal.fire({
             icon: "success",
-            title: "success!",
-            text: "account created successfully",
+            title: "تم إنشاء الحســاب بنجاح",
+            text: "برجـاء الدخـول أولا ثم تفعيـل حسـابك من خلال بريدك الإلكترونـي",
           });
           // localStorage.setItem("token", res.data.data.token);
           // localStorage.setItem("user", JSON.stringify(res.data.data.user));
