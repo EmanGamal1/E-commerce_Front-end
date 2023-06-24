@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { axiosInstance } from "Axios.js";
 import Swal from "sweetalert2";
-import { Container, Row, Card, CardBody, Col, CardHeader } from "reactstrap";
+import {
+  Container,
+  Row,
+  Card,
+  CardBody,
+  Col,
+  CardHeader,
+  Spinner,
+} from "reactstrap";
 import { Link, useNavigate } from "react-router-dom";
 import imageSrc from "../../Assets/img/OIUFKQ0.jpg";
 import removeSrc from "../../Assets/img/remove (1).png";
@@ -9,16 +17,17 @@ import quantitySrc from "../../Assets/img/product.png";
 
 import handleErrors from "../../../Errors";
 const Cart = () => {
+  const [loading, setLoading] = useState(true);
   const [cartData, setCartData] = useState([]);
   const [userData, setUserData] = useState({});
   // const [addressData, setAddressData] = useState({});
   const [totalPrice, setTotalPrice] = useState(0);
   // Other necessary state variables
   // ...
-  const user = localStorage.getItem('user');
+  const user = localStorage.getItem("user");
   const navigate = useNavigate();
-  
-  if(!user){
+
+  if (!user) {
     navigate("/login");
   }
 
@@ -54,6 +63,7 @@ const Cart = () => {
       console.log(error.message);
       // Handle error
     }
+    setLoading(false);
   };
   useEffect(() => {
     /*const fetchUserData = async () => {
@@ -95,6 +105,104 @@ const Cart = () => {
       // Handle error
     }
   };
+  const renderContent = () => {
+    if (loading)
+      return (
+        <div className={"text-center"}>
+          <Spinner className={"h1 p-5 m-4"} />
+        </div>
+      );
+    else {
+      return (
+        <>
+          {cartData.length ? (
+            cartData?.map((product) => (
+              <div key={product.product_id._id}>
+                <Row>
+                  <Col xs="3">
+                    <img
+                      src={product.product_id.image}
+                      alt="Product"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </Col>
+                  <Col xs="7" className="text-right">
+                    {/*<p>{product.product_id._id}</p>*/}
+                    <p> اسم المنتج: {product.product_id.name.ar}</p>
+                    <p>الكمية: {product.quantity}</p>
+                    <p>
+                      <label>الكمية: </label>
+                      <select
+                        className="form-control"
+                        onChange={(e) => {
+                          console.log(e.target.value);
+                          updateQuantity(
+                            e.target.value,
+                            product.product_id._id
+                          );
+                        }}
+                      >
+                        {Array.from(
+                          {
+                            length: product.product_id.quantity,
+                          },
+                          (_, index) => (
+                            <option
+                              key={index + 1}
+                              value={index + 1}
+                              selected={index + 1 == product.quantity}
+                            >
+                              {index + 1}
+                            </option>
+                          )
+                        )}
+                      </select>
+                    </p>
+
+                    <p>
+                      {" "}
+                      سعر الوحدة: {convertCurrency(product.product_id.price)}
+                    </p>
+                    <p>
+                      السعر الكلي:{" "}
+                      {convertCurrency(
+                        product.quantity * product.product_id.price
+                      )}
+                    </p>
+                  </Col>
+                  <Col xs="2">
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleDelete(product.product_id._id)}
+                    >
+                      حذف
+                    </button>
+                  </Col>
+                </Row>
+                <hr />
+              </div>
+            ))
+          ) : (
+            <div className="text-center mt-4 mb-4">
+              <h2>لا يوجد منتجات في العربة</h2>
+              <img
+                src={imageSrc}
+                alt="No Orders"
+                style={{ width: "250px", height: "250px" }}
+              />
+
+              {/*<Link to={`/`}>
+                        <h3 className={"text-light btn btn-primary"}>
+                          تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
+                        </h3>
+                      </Link>*/}
+            </div>
+          )}
+        </>
+      );
+    }
+  };
+
   return (
     <Container fluid className="mt-4">
       <Row>
@@ -126,93 +234,7 @@ const Cart = () => {
                 <div>
                   <h2>المنتجات في العربة</h2>
                   <hr />
-                  {cartData.length ? (
-                    cartData?.map((product) => (
-                      <div key={product.product_id._id}>
-                        <Row>
-                          <Col xs="3">
-                            <img
-                              src={product.product_id.image}
-                              alt="Product"
-                              style={{ width: "100%", height: "100%" }}
-                            />
-                          </Col>
-                          <Col xs="7" className="text-right">
-                            {/*<p>{product.product_id._id}</p>*/}
-                            <p> اسم المنتج: {product.product_id.name.ar}</p>
-                            <p>الكمية: {product.quantity}</p>
-                            <p>
-                              <label>الكمية: </label>
-                              <select
-                                className="form-control"
-                                onChange={(e) => {
-                                  console.log(e.target.value);
-                                  updateQuantity(
-                                    e.target.value,
-                                    product.product_id._id
-                                  );
-                                }}
-                              >
-                                {Array.from(
-                                  {
-                                    length: product.product_id.quantity,
-                                  },
-                                  (_, index) => (
-                                    <option
-                                      key={index + 1}
-                                      value={index + 1}
-                                      selected={index + 1 == product.quantity}
-                                    >
-                                      {index + 1}
-                                    </option>
-                                  )
-                                )}
-                              </select>
-                            </p>
-
-                            <p>
-                              {" "}
-                              سعر الوحدة:{" "}
-                              {convertCurrency(product.product_id.price)}
-                            </p>
-                            <p>
-                              السعر الكلي:{" "}
-                              {convertCurrency(
-                                product.quantity * product.product_id.price
-                              )}
-                            </p>
-                          </Col>
-                          <Col xs="2">
-                            <button
-                              className="btn btn-danger"
-                              onClick={() =>
-                                handleDelete(product.product_id._id)
-                              }
-                            >
-                              حذف
-                            </button>
-                          </Col>
-                        </Row>
-                        <hr />
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center mt-4 mb-4">
-                      <h2>لا يوجد منتجات في العربة</h2>
-                      <img
-                        src={imageSrc}
-                        alt="No Orders"
-                        style={{ width: "250px", height: "250px" }}
-                      />
-
-                      {/*<Link to={`/`}>
-                        <h3 className={"text-light btn btn-primary"}>
-                          تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
-                        </h3>
-                      </Link>*/}
-                    </div>
-                  )}
-
+                  {renderContent()}
                   <h2>السعر الكلي: {convertCurrency(totalPrice)}</h2>
                   <button className="btn btn-primary w-100">
                     {totalPrice !== 0 ? (
