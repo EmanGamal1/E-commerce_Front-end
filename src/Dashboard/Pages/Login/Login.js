@@ -54,7 +54,7 @@ const Login = () => {
       setUserToken(accessToken);
       setuser("");
       setpassword("");
-      navigate("/admin/index");
+      navigate("/admin/auth");
     } catch (err) {
       console.error(err.response.data.message);
       const erorr = err.response.data.message;

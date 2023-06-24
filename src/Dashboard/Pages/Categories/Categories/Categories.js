@@ -31,7 +31,7 @@ const Categories = () => {
     fetch();
   }, [rows, page, search]);
 
-  const fetch = () => {
+  const fetch = () =>
     axiosDashboard
       .get(`${CategoriesURL}?page=${page}&limit=${rows}`, {
         params: {
@@ -51,7 +51,6 @@ const Categories = () => {
         });
       })
       .catch((error) => handleErrors(error));
-  };
 
   const handleDeleteCategory = (id, name) => {
     MySwal.fire({
@@ -136,6 +135,7 @@ const Categories = () => {
     setPage(event.page + 1);
     setRows(event.rows);
   };
+
   return (
     <>
       <DataTable
