@@ -54,6 +54,8 @@ const Profile = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [currentPasswordError, setCurrentPasswordError] = useState(false);
   const [currentPasswordInCorrect, setCurrentPasswordInCorrect] = useState(false);
+  const [showErrorvalidation, setErrorvalidation] = useState("");
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -139,24 +141,29 @@ const Profile = () => {
       setErrorEmpty(true);
       setCurrentPasswordError(false);
       setPasswordError(false);
+      setErrorvalidation(false);
     } else if (newPassword !== confirmPassword) {
       setMatchError(true);
       setErrorEmpty(false);
       setCurrentPasswordError(false);
+      setErrorvalidation(false);
     } else if (newPassword.length < 8) {
       setPasswordError(true);
       setMatchError(false);
       setErrorEmpty(false);
       setCurrentPasswordError(false);
+      setErrorvalidation(false);
     } else if(currentPassword.length < 8) {
       setCurrentPasswordError(true);
       setMatchError(false);
       setErrorEmpty(false);
+      setErrorvalidation(false);
     }else {
       setMatchError(false);
       setErrorEmpty(false);
       setPasswordError(false);
       setCurrentPasswordError(false);
+      setErrorvalidation(false);
       try {
         await axiosInstance.patch("/update-password", {
           currentPassword,
@@ -215,11 +222,30 @@ const Profile = () => {
       const formData = new FormData();
       formData.append("image", profileImage);
       try {
+        if (profileImage) {
+          const allowedExtensions = /\.(jpeg|png|jpg)$/i;
+          if (!allowedExtensions.test(profileImage.name)) {
+            setShowErrorMessage(true);
+            setErrorvalidation("امتداد الصـورة غير صحيـح");
+            return;
+          }
+          const formData = new FormData();
+          formData.append("image", profileImage);
         await axiosInstance.patch("/profile", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
+      }
+      await axiosInstance.patch("/profile", updatedProfileData);
+      toggleEditMode();
+      setPhoneError(false);
+      Swal.fire({
+        title: "تم الحفظ",
+        text: "تم حفظ المعلومات الشخصية بنجاح",
+        icon: "success",
+        confirmButtonText: "حسناً",
+      });
         fetchProfileData();
       } catch (err) {
         console.log(err);
@@ -230,19 +256,19 @@ const Profile = () => {
       updatedProfileData.password = newPassword;
     }
   
-    try {
-      await axiosInstance.patch("/profile", updatedProfileData);
-      toggleEditMode();
-      setPhoneError(false);
-      Swal.fire({
-        title: "تم الحفظ",
-        text: "تم حفظ المعلومات الشخصية بنجاح",
-        icon: "success",
-        confirmButtonText: "حسناً",
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    // try {
+    //   await axiosInstance.patch("/profile", updatedProfileData);
+    //   toggleEditMode();
+    //   setPhoneError(false);
+    //   Swal.fire({
+    //     title: "تم الحفظ",
+    //     text: "تم حفظ المعلومات الشخصية بنجاح",
+    //     icon: "success",
+    //     confirmButtonText: "حسناً",
+    //   });
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
   
   return (
@@ -333,6 +359,9 @@ const Profile = () => {
                                     setProfileImage(e.target.files[0])
                                   }
                                 />
+                                {showErrorMessage && (
+                                  <div className="error-message text-danger"><p>{showErrorvalidation}</p></div>
+                                )}
                               </FormGroup>
                             ) : (
                               ""
