@@ -6,7 +6,7 @@ export const CategoryContainer = ({ data, loading }) => {
     <>
       <Container>
         <div className="admin-content-text mt-2 ">كل التصنيفات</div>
-        <Row className="my-2 d-flex justify-content-between">
+        <Row className="my-2 d-flex justify-content-between text-center">
           {loading === false ? (
             data ? (
               data.map((item, index) => {
@@ -23,7 +23,11 @@ export const CategoryContainer = ({ data, loading }) => {
               <h4>لا يوجد تصنيفات</h4>
             )
           ) : (
-            <Spinner animation="border" variant="primary" />
+            <Spinner
+              className={"h1 p-5 m-4"}
+              animation="border"
+              variant="primary"
+            />
           )}
         </Row>
       </Container>

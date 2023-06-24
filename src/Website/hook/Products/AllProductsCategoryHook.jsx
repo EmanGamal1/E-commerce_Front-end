@@ -6,7 +6,7 @@ const AllProductsCategoryHook = (categorySlug) => {
   useEffect(() => {
     getProduct();
   }, []);
-  const getProduct = (catSlug = categorySlug, page = 1, limit = 8) => {
+  const getProduct = (catSlug = categorySlug, page = 1, limit = 8000) => {
     axiosInstance
       .get(`categories/${catSlug}/products?page=${page}&limit=${limit}`)
       .then((res) => {
