@@ -13,12 +13,10 @@ const ConfirmNewPassword = () => {
   const [recaptchaValue, setRecaptchaValue] = useState("");
   const recaptchaRef = React.createRef();
   const navigate = useNavigate();
-
-  const { token } = useParams();
+  const { token, email } = useParams();
 
   const formik = useFormik({
     initialValues: {
-      email: "",
       password: "",
       password_confirm: "",
     },
@@ -41,7 +39,7 @@ const ConfirmNewPassword = () => {
         // Send a request to update the password
         const g_recaptcha_response = recaptchaValue;
         const response = await axiosDashboard.post("/admin/reset-password", {
-          email: values.email,
+          email,
           token,
           password: values.password,
           password_confirm: values.password_confirm,
@@ -73,24 +71,6 @@ const ConfirmNewPassword = () => {
             <small>Confirm New Password</small>
           </div>
           <Form role="form" onSubmit={formik.handleSubmit}>
-            <FormGroup className="mb-3">
-              <InputGroup className="input-group-alternative">
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <i className="ni ni-email-83" />
-                  </InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  {...formik.getFieldProps("email")}
-                  autoComplete="off"
-                />
-              </InputGroup>
-              {formik.touched.email && formik.errors.email && (
-                <div className="error text-danger">{formik.errors.email}</div>
-              )}
-            </FormGroup>
             <FormGroup className="mb-3">
               <InputGroup className="input-group-alternative">
                 <InputGroupAddon addonType="prepend">

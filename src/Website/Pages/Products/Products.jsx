@@ -19,6 +19,7 @@ const Products = () => {
 
   const handleSearchQueryChange = (query) => {
     setSearchQuery(query);
+    setPage(1);
   };
 
   const handleCategoryChange = (categoryId) => {
@@ -54,7 +55,7 @@ const Products = () => {
     query = query.slice(0, -1); // Remove'&' from the query
 
     axiosInstance
-      .get(`products?${query}&limit=8`)
+      .get(`products?${query}&limit=8&page=${page}`)
       .then((response) => {
         console.log("products", response.data);
         setProducts(response.data.data);
@@ -66,6 +67,7 @@ const Products = () => {
         setLoading(false);
       });
   }, [searchQuery, priceFrom, priceTo, selectedCategory, page]);
+  
   const onPageChange = (event, value) => {
     setPage(value);
   };

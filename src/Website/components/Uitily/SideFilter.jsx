@@ -14,15 +14,18 @@ export const SideFilter = ({ updateCategory, updatePriceRange }) => {
   };
 
   const handleChangePriceFrom = (event) => {
-    const value = event.target.value;
-    setPriceFrom(value);
-    updatePriceRange(value, priceTo);
+    // No minus numbers
+    let value = parseInt(event.target.value, 10);
+    value = isNaN(value) ? 0 : Math.max(0, value);
+    setPriceFrom(value.toString());
+    updatePriceRange(value.toString(), priceTo);
   };
-
+  
   const handleChangePriceTo = (event) => {
-    const value = event.target.value;
-    setPriceTo(value);
-    updatePriceRange(priceFrom, value);
+    let value = parseInt(event.target.value, 10);
+    value = isNaN(value) ? 0 : Math.max(0, value);
+    setPriceTo(value.toString());
+    updatePriceRange(priceFrom, value.toString());
   };
 
   return (
