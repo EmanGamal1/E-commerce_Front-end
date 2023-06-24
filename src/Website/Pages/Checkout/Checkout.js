@@ -8,7 +8,6 @@ import VisaSrc from "../../Assets/img/visa.png";
 import deliverySrc from "../../Assets/img/food.png";
 import ordersSrc from "../../Assets/img/shopping-cart (1).png";
 
-
 const Checkout = () => {
   const [cartData, setCartData] = useState([]);
   const [userData, setUserData] = useState({});
@@ -17,9 +16,16 @@ const Checkout = () => {
   const [userAddresses, setUserAddresses] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState(""); // New state for payment method
-  
+
   const user = localStorage.getItem("user");
   const navigate = useNavigate();
+
+  const convertCurrency = (currency) => {
+    return Intl.NumberFormat("ar-EG", {
+      style: "currency",
+      currency: "EGP",
+    }).format(currency);
+  };
 
   useEffect(() => {
     if (!user) {
@@ -58,7 +64,6 @@ const Checkout = () => {
     });
     setTotalPrice(total);
   };
-  
 
   const handlePlaceOrder = async () => {
     try {
@@ -66,7 +71,7 @@ const Checkout = () => {
         address_id: selectedAddress,
         payment_method: paymentMethod,
       };
-  
+
       if (paymentMethod === "Credit Card") {
         Swal.fire({
           title: "تم الطلب!",
@@ -77,7 +82,8 @@ const Checkout = () => {
           cancelButtonText: "إغلاق",
         }).then((result) => {
           if (result.isConfirmed) {
-            axiosInstance.post("/orders", orderData)
+            axiosInstance
+              .post("/orders", orderData)
               .then((response) => {
                 const paymentUrl = response.data.data.payment_url;
                 window.location.href = paymentUrl;
@@ -93,17 +99,22 @@ const Checkout = () => {
         Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "success");
       }
     } catch (error) {
-      console.log(error.message);
-      Swal.fire("عذرا", "حدث خطأ برجاء المحاولة مرة أخرى.", "error");
+      console.log(error);
+      if (error.response.data.error.address_id) {
+        Swal.fire("عذرا", "برجاء اختيار عنوان التوصيل.", "error");
+      } else if (error.response.data.error.payment_method) {
+        Swal.fire("عذرا", "برجاء اختيار طريقة الدفع.", "error");
+      } else if (typeof error.response.data.error === "string") {
+        Swal.fire("عذرا", error.response.data.error, "error");
+      } else {
+        Swal.fire("عذرا", "حدث خطأ برجاء المحاولة مرة أخرى.", "error");
+      }
     }
   };
-  
-  
+
   const handleAddressSelect = (event) => {
     const selectedValue = event.target.value;
     setSelectedAddress(selectedValue);
-  
- 
 
     // Use the selectedValue as needed
     console.log(selectedValue);
@@ -113,12 +124,18 @@ const Checkout = () => {
     const selectedValue = event.target.value;
     setPaymentMethod(selectedValue);
     console.log(selectedValue);
-};
+  };
   return (
     <Container className="mt-4">
       <Row>
-      <Col xs="12" lg="7">
-          <h1 className="mb-3">مراجعة الطلب <img src={ordersSrc}  style={{ width: "30px"  , marginRight : "10px"}}></img></h1>
+        <Col xs="12" lg="7">
+          <h1 className="mb-3">
+            مراجعة الطلب{" "}
+            <img
+              src={ordersSrc}
+              style={{ width: "30px", marginRight: "10px" }}
+            ></img>
+          </h1>
           <Card className="container shadow text-right p-4">
             {cartData?.map((product) => (
               <div key={product.product_id._id}>
@@ -134,11 +151,15 @@ const Checkout = () => {
                     {/*<p>{product.product_id._id}</p>*/}
                     <p> اسم المنتج: {product.product_id.name.ar}</p>
                     <p>الكمية: {product.quantity}</p>
-                    <p> سعر الوحدة: {product.product_id.price.toFixed(2)}$</p>
+                    <p>
+                      {" "}
+                      سعر الوحدة: {convertCurrency(product.product_id.price)}
+                    </p>
                     <p>
                       السعر الكلي:{" "}
-                      {(product.quantity * product.product_id.price).toFixed(2)}
-                      $
+                      {convertCurrency(
+                        product.quantity * product.product_id.price
+                      )}
                     </p>
                   </Col>
                 </Row>
@@ -148,9 +169,15 @@ const Checkout = () => {
           </Card>
         </Col>
         <Col xs="12" lg="5">
-        <h1 className="mb-3 ">معلومات التوصيل<img src={deliverySrc}  style={{ width: "30px"  , marginRight : "10px"}}></img></h1>
+          <h1 className="mb-3 ">
+            معلومات التوصيل
+            <img
+              src={deliverySrc}
+              style={{ width: "30px", marginRight: "10px" }}
+            ></img>
+          </h1>
           <Card className="container shadow text-right p-4 ">
-          <Row>
+            <Row>
               <Col>
                 <h3>{userData.name}</h3>
               </Col>
@@ -161,7 +188,7 @@ const Checkout = () => {
                 </p>
               </Col>
             </Row>
-            
+
             <Row>
               <Col>
                 <p>اختيار العنوان</p>
@@ -208,7 +235,8 @@ const Checkout = () => {
                     كاش عند الاستلام
                   </label>
                 </div>
-                </Col><Col>
+              </Col>
+              <Col>
                 <div className="d-flex">
                   <input
                     type="radio"
@@ -226,18 +254,17 @@ const Checkout = () => {
             </Row>
             <hr></hr>
             <Row>
-            
-              <Col className="d-flex text-center">
+              <Col className="d-flex text-center px-2">
                 <h2>السعر الكلى: </h2>
-                <h2>{totalPrice}$</h2>
+                <h2> {convertCurrency(totalPrice)}</h2>
               </Col>
             </Row>
-            
+
             <Row>
               <Button
                 className="btn  w-100"
                 onClick={handlePlaceOrder}
-                style={{backgroundColor:"orange" ,color:"#fff"}}
+                style={{ backgroundColor: "orange", color: "#fff" }}
               >
                 اتمام الشراء
               </Button>
@@ -245,9 +272,7 @@ const Checkout = () => {
           </Card>
         </Col>
       </Row>
-      <Row>
-       
-      </Row>
+      <Row></Row>
     </Container>
   );
 };
