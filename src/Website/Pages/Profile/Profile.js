@@ -47,7 +47,7 @@ const Profile = () => {
   const [originalProfileData, setOriginalProfileData] = useState(null);
   const [phoneError, setPhoneError] = useState(false);
   const [errorEmpty, setErrorEmpty] = useState(false);
-  const jwt = localStorage.getItem("token");
+  // const jwt = localStorage.getItem("token");
   const [currentPassword, setCurrentPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   // const [passwordChangeError, setPasswordChangeError] = useState(false);
@@ -124,17 +124,6 @@ const Profile = () => {
     } else if (name === "confirmPassword") {
       setConfirmPassword(value);
       setMatchError(false);
-    // } else if (name === "phone") {
-    //   // Validate mobile number format
-    //   if (/^\d+$/.test(value) || value === "") {
-    //     setProfileData((prevState) => ({
-    //       ...prevState,
-    //       [name]: value,
-    //     }));
-    //     setPhoneError(false);
-    //   } else {
-    //     setPhoneError(true);
-    //   }
     } else {
       setProfileData((prevState) => ({
         ...prevState,
@@ -180,6 +169,7 @@ const Profile = () => {
           icon: "success",
           confirmButtonText: "اعد الدخـول",
         });
+        localStorage.removeItem("token");
         localStorage.removeItem("user");
         navigate("/login");
       setShowModal(false);
@@ -197,11 +187,13 @@ const Profile = () => {
       setInputError(true);
       return;
     }
-     // Validate phone number format
-  if (!/^01[0125][0-9]{8}$/.test(profileData.phone)) {
-    setPhoneError(true);
-    return;
-  }
+  
+    // Validate phone number format
+    if (!/^01[0125][0-9]{8}$/.test(profileData.phone)) {
+      setPhoneError(true);
+      return;
+    }
+  
     const {
       _id,
       address,
@@ -214,9 +206,11 @@ const Profile = () => {
       id,
       verified_at,
       passwordChangedAt,
+      reset_password_token,
+      reset_password_token_expire,
       ...updatedProfileData
     } = profileData;
-
+  
     if (profileImage) {
       const formData = new FormData();
       formData.append("image", profileImage);
@@ -231,20 +225,26 @@ const Profile = () => {
         console.log(err);
       }
     }
-
+  
     if (newPassword !== "" && confirmNewPassword !== "") {
       updatedProfileData.password = newPassword;
     }
-
+  
     try {
       await axiosInstance.patch("/profile", updatedProfileData);
       toggleEditMode();
       setPhoneError(false);
+      Swal.fire({
+        title: "تم الحفظ",
+        text: "تم حفظ المعلومات الشخصية بنجاح",
+        icon: "success",
+        confirmButtonText: "حسناً",
+      });
     } catch (err) {
       console.log(err);
     }
   };
-
+  
   return (
     <div>
       <>

@@ -37,7 +37,7 @@ const Profile = () => {
   const [originalProfileData, setOriginalProfileData] = useState(null);
   const [phoneError, setPhoneError] = useState(false);
   const [errorEmpty, setErrorEmpty] = useState(false);
-  const [jwt, setJWT] = useState(localStorage.getItem("admin"));
+  const jwt = localStorage.getItem("admin");
   const [decodedToken, setDecodedToken] = useState(jwtDecode(jwt));
   const userId = decodedToken.id;
 
@@ -125,7 +125,7 @@ const Profile = () => {
           .then((res) => {
             console.log(res.data.data);
             localStorage.setItem("admin", res.data.data.token);
-            setJWT(localStorage.getItem("admin"));
+            //setJWT(localStorage.getItem("admin"));
             setDecodedToken(jwtDecode(jwt));
             setOriginalProfileData(res.data.data.user);
             setProfileData(res.data.data.user);

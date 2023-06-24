@@ -38,15 +38,19 @@ const NavBar = () => {
   };
 
   const fetchProfileData = () => {
-    axiosInstance
-      .get("/profile")
-      .then((response) => {
-        setProfileData(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // axiosInstance
+    //   .get("/profile")
+    //   .then((response) => {
+    //     setProfileData(response.data.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+    // const userData =localStorage.getItem("user");
+    // setProfileData(userData);
   };
+
+  const userName = JSON.parse(localStorage.getItem("user"));
   
   const hideNavbar = () => {
     setShowNavbar(false);
@@ -131,11 +135,11 @@ const NavBar = () => {
             <Link to="/profile">
             <li className="">
               <img
-                src={profileData.image}
+                src={userName.image}
                 className="navProfileImage"
                 alt="user profile img"
               />
-              <span className="col-6">{profileData.name}</span>
+              <span className="col-6">{userName.name}</span>
             </li>
             </Link>
             <li>
