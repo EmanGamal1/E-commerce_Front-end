@@ -54,13 +54,11 @@ const Login = () => {
       setUserToken(accessToken);
       setuser("");
       setpassword("");
-      setTimeout(() => {
-        navigate("/admin/index");
-      }, 500);
+      navigate("/admin/index");
     } catch (err) {
       console.error(err.response.data.message);
       const erorr = err.response.data.message;
-      seterrmsg(erorr);
+      seterrmsg(erorr || "please Enter your email Password Correctly");
       errRef.current.focus();
     }
   };

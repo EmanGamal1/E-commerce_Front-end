@@ -52,6 +52,8 @@ const Profile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   // const [passwordChangeError, setPasswordChangeError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [currentPasswordError, setCurrentPasswordError] = useState(false);
+  const [currentPasswordInCorrect, setCurrentPasswordInCorrect] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,14 +67,13 @@ const Profile = () => {
       setOriginalProfileData(res.data.data);
     } catch (err) {
       if (err.response.data.error.includes("Please login first")) {
-        navigate("/auth/login");
+        navigate("/login");
       }
       else if (
         err.response.data.error.includes(
           "Password changed recently, login again"
         )
       ) {
-        localStorage.removeItem("token");
         Swal.fire({
           title: 'اعـد الدخـول مرة ثانيــة',
           text: 'تم تغيير كلمة المرور',
@@ -81,7 +82,7 @@ const Profile = () => {
           confirmButtonText: 'دخــول',
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate("/auth/login");
+            navigate("/login");
           }
         });
         
@@ -119,21 +120,21 @@ const Profile = () => {
       setCurrentPassword(value);
     } else if (name === "newPassword") {
       setNewPassword(value);
-      setMatchError(false); // Reset the match error when the new password changes
+      setMatchError(false);
     } else if (name === "confirmPassword") {
       setConfirmPassword(value);
-      setMatchError(false); // Reset the match error when the confirm password changes
-    } else if (name === "phone") {
-      // Validate mobile number format
-      if (/^\d+$/.test(value) || value === "") {
-        setProfileData((prevState) => ({
-          ...prevState,
-          [name]: value,
-        }));
-        setPhoneError(false);
-      } else {
-        setPhoneError(true);
-      }
+      setMatchError(false);
+    // } else if (name === "phone") {
+    //   // Validate mobile number format
+    //   if (/^\d+$/.test(value) || value === "") {
+    //     setProfileData((prevState) => ({
+    //       ...prevState,
+    //       [name]: value,
+    //     }));
+    //     setPhoneError(false);
+    //   } else {
+    //     setPhoneError(true);
+    //   }
     } else {
       setProfileData((prevState) => ({
         ...prevState,
@@ -147,76 +148,60 @@ const Profile = () => {
       setMatchError(false);
       setShowModal(true);
       setErrorEmpty(true);
+      setCurrentPasswordError(false);
+      setPasswordError(false);
     } else if (newPassword !== confirmPassword) {
       setMatchError(true);
       setErrorEmpty(false);
+      setCurrentPasswordError(false);
     } else if (newPassword.length < 8) {
       setPasswordError(true);
       setMatchError(false);
       setErrorEmpty(false);
-    } else {
-      // // Verify current password on the client-side
-      // if (currentPassword !== originalProfileData.password) {
-      //   setPasswordChangeError(true);
-      //   return;
-      // }
-  
+      setCurrentPasswordError(false);
+    } else if(currentPassword.length < 8) {
+      setCurrentPasswordError(true);
       setMatchError(false);
-      setShowModal(false);
+      setErrorEmpty(false);
+    }else {
+      setMatchError(false);
       setErrorEmpty(false);
       setPasswordError(false);
+      setCurrentPasswordError(false);
       try {
         await axiosInstance.patch("/update-password", {
           currentPassword,
           password: newPassword,
           confirmPassword,
         });
-        // Password successfully changed
         Swal.fire({
-          title: "Password Changed",
-          text: "Your password has been changed successfully.",
+          title: "تغييـر كلمة المرور",
+          text: "تم تغييــر كلمة المرور بنجاح",
           icon: "success",
-          confirmButtonText: "OK",
+          confirmButtonText: "اعد الدخـول",
         });
+        localStorage.removeItem("user");
+        navigate("/login");
+      setShowModal(false);
       } catch (error) {
-        // setPasswordChangeError(true);
-        console.error(error);
+        if (error.response.data.error==="Incorrect Password"){
+          setCurrentPasswordInCorrect(true);
+          setShowModal(true);
+        }
       }
     }
   };
-   
-  // const handleAddressChange = (e, index) => {
-  //   const { name, value } = e.target;
-  //   const updatedAddresses = [...profileData.address];
-  //   updatedAddresses[index] = {
-  //     ...updatedAddresses[index],
-  //     [name]: value,
-  //   };
-  //   setProfileData((prevState) => ({
-  //     ...prevState,
-  //     address: updatedAddresses,
-  //   }));
-  // };
-
-  // const handleAddAddress = () => {
-  //   const updatedAddresses = [...profileData.address, ""];
-  //   setProfileData({ ...profileData, address: updatedAddresses });
-  // };
-
-  // const handleRemoveAddress = (index) => {
-  //   const updatedAddresses = [...profileData.address];
-  //   updatedAddresses.splice(index, 1);
-  //   setProfileData((prevState) => ({
-  //     ...prevState,
-  //     address: updatedAddresses,
-  //   }));
-  // };
 
   const saveProfileData = async () => {
     if (profileData.name.trim() === "" || profileData.phone.trim() === "") {
       setInputError(true);
       return;
     }
+     // Validate phone number format
+  if (!/^01[0125][0-9]{8}$/.test(profileData.phone)) {
+    setPhoneError(true);
+    return;
+  }
     const {
       _id,
       address,
@@ -227,6 +212,7 @@ const Profile = () => {
       email_token,
       __v,
       id,
+      verified_at,
       passwordChangedAt,
       ...updatedProfileData
     } = profileData;
@@ -253,6 +239,7 @@ const Profile = () => {
     try {
       await axiosInstance.patch("/profile", updatedProfileData);
       toggleEditMode();
+      setPhoneError(false);
     } catch (err) {
       console.log(err);
     }
@@ -266,42 +253,42 @@ const Profile = () => {
           <Row>
             <SideBar />
             <Col lg="8">
-              <Card className="shadow pr-4">
+              <Card className="shadow px-4">
                 <CardHeader className="bg-white rounded shadow border-0">
-                  <Row className="align-items-center">
-                    <Col xs="8">
+                <div className="d-flex">
+                    {/* <Col> */}
                       <h3 className="mb-0">حســـابي</h3>
-                    </Col>
-                    <Col className="text-right" xs="4">
+                    {/* </Col> */}
+                    {/* <Col className="text-right" > */}
                       {!editMode ? (
                         <Buttons
                           title="تعـديل"
-                          className="btn btn-outline-warning"
+                          className="btn btn-outline-warning mr-auto"
                           onClick={toggleEditMode}
                         />
                       ) : (
                         ""
                       )}
-                      <Col className="text-right" xs="12">
+                      {/* <Col className="text-right" xs="12"> */}
                         {editMode ? (
                           <>
                             <Buttons
                               title="حفـظ"
-                              className="btn btn-outline-warning shadow"
+                              className="btn btn-outline-warning shadow ml-2  mr-auto"
                               onClick={saveProfileData}
                             />
                             <Buttons
                               title="رجــوع"
-                              className="btn btn-outline-primary"
+                              className="btn btn-outline-dark"
                               onClick={cancelMode}
                             />
                           </>
                         ) : (
                           ""
                         )}
-                      </Col>
-                    </Col>
-                  </Row>
+                      {/* </Col> */}
+                    {/* </Col> */}
+                  </div>
                 </CardHeader>
                 <CardBody>
                   <Form>
@@ -320,7 +307,7 @@ const Profile = () => {
                             style={{ height: "120px" }}
                             className="mt-5"
                           >
-                            <div className="card-profile-image">
+                            <div className="card-profile-image mr-3">
                               <a
                                 href="#pablo"
                                 onClick={(e) => e.preventDefault()}
@@ -341,7 +328,7 @@ const Profile = () => {
                                 <Input
                                   type="file"
                                   name="image"
-                                  id="image"
+                                  id="coverImage"
                                   onChange={(e) =>
                                     setProfileImage(e.target.files[0])
                                   }
@@ -359,7 +346,7 @@ const Profile = () => {
                         <Col>
                           {editMode && inputError && (
                             <Alert color="danger" className="alert-transparent">
-                              Complete all required fields
+                                جميـع الحقـول مطلوبة
                             </Alert>
                           )}
                         </Col>
@@ -402,6 +389,7 @@ const Profile = () => {
                             </label>
                             <Col lg="8">
                               {editMode ? (
+                                <>
                                 <Input
                                   className="form-control-alternative"
                                   id="input-mobile-number"
@@ -410,16 +398,18 @@ const Profile = () => {
                                   value={profileData.phone}
                                   onChange={handleInputChange}
                                 />
+                                {phoneError ? (
+                                  <span className="text-danger">
+                                    رقـم الهاتــف غير صحيح
+                                  </span>
+                                ) : (
+                                  ""
+                                )}
+                                </>
                               ) : (
                                 <p>{profileData.phone}</p>
                               )}
-                              {phoneError ? (
-                                <span className="text-danger">
-                                  Phone Number must be only numbers
-                                </span>
-                              ) : (
-                                ""
-                              )}
+                             
                             </Col>
                           </FormGroup>
                         </Col>
@@ -437,82 +427,6 @@ const Profile = () => {
                             <Col lg="12">
                               {editMode ? (
                                 <>
-                                  {/* {profileData.address.map((address, index) => (
-                                    <div
-                                      className="row"
-                                      key={`address-${index}`}
-                                    >
-                                      <Col lg="3">
-                                        <Input
-                                          key={`input-address-${index}-area`}
-                                          className="form-control-alternative mb-2"
-                                          type="text"
-                                          name="area"
-                                          value={address.area}
-                                          onChange={(e) =>
-                                            handleAddressChange(e, index)
-                                          }
-                                        />
-                                      </Col>
-                                      <Col lg="3">
-                                        <Input
-                                          key={`input-address-${index}-city`}
-                                          className="form-control-alternative mb-2"
-                                          type="text"
-                                          name="city"
-                                          value={address.city}
-                                          onChange={(e) =>
-                                            handleAddressChange(e, index)
-                                          }
-                                        />
-                                      </Col>
-                                      <Col lg="3">
-                                        <Input
-                                          key={`input-address-${index}-governorate`}
-                                          className="form-control-alternative mb-2"
-                                          type="text"
-                                          name="governorate"
-                                          value={address.governorate}
-                                          onChange={(e) =>
-                                            handleAddressChange(e, index)
-                                          }
-                                        />
-                                      </Col>
-                                      <Col lg="2">
-                                        <Input
-                                          key={`input-address-${index}-country`}
-                                          className="form-control-alternative mb-2"
-                                          type="text"
-                                          name="country"
-                                          value={address.country}
-                                          onChange={(e) =>
-                                            handleAddressChange(e, index)
-                                          }
-                                        />
-                                      </Col>
-                                      <Col lg="1">
-                                        <button
-                                          className="btn btn-sm btn-outline-danger mb-2"
-                                          onClick={() =>
-                                            handleRemoveAddress(index)
-                                          }
-                                        >
-                                          <i className="fa fa-minus-circle"></i>
-                                        </button>
-                                      </Col>
-                                      {index ===
-                                        profileData.address.length - 1 && (
-                                        <button
-                                          className="btn-sm btn-outline-primary"
-                                          onClick={handleAddAddress}
-                                        >
-                                          <i className="fa fa-plus-circle"></i>
-                                          إضافة عنـوان جديد
-                                        </button>
-                                      )}
-                                    </div>
-                                  ))} */}
-
                                   <Link to="/address"><Buttons title="الذهاب للعناوين" className="btn-sm btn-outline-warning"/></Link>
                                 </>
                               ) : (
@@ -588,20 +502,12 @@ const Profile = () => {
                               className="btn btn-primary ml-3"
                               onClick={openModal}
                             />
-                            <Modal isOpen={showModal} toggle={closeModal}>
+                            <Modal isOpen={showModal} toggle={closeModal} dir="rtl">
                               <ModalBody>
                                 <span className="close" onClick={closeModal}>
                                   &times;
                                 </span>
                                 <h2>تغيير كلمة المرور</h2>
-                                {/* {passwordChangeError && (
-                                  <Alert
-                                    color="danger"
-                                    className="alert-transparent"
-                                  >
-                                    كلمة المرور الحاليــة غير صحيحة
-                                  </Alert>
-                                )} */}
                                 <Input
                                   type="password"
                                   name="currentPassword"
@@ -609,17 +515,27 @@ const Profile = () => {
                                   placeholder="كلمـة المرور الحاليــة"
                                   onChange={handleInputChange}
                                 />
+                                {currentPasswordError && (
+                                  <span className="text-danger">
+                                    يجب ألا تقـل كلمة المــرور الحاليــة عن 8 أحـرف
+                                  </span>
+                                )}
+                                {currentPasswordInCorrect && (
+                                  <span className="text-danger">
+                                    كلمـة المرور الحاليــة غير صحيحة
+                                  </span>
+                                )}
                                 <Input
                                   type="password"
                                   name="newPassword"
-                                  className="form-control"
+                                  className="form-control mt-2"
                                   placeholder="كلمـة مـرور جديدة"
                                   onChange={handleInputChange}
                                 />
                                 <Input
                                   type="password"
                                   name="confirmPassword"
-                                  className="form-control"
+                                  className="form-control mt-2"
                                   placeholder="تأكيـد كلمـة المـرور الجديدة"
                                   onChange={handleInputChange}
                                 />
@@ -638,7 +554,7 @@ const Profile = () => {
                                 )}
                                 {passwordError && (
                                   <span className="text-danger">
-                                    Password must be at least 8 characters long
+                                    يجب ألا تقـل كلمة المــرور الجديدة عن 8 أحـرف
                                   </span>
                                 )}
 

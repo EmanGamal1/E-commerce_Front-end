@@ -1,202 +1,255 @@
 import React, { useState, useEffect } from "react";
 import { axiosInstance } from "Axios.js";
 import Swal from "sweetalert2";
-import { Container, Row, Card, CardBody, Col , Button , Input} from "reactstrap";
+import { Container, Row, Card, CardBody, Col, Button, Input } from "reactstrap";
+import { useNavigate } from "react-router";
+import "./Checkout.css";
+import VisaSrc from "../../Assets/img/visa.png";
+import deliverySrc from "../../Assets/img/food.png";
+import ordersSrc from "../../Assets/img/shopping-cart (1).png";
 
 
 const Checkout = () => {
+  const [cartData, setCartData] = useState([]);
+  const [userData, setUserData] = useState({});
+  const [addressData, setAddressData] = useState({});
+  const [selectedAddress, setSelectedAddress] = useState([]);
+  const [userAddresses, setUserAddresses] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState(""); // New state for payment method
   
-        const [cartData, setCartData] = useState([]);
-        const [userData, setUserData] = useState({});
-        const [addressData, setAddressData] = useState({});
-        const [selectedAddress, setSelectedAddress] = useState([]);
-        const [userAddresses, setUserAddresses] = useState([]);
-        const [totalPrice, setTotalPrice] = useState(0);
-        // Other necessary state variables
-        // ...
+  const user = localStorage.getItem("user");
+  const navigate = useNavigate();
 
-       
-        useEffect(() => {
-            const fetchCartData = async () => {
-              try {
-                const response = await axiosInstance.get("/profile/cart");
-                setCartData(response.data.data);
-                calculateTotalPrice(response.data.data);
-              } catch (error) {
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+    const fetchCartData = async () => {
+      try {
+        const response = await axiosInstance.get("/profile/cart");
+        setCartData(response.data.data);
+        calculateTotalPrice(response.data.data);
+      } catch (error) {
+        console.log(error.message);
+        // Handle error
+      }
+    };
+
+    const fetchUserData = async () => {
+      try {
+        const response = await axiosInstance.get("/profile");
+        setUserData(response.data.data);
+        setAddressData(response.data.data.address[0]);
+        setUserAddresses(response.data.data.address);
+      } catch (error) {
+        console.log(error.message);
+        // Handle error
+      }
+    };
+
+    fetchCartData();
+    fetchUserData();
+  }, []);
+  const calculateTotalPrice = (cartData) => {
+    let total = 0;
+    cartData.forEach((item) => {
+      total += item.quantity * item.product_id.price;
+    });
+    setTotalPrice(total);
+  };
+  
+
+  const handlePlaceOrder = async () => {
+    try {
+      const orderData = {
+        address_id: selectedAddress,
+        payment_method: paymentMethod,
+      };
+  
+      if (paymentMethod === "Credit Card") {
+        Swal.fire({
+          title: "تم الطلب!",
+          text: "اتمام اجراءات الدفع !",
+          icon: "success",
+          showCancelButton: true,
+          confirmButtonText: "الدفع الآن",
+          cancelButtonText: "إغلاق",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            axiosInstance.post("/orders", orderData)
+              .then((response) => {
+                const paymentUrl = response.data.data.payment_url;
+                window.location.href = paymentUrl;
+              })
+              .catch((error) => {
                 console.log(error.message);
-                // Handle error
-              }
-            };
-          
-            const fetchUserData = async () => {
-              try {
-                const response = await axiosInstance.get("/profile");
-                setUserData(response.data.data);
-                setAddressData(response.data.data.address[0]);
-                setUserAddresses(response.data.data.address);
-              } catch (error) {
-                console.log(error.message);
-                // Handle error
-              }
-            };
-          
-            fetchCartData();
-            fetchUserData();
+                Swal.fire("عذرا", "حدث خطأ برجاء المحاولة مرة أخرى.", "error");
+              });
+          }
+        });
+      } else {
+        await axiosInstance.post("/orders", orderData);
+        Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "success");
+      }
+    } catch (error) {
+      console.log(error.message);
+      Swal.fire("عذرا", "حدث خطأ برجاء المحاولة مرة أخرى.", "error");
+    }
+  };
+  
+  
+  const handleAddressSelect = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedAddress(selectedValue);
+  
+ 
+
+    // Use the selectedValue as needed
+    console.log(selectedValue);
+    // You can pass the selectedValue to any function or perform any other logic here
+  };
+  const handlePaymentMethodChange = (event) => {
+    const selectedValue = event.target.value;
+    setPaymentMethod(selectedValue);
+    console.log(selectedValue);
+};
+  return (
+    <Container className="mt-4">
+      <Row>
+      <Col xs="12" lg="7">
+          <h1 className="mb-3">مراجعة الطلب <img src={ordersSrc}  style={{ width: "30px"  , marginRight : "10px"}}></img></h1>
+          <Card className="container shadow text-right p-4">
+            {cartData?.map((product) => (
+              <div key={product.product_id._id}>
+                <Row>
+                  <Col xs="6" lg="3">
+                    <img
+                      src={product.product_id.image}
+                      alt="Product"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </Col>
+                  <Col xs="6" lg="7" className="text-right">
+                    {/*<p>{product.product_id._id}</p>*/}
+                    <p> اسم المنتج: {product.product_id.name.ar}</p>
+                    <p>الكمية: {product.quantity}</p>
+                    <p> سعر الوحدة: {product.product_id.price.toFixed(2)}$</p>
+                    <p>
+                      السعر الكلي:{" "}
+                      {(product.quantity * product.product_id.price).toFixed(2)}
+                      $
+                    </p>
+                  </Col>
+                </Row>
+                <hr />
+              </div>
+            ))}
+          </Card>
+        </Col>
+        <Col xs="12" lg="5">
+        <h1 className="mb-3 ">معلومات التوصيل<img src={deliverySrc}  style={{ width: "30px"  , marginRight : "10px"}}></img></h1>
+          <Card className="container shadow text-right p-4 ">
+          <Row>
+              <Col>
+                <h3>{userData.name}</h3>
+              </Col>
+              <Col>
+                <p>
+                  <i className="fa-solid fa-phone text-success ml-2"></i>
+                  {userData.phone}
+                </p>
+              </Col>
+            </Row>
             
-          }, []);
-          const calculateTotalPrice = (cartData) => {
-            let total = 0;
-            cartData.forEach((item) => {
-              total += item.quantity * item.product_id.price;
-            });
-            setTotalPrice(total);
-          };
-          const handlePlaceOrder = async () => {
-            try {
-              
-                const orderData = {
-                    address_id:selectedAddress,
-                    
-                  };
-              await axiosInstance.post("/orders", orderData);
-              console.log(orderData);
-              Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "success");
-              // Redirect to the orders page
-              
-            } catch (error) {
-              console.log(error.message);
-              Swal.fire("عذرا", " حدث خطأ برجاء المحاولة مرة أخرى.", "error");
-            }
-          };
-          const handleAddressSelect = (event) => {
-            const selectedValue = event.target.value;
-            setSelectedAddress(selectedValue);
-          
-            // Use the selectedValue as needed
-            console.log(selectedValue);
-            // You can pass the selectedValue to any function or perform any other logic here
-          };    
-    return (
-      <Container className="mt-4">
-        <Row>
-        <Col lg="8" md="8" xs="12">
-            <h1 className="mb-3">معلومات التوصيل</h1>
-            <Card className="shadow p-3">
-              <Row>
-                <Col>
-                  <h3>{userData.name}</h3>
-                </Col>
-              </Row>
-              {/* <Row>
-                <Col>
-                  <p>المنطقة: {addressData.area}</p>
-                </Col>
-                <Col>
-                  <p>المدينة: {addressData.city}</p>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <p>المحافظة: {addressData.governorate}</p>
-                </Col>
-                <Col>
-                  <p>الدولة: {addressData.country}</p>
-                </Col>
-              </Row> */}
-              <Row>
-                <Col>
-                <p><i className="fa-solid fa-phone text-success ml-2"></i>{userData.phone}</p> 
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <hr></hr>
-                  <p>اختيار العنوان</p>
-                  <Input
-                      type="select"
-                      name="address"
-                      id="address"
-                      value={selectedAddress}
-                      onChange={handleAddressSelect}
-                      className="mb-3"
-                    >
-                      <option value="">اختر العنوان</option>
-                      {userAddresses.length > 0 ? (
-                        userAddresses.map((address) => (
-                          <option key={address._id} value={address._id}>
-                            {address.area}, {address.city}, {address.governorate}, {address.country}
-                          </option>
-                        ))
-                      ) : (
-                        <option disabled> لا يوجد عنوان </option>
-                      )}
-                  </Input>
-                </Col>
-              </Row>
-              <Row>
+            <Row>
+              <Col>
+                <p>اختيار العنوان</p>
+                <Input
+                  type="select"
+                  name="address"
+                  id="address"
+                  value={selectedAddress}
+                  onChange={handleAddressSelect}
+                  className="mb-3"
+                >
+                  <option value="">اختر العنوان</option>
+                  {userAddresses.length > 0 ? (
+                    userAddresses.map((address) => (
+                      <option key={address._id} value={address._id}>
+                        {address.area}, {address.city}, {address.governorate},{" "}
+                        {address.country}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled> لا يوجد عنوان </option>
+                  )}
+                </Input>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="4">
+                <p> طريقة الدفع :</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <div className="d-flex">
+                  <input
+                    type="radio"
+                    id="Cash"
+                    name="payment_method"
+                    value="Cash"
+                    onChange={handlePaymentMethodChange}
+                  />
 
-              </Row>
-            </Card>
-          </Col>
-          <Col xs="12" lg="4">
-            <h1 className="mb-3">معلومات الدفع </h1>
-            <Card className="container shadow text-right p-4 ">
-              <Row>
-                <Col xs="5">
-                <h4>طريقة الدفع :</h4>
-                </Col>
-                <Col  xs="7">
-                <p><i className="fa-solid fa-money-bill text-success ml-2"></i>كاش عند الاستلام</p>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <h2>السعر الكلى:</h2>
-                </Col>
-                <Col>
-                  <h2>{totalPrice}$</h2>
-                </Col>
-              </Row>
-              <Row>
-                
-              </Row> 
-              <Row>
-                  <Button className="btn btn-success w-100" onClick={handlePlaceOrder}>
-                      اتمام الشراء
-                  </Button>
-              </Row>
-            </Card>
-          </Col>
-          
-        </Row>
-        <Row>
-          <Col xs="12">
-          <h1 className="mb-3 mt-3">مراجعة الطلب </h1>
-            <Card className="container shadow text-right p-4">
-             {cartData?.map((product) => (
-                                    <div key={product.product_id._id}>
-                                        <Row>
-                                            <Col xs="6" lg="3">
-                                                <img src={product.product_id.image} alt="Product" style={{ width: "100%", height: "100%" }} />
-                                            </Col>
-                                            <Col xs="6" lg="7" className="text-right">
-                                                {/*<p>{product.product_id._id}</p>*/}
-                                                <p> اسم المنتج: {product.product_id.name.ar}</p>
-                                                <p>الكمية: {product.quantity}</p>
-                                                <p> سعر الوحدة: {product.product_id.price.toFixed(2)}$</p>
-                                                <p>السعر الكلي: {(product.quantity * product.product_id.price).toFixed(2)}$</p>
-                                            </Col>
-                                            
-                                        </Row>
-                                        <hr />
-                                    </div>
-             ))}
-            </Card>
-          </Col>
-        </Row>
-        
-      </Container>
-    );
-}
+                  <label htmlFor="Cash">
+                    <i className="fa-solid fa-money-bill text-success m-3"></i>
+                    كاش عند الاستلام
+                  </label>
+                </div>
+                </Col><Col>
+                <div className="d-flex">
+                  <input
+                    type="radio"
+                    id="Credit Card"
+                    name="payment_method"
+                    value="Credit Card"
+                    onChange={handlePaymentMethodChange}
+                  />
+                  <label htmlFor="Credit Card" className="mr-2">
+                    <img src={VisaSrc} style={{ width: "40px" }}></img>بطاقة
+                    الائتمان
+                  </label>
+                </div>
+              </Col>
+            </Row>
+            <hr></hr>
+            <Row>
+            
+              <Col className="d-flex text-center">
+                <h2>السعر الكلى: </h2>
+                <h2>{totalPrice}$</h2>
+              </Col>
+            </Row>
+            
+            <Row>
+              <Button
+                className="btn  w-100"
+                onClick={handlePlaceOrder}
+                style={{backgroundColor:"orange" ,color:"#fff"}}
+              >
+                اتمام الشراء
+              </Button>
+            </Row>
+          </Card>
+        </Col>
+      </Row>
+      <Row>
+       
+      </Row>
+    </Container>
+  );
+};
 
 export default Checkout;

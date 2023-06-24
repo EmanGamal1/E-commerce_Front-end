@@ -87,3 +87,6 @@ body {
 .btn-login:hover {
     color: rgb(206, 204, 204);
 }
+.filter-sub{
+    font-size: 1rem !important;
+}

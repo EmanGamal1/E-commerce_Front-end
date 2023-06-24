@@ -34,7 +34,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Link to="/home">Go to website</Link>
+              <Link to="/">Go to website</Link>
             </a>
           </div>
         </Col>

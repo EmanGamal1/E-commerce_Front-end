@@ -5,7 +5,7 @@ export const AllCategoriesHook = () => {
   const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
-  const getAllCategories = (page = 1, limit = 5) => {
+  const getAllCategories = (page = 1, limit = 1000) => {
     axiosInstance
       .get(`categories?page=${page}&limit=${limit}`)
       .then((categories) => {

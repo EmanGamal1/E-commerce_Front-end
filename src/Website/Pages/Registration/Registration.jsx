@@ -14,7 +14,7 @@ const Registration = () => {
   const RegistrationURL = "register";
   useEffect(() => {
     const user = localStorage.getItem("user");
-    if (user) navigate("/home");
+    if (user) navigate("/");
   }, []);
 
   const formik = useFormik({
@@ -90,7 +90,7 @@ const Registration = () => {
           });
           localStorage.setItem("token", res.data.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.data.user));
-          navigate("/home");
+          navigate("/");
         })
         .catch((err) => {
           console.log(err);
@@ -111,7 +111,7 @@ const Registration = () => {
   };
   return (
     <>
-      <NavBar />
+      {/*<NavBar />*/}
       <Container style={{ minHeight: "680px" }}>
         <Row className="py-5 d-flex justify-content-center hieght-search">
           <Col sm="12" className="d-flex flex-column ">
@@ -312,7 +312,7 @@ const Registration = () => {
           </Col>
         </Row>
       </Container>
-      <FooterSite />
+      {/*<FooterSite />*/}
     </>
   );
 };

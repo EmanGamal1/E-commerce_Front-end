@@ -11,6 +11,11 @@ import addressIMG from '../../../../Website/Assests/travel.png';
 const AddressEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const user = localStorage.getItem('user');
+  
+  if(!user){
+    navigate("/login");
+  }
 
   useEffect(() => {
     const fetchOldValues = async () => {
@@ -78,7 +83,7 @@ const AddressEdit = () => {
             <CardBody>
               <Card>
                 <CardBody className="row addressEditForm">
-                  <form className="form col-6" onSubmit={formik.handleSubmit}>
+                  <form className="form col-lg-6 col-md-6 col-xs-12" onSubmit={formik.handleSubmit}>
                     <input
                       className="form-control w-75 mb-3"
                       placeholder="المنطقــة"

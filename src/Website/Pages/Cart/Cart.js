@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { axiosInstance } from "Axios.js";
 import Swal from "sweetalert2";
 import { Container, Row, Card, CardBody, Col, CardHeader } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import imageSrc from "../../Assets/img/OIUFKQ0.jpg";
+import removeSrc from "../../Assets/img/remove (1).png";
+import quantitySrc from "../../Assets/img/product.png";
+
 import handleErrors from "../../../Errors";
 const Cart = () => {
   const [cartData, setCartData] = useState([]);
@@ -12,6 +15,12 @@ const Cart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   // Other necessary state variables
   // ...
+  const user = localStorage.getItem('user');
+  const navigate = useNavigate();
+  
+  if(!user){
+    navigate("/login");
+  }
 
   const convertCurrency = (currency) => {
     return Intl.NumberFormat("ar-EG", {
@@ -27,8 +36,7 @@ const Cart = () => {
       });
       fetchCartData();
       Swal.fire({
-        icon: "success",
-        title: "تم تحديث الكمية",
+        html: `<p>تم تحديث الكمية </p><img src="${quantitySrc}" alt="Success Image" style="width: 100px; height: 100px;">`,
         showConfirmButton: false,
         timer: 1500,
       });
@@ -78,8 +86,7 @@ const Cart = () => {
       });
       fetchCartData();
       Swal.fire({
-        icon: "success",
-        title: "تم حذف المنتج من العربة",
+        html: `<p>تم حذف المنتج بنجاح ! </p><img src="${removeSrc}" alt="Success Image" style="width: 100px; height: 100px;">`,
         showConfirmButton: false,
         timer: 1500,
       });
@@ -106,7 +113,7 @@ const Cart = () => {
                     </h3>
                   </Link>
                 ) : (
-                  <Link to={`/home`}>
+                  <Link to={`/`}>
                     <h3 className={"text-light btn btn-primary"}>
                       تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
                     </h3>
@@ -198,7 +205,7 @@ const Cart = () => {
                         style={{ width: "250px", height: "250px" }}
                       />
 
-                      {/*<Link to={`/home`}>
+                      {/*<Link to={`/`}>
                         <h3 className={"text-light btn btn-primary"}>
                           تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
                         </h3>
@@ -215,7 +222,7 @@ const Cart = () => {
                         </h3>
                       </Link>
                     ) : (
-                      <Link to={`/home`}>
+                      <Link to={`/`}>
                         <h3 className={"text-light"}>
                           تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
                         </h3>

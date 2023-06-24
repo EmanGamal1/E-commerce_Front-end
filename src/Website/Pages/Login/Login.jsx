@@ -40,7 +40,7 @@ const Login = () => {
         .then((res) => {
           localStorage.setItem("token", res.data.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.data.user));
-          navigate("/home");
+          navigate("/");
         })
         .catch((err) => {
           console.log(err);
@@ -56,11 +56,10 @@ const Login = () => {
   });
   useEffect(() => {
     const user = localStorage.getItem("user");
-    if (user) navigate("/home");
+    if (user){ navigate("/");}
   }, []);
   return (
     <>
-      <NavBar />
       <Container style={{ minHeight: "690px" }}>
         <Row className="py-5 d-flex justify-content-center ">
           <Col sm="12" className="d-flex flex-column ">
@@ -122,7 +121,7 @@ const Login = () => {
           </Col>
         </Row>
       </Container>
-      <FooterSite />
+      {/*<FooterSite />*/}
     </>
   );
 };

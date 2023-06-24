@@ -1,0 +1,21 @@
+/* CSS */
+.radio-input {
+    /* Hide the default radio input */
+    display: none;
+  }
+  
+  /* Style the custom radio button */
+  .custom-radio {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  /* Style the checked custom radio button */
+  .custom-radio:checked {
+    background-color: #ccc;
+  }
+  

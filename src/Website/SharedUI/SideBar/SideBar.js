@@ -10,7 +10,7 @@ const SideBar = () => {
     try {
       await axiosInstance.delete("/logout");
       localStorage.removeItem("token");
-      navigate("/auth/login");
+      navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
     }

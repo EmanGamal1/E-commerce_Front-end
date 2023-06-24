@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import ProtectedRouteHook from "../../hook/auth/ProtectedRouteHook";
+import AddedSrc from "../../Assets/img/shopping-cart (1).png"
+import outOfStock from "../../Assets/img/out-of-stock.png"
 
 export const ProductsCard = ({ item }) => {
   const [quantity, setQuantity] = useState(1);
@@ -31,8 +33,9 @@ export const ProductsCard = ({ item }) => {
 
   const showSuccessAlert = () => {
     Swal.fire({
-      icon: "success",
-      title: "تمت إضافة المنتج لعربة التسـوق",
+    
+      html: `<p>تمت الاضافة الى عربة التسوق </p><img src="${AddedSrc}" alt="Success Image" style="width: 100px; height: 100px;">`,
+  
       showConfirmButton: false,
       timer: 1500,
     });
@@ -40,8 +43,7 @@ export const ProductsCard = ({ item }) => {
 
   const showFailureAlert = () => {
     Swal.fire({
-      icon: "error",
-      title: "الكميـة المتاحة لدينا لا تكفـي",
+      html: `<p>عذرا هذ المنتج غير متوفر حاليا </p><img src="${outOfStock}" alt="error Image" style="width: 100px; height: 100px;">`,
       showConfirmButton: false,
       timer: 1500,
     });
@@ -49,12 +51,12 @@ export const ProductsCard = ({ item }) => {
 
   return (
     <>
-      <Col xs="6" sm="6" md="4" lg="3" className="d-flex">
+      <Col xs="12" sm="6" md="4" lg="3" className="d-flex">
         <Card
           className="my-2"
           style={{
+            display: "flex",
             width: "100%",
-            height: "365px",
             borderRadius: "8px",
             border: "none",
             backgroundColor: "#FFFFFF",
@@ -85,7 +87,6 @@ export const ProductsCard = ({ item }) => {
                     onClick={addToCart}
                   >
                     <FontAwesomeIcon icon={faCartPlus} className="mx-1" />
-                    إضافة إلي العربة
                   </button>
                 )}
               </div>

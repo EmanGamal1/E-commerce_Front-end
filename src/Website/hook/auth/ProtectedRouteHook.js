@@ -7,26 +7,22 @@ const ProtectedRouteHook = () => {
   const [adminData, setAdminData] = useState(
     JSON.parse(localStorage.getItem("admin-user"))
   );
-  const [isUser, setIsUser] = useState();
-  const [isAdmin, setIsAdmin] = useState();
-  const [isGuest, setIsGuest] = useState();
+  const [isUser, setIsUser] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
 
   useEffect(() => {
     if (userData != null) {
       setIsUser(true);
-      setIsAdmin(false);
-      setIsGuest(false);
     }
     if (adminData != null) {
       setIsAdmin(true);
-      setIsGuest(false);
     }
     if (userData === null && adminData === null) {
       setIsGuest(true);
-      setIsAdmin(false);
-      setIsUser(false);
     }
   }, []);
+
   return [isUser, isAdmin, isGuest, userData];
 };
 

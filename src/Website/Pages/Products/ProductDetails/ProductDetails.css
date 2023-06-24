@@ -71,8 +71,19 @@
     font-size: 35px;
 }
 
-@media (width:567px){
-    .productImage{
-        width: 150px;
+@media screen and (max-width: 768px) {
+    .productGallery {
+      width: 100px;
+      height: 100px;
     }
-}
+    
+    .productImage {
+      width: 290px;
+      height: 350px;
+    }
+    
+    .details {
+      margin: auto;
+      max-width: 80%;
+    }
+  }

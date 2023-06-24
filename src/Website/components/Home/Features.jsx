@@ -12,8 +12,8 @@ export const Features = () => {
     <>
       <Container className="mt-4">
         <Row>
-          <Col xs="3">
-            <div className="bg-secondary p-2 d-flex features-card">
+          <Col lg="3" xs="6">
+            <div className="bg-secondary p-2 d-flex features-card" style={{minHeight:"120px"}}>
               <div className="align-self-center mx-4">
                 <FontAwesomeIcon icon={faTruck} size="2xl" color="#fd4b6b" />
               </div>
@@ -25,8 +25,8 @@ export const Features = () => {
               </div>
             </div>
           </Col>
-          <Col xs="3">
-            <div className="bg-secondary p-2 d-flex features-card">
+          <Col lg="3" xs="6">
+            <div className="bg-secondary p-2 d-flex features-card" style={{minHeight:"120px"}}>
               <div className="align-self-center mx-4">
                 <FontAwesomeIcon
                   icon={faDollarSign}
@@ -40,8 +40,8 @@ export const Features = () => {
               </div>
             </div>
           </Col>
-          <Col xs="3">
-            <div className="bg-secondary p-2 d-flex features-card">
+          <Col lg="3" xs="6">
+            <div className="bg-secondary p-2 d-flex features-card" style={{minHeight:"120px"}}>
               <div className="align-self-center mx-4">
                 <FontAwesomeIcon
                   icon={faHeadphones}
@@ -55,8 +55,8 @@ export const Features = () => {
               </div>
             </div>
           </Col>
-          <Col xs="3">
-            <div className="bg-secondary p-2 d-flex features-card">
+          <Col lg="3" xs="6">
+            <div className="bg-secondary p-2 d-flex features-card" style={{minHeight:"120px"}}>
               <div className="align-self-center mx-4">
                 <FontAwesomeIcon icon={faPercent} size="2xl" color="#fd4b6b" />
               </div>

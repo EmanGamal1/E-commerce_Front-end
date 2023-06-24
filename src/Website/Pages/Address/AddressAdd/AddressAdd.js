@@ -11,7 +11,11 @@ import './AddressAdd.css';
 const Address = () => {
   const [addresses, setAddresses] = useState([]);
   const navigate = useNavigate();
-
+  const user = localStorage.getItem('user');
+  
+  if(!user){
+    navigate("/login");
+  }
   useEffect(() => {
     axiosInstance
       .get("profile/address")
@@ -74,7 +78,7 @@ const Address = () => {
             <CardBody>
               <Card>
                 <CardBody className="row addressAddForm">
-                  <form className="form col-6" onSubmit={formik.handleSubmit}>
+                  <form className="form col-lg-6 col-md-6 col-xs-6" onSubmit={formik.handleSubmit}>
                     <input
                       className="form-control w-75 mb-3"
                       placeholder="المنطقــة"
@@ -126,7 +130,7 @@ const Address = () => {
                       disabled={formik.isSubmitting}
                     />
                   </form>
-                  <div className="col-6">
+                  <div className="col-lg-6 col-md-6">
                     <img src={addressIMG} alt="address" className="addressIMG" />
                   </div>
                 </CardBody>

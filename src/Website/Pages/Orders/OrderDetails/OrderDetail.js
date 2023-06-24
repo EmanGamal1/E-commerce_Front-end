@@ -1,11 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardBody, CardFooter, Container, Col, Row, Navbar, Table, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input , Responsive } from "reactstrap";
-import { useParams } from "react-router-dom";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Container,
+  Col,
+  Row,
+  Navbar,
+  Table,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  FormGroup,
+  Label,
+  Input,
+} from "reactstrap";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { axiosInstance } from "Axios.js";
 import "./OrderDetail";
-import Swal from 'sweetalert2';
-
+import Swal from "sweetalert2";
+import { FaMarsDouble } from "react-icons/fa";
+import VisaSrc from "../../../Assets/img/visa.png";
 
 const OrderDetail = () => {
   const { id } = useParams();
@@ -16,8 +35,14 @@ const OrderDetail = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState([]);
   const [userAddresses, setUserAddresses] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const user = localStorage.getItem("user");
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
     axiosInstance
       .get(`/orders/${id}`)
       .then((res) => {
@@ -26,27 +51,24 @@ const OrderDetail = () => {
         fetchProductData(res.data.data.products);
         const updatedOrderData = res.data.data;
         setPaymentStatus(updatedOrderData.payment_status);
-        
       })
       .catch((err) => {
         console.log(err.message);
       });
 
-      const fetchUserData = async () => {
-        try {
-          const response = await axiosInstance.get("/profile");
-          setUserData(response.data.data);
-          setUserAddresses(response.data.data.address);
-          console.log(response.data.data.address);
-        } catch (error) {
-          console.log(error.message);
-          // Handle error
-        }
-      };
-      fetchUserData();
-
+    const fetchUserData = async () => {
+      try {
+        const response = await axiosInstance.get("/profile");
+        setUserData(response.data.data);
+        setUserAddresses(response.data.data.address);
+        console.log(response.data.data.address);
+      } catch (error) {
+        console.log(error.message);
+        // Handle error
+      }
+    };
+    fetchUserData();
   }, [id]);
-  
 
   const fetchProductData = async (products) => {
     const productId = products.map((product) => product.id);
@@ -61,8 +83,6 @@ const OrderDetail = () => {
     });
     setProductData(productDataWithImage);
   };
-  
- 
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -82,60 +102,63 @@ const OrderDetail = () => {
   const handleStatusChange = async () => {
     try {
       const { value } = await Swal.fire({
-        title: 'هل انت متأكد?',
+        title: "هل انت متأكد?",
         text: `هل تريد ${
-          orderdata.status === 'Completed' ? 'اعادة شراء': 'الغاء'
+          orderdata.status === "Completed" ? "اعادة شراء" : "الغاء"
         } هذا الطلب?`,
-        icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "نعم",
+        cancelButtonText: "لا",
       });
-  
+
       if (value) {
-        if (orderdata.status === 'Completed') {
+        if (orderdata.status === "Completed") {
           // Update order status to 'Pending'
-          await axiosInstance.post(`/orders/${orderdata._id}/reorder`, { status: 'Pending' });
-          setOrderData((prevOrderData) => ({ ...prevOrderData, status: 'Pending' }));
-          Swal.fire('تم الطلب!', 'تمت اعادة الطلب بنجاح', 'success');
-        }  if (orderdata.status === 'Pending') {
+          await axiosInstance.post(`/orders/${orderdata._id}/reorder`, {
+            status: "Pending",
+          });
+          setOrderData((prevOrderData) => ({
+            ...prevOrderData,
+            status: "Pending",
+          }));
+          Swal.fire("تم الطلب!", "تمت اعادة الطلب بنجاح", "success");
+        }
+        if (orderdata.status === "Pending") {
           // Update order status to 'Cancelled'
-          await axiosInstance.delete(`/orders/${orderdata._id}`, { status: 'Cancelled' });
-          setOrderData((prevOrderData) => ({ ...prevOrderData, status: 'Cancelled' }));
-          Swal.fire('تم الغاء الطلب بنجاح', 'success');
+          await axiosInstance.delete(`/orders/${orderdata._id}`, {
+            status: "Cancelled",
+          });
+          setOrderData((prevOrderData) => ({
+            ...prevOrderData,
+            status: "Cancelled",
+          }));
+          Swal.fire("تم الغاء الطلب بنجاح", "success");
         }
       }
     } catch (error) {
       console.log(error);
-      Swal.fire('عذرا', 'لقد حدث خطأ ما ', 'error');
+      Swal.fire("عذرا", "لقد حدث خطأ ما ", "error");
     }
   };
-  
+
   const renderCancelButton = () => {
-    if (orderdata.status === 'Completed') {
+    if (orderdata.status === "Completed") {
       return (
-        <Button
-          onClick={handleReorder}
-          className="btn-success btn "
-          
-        >
+        <Button onClick={handleReorder} className="btn-success btn ">
           اعادة الشراء
         </Button>
       );
-    } else if (orderdata.status === 'Pending') {
+    } else if (orderdata.status === "Pending") {
       return (
-        <Button
-          onClick={handleStatusChange}
-          className="btn-danger btn "
-        >
+        <Button onClick={handleStatusChange} className="btn-danger btn ">
           الغاء الطلب
         </Button>
       );
     }
   };
-  
+
   const handleReorder = () => {
     setModalOpen(true);
   };
@@ -145,38 +168,58 @@ const OrderDetail = () => {
   };
 
   const handleAddressSelect = (event) => {
-  const selectedValue = event.target.value;
-  setSelectedAddress(selectedValue);
+    const selectedValue = event.target.value;
+    setSelectedAddress(selectedValue);
 
-  // Use the selectedValue as needed
-  console.log(selectedValue);
-  // You can pass the selectedValue to any function or perform any other logic here
+    // Use the selectedValue as needed
+    console.log(selectedValue);
+    // You can pass the selectedValue to any function or perform any other logic here
+  };
+  const handlePaymentMethodChange = (event) => {
+    const selectedValue = event.target.value;
+    setPaymentMethod(selectedValue);
+    console.log(selectedValue);
 };
 
   const handleReorderConfirm = async () => {
     try {
-      const response = await axiosInstance.post(`/orders/${orderdata._id}/reorder`, {
+      const orderData = {
         address_id: selectedAddress,
-        
-      });
-      console.log(response);
-      if (response.data.status === "success") {
+        payment_method: paymentMethod,
+      };
+  
+      if (paymentMethod === "Credit Card") {
         Swal.fire({
-          title: 'Success!',
-          text: 'Order has been placed successfully.',
-          icon: 'success',
+          title: "تم الطلب!",
+          text: "اتمام اجراءات الدفع !",
+          icon: "success",
+          showCancelButton: true,
+          confirmButtonText: "الدفع الآن",
+          cancelButtonText: "إغلاق",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            axiosInstance.post( `/orders/${orderdata._id}/reorder`, orderData)
+              .then((response) => {
+                const paymentUrl = response.data.data.payment_url;
+                window.location.href = paymentUrl;
+              })
+              .catch((error) => {
+                console.log(error.message);
+                Swal.fire("عذرا", "حدث خطأ برجاء المحاولة مرة أخرى.", "error");
+              });
+          }
         });
-        setModalOpen(false);
+      } else {
+        await axiosInstance.post( `/orders/${orderdata._id}/reorder`, orderData);
+        Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "success");
       }
     } catch (error) {
-      Swal.fire({
-        title: 'Error!',
-        text: 'Failed to place the order. Please try again.',
-        icon: 'error',
-      });
+      console.log(error.message);
+      Swal.fire("عذرا", "حدث خطأ برجاء المحاولة مرة أخرى.", "error");
     }
   };
   
+     
 
   return (
     <>
@@ -189,52 +232,63 @@ const OrderDetail = () => {
               <Card className="shadow">
                 <CardHeader className="border-0 ">
                   <div className="d-flex justify-content-around">
-                  <h1 className="mb-0">تفاصيل الطلب</h1>
-                  <Link to={`/orders`}>
-                        <h3>الرجوع الى الطلبات<i className="fa fa-arrow-left mr-3"></i></h3>
-                  </Link>
+                    <h1 className="mb-0">تفاصيل الطلب</h1>
+                    <Link to={`/orders`}>
+                      <h3>
+                        الرجوع الى الطلبات
+                        <i className="fa fa-arrow-left mr-3"></i>
+                      </h3>
+                    </Link>
                   </div>
-                  <div >
-                   
-                  </div>
+                  <div></div>
                 </CardHeader>
                 <div className="container">
                   <CardBody className="border-0 shadow">
                     <Row className="text-center">
-                    {/* <Col  className=" d-flex justify-content-around">
+                      {/* <Col  className=" d-flex justify-content-around">
                     <p>
                       رقم الطلب :  <b>{orderdata._id}</b>
                     </p>
                     </Col> */}
-                    <Col xs="12" md="6"  lg="6">
-                    <p>
-                        تم الطلب يوم{" "}
-                        {new Date(orderdata.createdAt).toLocaleDateString("ar", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                        })}
-                    </p>
-                    </Col>
-                    <Col xs="12" md="6"  lg="6">
-                    <h3 className={getStatusColor(orderdata.status)}>{orderdata.status}</h3>
-                    </Col>
+                      <Col xs="12" md="6" lg="6">
+                        <p>
+                          تم الطلب يوم{" "}
+                          {new Date(orderdata.createdAt).toLocaleDateString(
+                            "ar",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )}
+                        </p>
+                      </Col>
+                      <Col xs="12" md="6" lg="6">
+                        <h3 className={getStatusColor(orderdata.status)}>
+                          {orderdata.status}
+                        </h3>
+                      </Col>
                     </Row>
-                    
+
                     <div>
-                      <h2 >المنتجات المطلوبة</h2>
+                      <h2>المنتجات المطلوبة</h2>
                       {orderdata.products?.map((product) => (
                         <div key={product.product_id}>
                           <Row>
-                            <Col xs="12" md="6"  lg="3" className="mt-3">
-                            <img
-                              src={product.image}
-                              alt="Product"
-                              style={{ width: "100%", height: "100%" }}
-                            />
+                            <Col xs="12" md="6" lg="3" className="mt-3">
+                              <img
+                                src={product.image}
+                                alt="Product"
+                                style={{ width: "100%", height: "100%" }}
+                              />
                             </Col>
-                            <Col xs="12" md="6"  lg="9"  className="text-right mt-3">
-                              <p style={{color:"blue"}}>معلومات المنتج : </p>
+                            <Col
+                              xs="12"
+                              md="6"
+                              lg="9"
+                              className="text-right mt-3"
+                            >
+                              <p style={{ color: "blue" }}>معلومات المنتج : </p>
                               <p>{product.product_id}</p>
                               <p>{product.name_ar}</p>
                               <p>الكمية: {product.quantity}</p>
@@ -252,41 +306,69 @@ const OrderDetail = () => {
                           <Card className="shadow">
                             <CardHeader>
                               <div className="d-flex justify-content-between">
-                               <h2><i className="fa fa-sack-dollar ml-3 text-warning"></i >فاتورة الطلب   </h2> 
-                               <h4> حالة الدفع :  {paymentStatus === 'Pending' ? (
+                                <h2>
+                                  <i className="fa fa-sack-dollar ml-3 text-warning"></i>
+                                  فاتورة الطلب{" "}
+                                </h2>
+                                <h4>
+                                  {" "}
+                                  حالة الدفع :{" "}
+                                  {paymentStatus === "Pending" ? (
                                     <button
                                       className="btn btn-warning"
-                                      disabled={paymentStatus === 'Completed'}
-                                      
+                                      disabled={paymentStatus === "Completed"}
                                     >
                                       {paymentStatus}
                                     </button>
                                   ) : (
-                                    <button className="btn btn-success" disabled>
+                                    <button
+                                      className="btn btn-success"
+                                      disabled
+                                    >
                                       {paymentStatus}
                                     </button>
-                                  )}</h4>
-                                  </div>
+                                  )}
+                                </h4>
+                              </div>
                             </CardHeader>
                             <CardBody>
                               <Row>
                                 <Col>
-                                  {/* <h4>
-                                    Total Price: <b>{orderdata.total_price}$</b>
-                                  </h4> */}
-                                  <p>
-                                  <span  style={{ fontWeight: 'bold' }}> طريقة الدفع : </span><i className="fa fa-wallet m-3 text-success"></i>الدفع نقدا عند الاستلام
+                                
+                                 {orderdata.payment_method === "Credit Card" ? (
+                                      <div>
+                                        <p>
+                                          <span style={{ fontWeight: "bold" }}>طريقة الدفع:</span>{" "}
+                                          <i className="fa fa-credit-card m-3 text-success"></i>
+                                          بطاقة الائتمان
+                                        </p>
+                                        <p>
+                                    <span style={{ fontWeight: "bold" }}>
+                                      {" "}
+                                      رقم الفاتورة:{" "}
+                                    </span>{" "}
+                                    <b>{orderdata.payment_id}</b>
                                   </p>
-                               
-                               
-                                  <p>
-                                  <span  style={{ fontWeight: 'bold' }}> رقم الفاتورة: </span> <b>{orderdata.payment_id}</b>
-                                  </p>
-                                  </Col>
+                                        <Button onClick={() => window.location.href = orderdata.payment_url} className="btn-warning">
+                                          فاتورة الدفع
+                                        </Button>
+                                      </div>
+                                    ) : (
+                                      <p>
+                                        <span style={{ fontWeight: "bold" }}>طريقة الدفع:</span>{" "}
+                                        <i className="fa fa-wallet m-3 text-success"></i>
+                                        كاش عند الاستلام
+                                      </p>
+                                    )}
+
+
+                                 
+                                  
+                                </Col>
                               </Row>
                               <Row>
                                 <Col xs="12" sm="12" md="12" lg="12" xl="12">
-                                  <Table striped style={{ fontSize: '22px' }}>
+                                  <Table striped style={{ fontSize: "22px" , marginTop:"20px"}}>
                                     <thead>
                                       <tr>
                                         <th>اسم المنتج</th>
@@ -308,13 +390,20 @@ const OrderDetail = () => {
                                 </Col>
                               </Row>
                               <Row>
-                                <Col className="text-center mt-3"><h2>الاجمالى :  <b>{orderdata.total_price}$</b></h2></Col>
+                                <Col className="text-center mt-3">
+                                  <h2>
+                                    الاجمالى : <b>{orderdata.total_price}$</b>
+                                  </h2>
+                                </Col>
                               </Row>
                             </CardBody>
                           </Card>
                           <Card className="mt-3 shadow">
                             <CardHeader>
-                               <h2><i className=" fa fa-truck  ml-3 text-danger"></i> عنوان التوصيل  </h2>
+                              <h2>
+                                <i className=" fa fa-truck  ml-3 text-danger"></i>{" "}
+                                عنوان التوصيل{" "}
+                              </h2>
                             </CardHeader>
                             <CardBody>
                               <Row>
@@ -324,7 +413,8 @@ const OrderDetail = () => {
                                       <h4>
                                         {orderdata.address.area}
                                         {orderdata.address.city},{" "}
-                                        {orderdata.address.governate} {orderdata.address.country}
+                                        {orderdata.address.governate}{" "}
+                                        {orderdata.address.country}
                                       </h4>
                                     </>
                                   ) : (
@@ -340,10 +430,7 @@ const OrderDetail = () => {
                     </div>
                   </CardBody>
                 </div>
-                <CardFooter>
-            
-            {renderCancelButton()}
-          </CardFooter>
+                <CardFooter>{renderCancelButton()}</CardFooter>
               </Card>
             )}
           </div>
@@ -352,27 +439,66 @@ const OrderDetail = () => {
       <Modal isOpen={modalOpen} toggle={handleModalClose}>
         <ModalHeader toggle={handleModalClose}>اختر عنوانًا</ModalHeader>
         <ModalBody>
-        <FormGroup>
-  <Label for="address">العنوان</Label>
-  <Input
-    type="select"
-    name="address"
-    id="address"
-    value={selectedAddress}
-    onChange={handleAddressSelect}
-  >
-    <option value="">اختر العنوان</option>
-    {userAddresses.length > 0 ? (
-      userAddresses.map((address) => (
-        <option key={address._id} value={address._id}>
-          {address.area}, {address.city}, {address.governorate}, {address.country}
-        </option>
-      ))
-    ) : (
-      <option disabled> لا يوجد عنوان </option>
-    )}
-  </Input>
-</FormGroup>
+          <FormGroup>
+            <Label for="address">العنوان</Label>
+            <Input
+              type="select"
+              name="address"
+              id="address"
+              value={selectedAddress}
+              onChange={handleAddressSelect}
+            >
+              <option value="">اختر العنوان</option>
+              {userAddresses.length > 0 ? (
+                userAddresses.map((address) => (
+                  <option key={address._id} value={address._id}>
+                    {address.area}, {address.city}, {address.governorate},{" "}
+                    {address.country}
+                  </option>
+                ))
+              ) : (
+                <option disabled> لا يوجد عنوان </option>
+              )}
+            </Input>
+          </FormGroup>
+          <Row>
+              <Col xs="4">
+                <p> طريقة الدفع :</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <div className="d-flex">
+                  <input
+                    type="radio"
+                    id="Cash"
+                    name="payment_method"
+                    value="Cash"
+                    onChange={handlePaymentMethodChange}
+                  />
+
+                  <label htmlFor="Cash">
+                    <i className="fa-solid fa-money-bill text-success m-3"></i>
+                    كاش عند الاستلام
+                  </label>
+                </div>
+                </Col><Col>
+                <div className="d-flex">
+                  <input
+                    type="radio"
+                    id="Credit Card"
+                    name="payment_method"
+                    value="Credit Card"
+                    onChange={handlePaymentMethodChange}
+                  />
+                  <label htmlFor="Credit Card" className="mr-2">
+                    <img src={VisaSrc} style={{ width: "40px" }}></img>بطاقة
+                    الائتمان
+                  </label>
+                </div>
+              </Col>
+            </Row>
+
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={handleReorderConfirm}>
@@ -383,7 +509,6 @@ const OrderDetail = () => {
           </Button>
         </ModalFooter>
       </Modal>
-      
     </>
   );
 };
