@@ -20,7 +20,7 @@ export const SideFilter = ({ updateCategory, updatePriceRange }) => {
     setPriceFrom(value.toString());
     updatePriceRange(value.toString(), priceTo);
   };
-  
+
   const handleChangePriceTo = (event) => {
     let value = parseInt(event.target.value, 10);
     value = isNaN(value) ? 0 : Math.max(0, value);
@@ -70,6 +70,7 @@ export const SideFilter = ({ updateCategory, updatePriceRange }) => {
               <div className="d-flex">
                 <p className="filter-sub my-2">من:</p>
                 <input
+                  min={0}
                   className="m-2 text-center form-control"
                   type="number"
                   style={{ width: "80px", height: "25px" }}
@@ -80,6 +81,7 @@ export const SideFilter = ({ updateCategory, updatePriceRange }) => {
               <div className="d-flex">
                 <p className="filter-sub my-2">إلـي:</p>
                 <input
+                  min={0}
                   className="m-2 text-center form-control"
                   type="number"
                   style={{ width: "80px", height: "25px" }}
