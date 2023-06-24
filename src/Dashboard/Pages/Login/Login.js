@@ -65,8 +65,8 @@ const Login = () => {
 
   return (
     <>
-      <div className={"row text-center mt-5"}>
-        <Card className="bg-secondary shadow border-0 col-lg-5 col-md-7 mx-auto">
+      <div className={"text-center"} style={{paddingTop:"10%"}}>
+        <Card className="bg-secondary shadow border-0 col-lg-5 col-md-7 m-auto">
           <CardBody className="px-lg-5 py-lg-5">
             <div className="text-center text-muted mb-4">
               <p ref={errRef} className="text-danger" aria-live="assertive">

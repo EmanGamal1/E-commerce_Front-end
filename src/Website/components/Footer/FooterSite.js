@@ -61,8 +61,8 @@ const FooterSite = () => {
                 {Array.isArray(footerData.social_media) &&
                   footerData.social_media.map((item, index) => (
                     <div key={index}>
-                      <a
-                        href={item.url}
+                    <a
+                      href={"https://" + item.url}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
