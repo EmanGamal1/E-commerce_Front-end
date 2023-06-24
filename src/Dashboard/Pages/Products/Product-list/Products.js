@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Tables from "../../../SharedUI/Table/Tables";
-import { axiosInstance } from "Axios.js";
+import { axiosDashboard } from "Axios.js";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Btn from "../../../SharedUI/Btn/Btn";
@@ -33,7 +33,7 @@ const Products = () => {
   }, [rows, page, search]);
 
   const fetch = () => {
-    axiosInstance
+    axiosDashboard
       .get(`${Product_URL}?page=${page}&limit=${rows}`, {
         params: {
           keyword: search,
@@ -74,7 +74,7 @@ const Products = () => {
   };
 
   const callApiToDelete = (id) => {
-    axiosInstance
+    axiosDashboard
       .delete(`${Product_URL}/${id}`)
       .then((response) => {
         // Update the component's state or perform any other necessary actions
@@ -88,7 +88,7 @@ const Products = () => {
       .catch((error) => handleErrors(error));
   };
   const handleActivate = async (userId) => {
-    await axiosInstance
+    await axiosDashboard
       .post(`${Product_URL}/${userId}/ban`)
       .then((res) => {
         // Update the user data
@@ -110,7 +110,7 @@ const Products = () => {
   };
 
   const handleDeactivate = async (userId) => {
-    await axiosInstance
+    await axiosDashboard
       .post(`${Product_URL}/${userId}/unban`)
       .then((res) => {
         // Update the user data

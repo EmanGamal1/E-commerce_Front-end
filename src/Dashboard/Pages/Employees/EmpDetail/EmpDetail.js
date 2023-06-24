@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "../../../Assets/css/project.css";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import handleErrors from "../../../../Errors";
 
 const EmpDetails = () => {
@@ -24,7 +24,7 @@ const EmpDetails = () => {
   const [empdata, setEmpData] = useState({});
 
   useEffect(() => {
-    axiosInstance
+    axiosDashboard
       .get(`/api/v1/employees/${id}`)
       .then((res) => {
         setEmpData(res.data.data);

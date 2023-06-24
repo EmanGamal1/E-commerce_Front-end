@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import Btn from "Dashboard/SharedUI/Btn/Btn";
 import Tables from "./../../../SharedUI/Table/Tables";
 import { Link } from "react-router-dom";
@@ -42,7 +42,7 @@ const Roles = () => {
 
   const fetch = async () => {
     try {
-      const response = await axiosInstance.get(
+      const response = await axiosDashboard.get(
         `/api/v1/roles?page=${page}&limit=${rows}`,
         {
           params: {
@@ -66,7 +66,7 @@ const Roles = () => {
   };
 
   const handleActivate = async (userId) => {
-    await axiosInstance
+    await axiosDashboard
       .post(`/api/v1/roles/${userId}/ban`)
       .then((res) => {
         // Update the user data
@@ -90,7 +90,7 @@ const Roles = () => {
   };
 
   const handleDeactivate = async (userId) => {
-    await axiosInstance
+    await axiosDashboard
       .post(`/api/v1/roles/${userId}/unban`)
       .then((res) => {
         // Update the user data
@@ -125,7 +125,7 @@ const Roles = () => {
       });
 
       if (result.isConfirmed) {
-        await axiosInstance.delete(`/api/v1/roles/${id}`);
+        await axiosDashboard.delete(`/api/v1/roles/${id}`);
         setRoles((prevRoles) => prevRoles.filter((role) => role._id !== id));
         Swal.fire("Deleted!", "The role has been deleted.", "success");
       }

@@ -2,7 +2,7 @@ import Btn from "Dashboard/SharedUI/Btn/Btn";
 import { useState, useEffect } from "react";
 import { Card, CardBody, CardFooter, CardHeader } from "reactstrap";
 import EditContactUs from "./../EditContactUs/EditContactUs";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 
 const ContactUs = () => {
   const [showEditCard, setShowEditCard] = useState(false);
@@ -13,7 +13,7 @@ const ContactUs = () => {
   });
 
   const fetchContactUsData = async () => {
-    await axiosInstance
+    await axiosDashboard
       .get("/api/v1/settings")
       .then((res) => {
         setContactUsData(res.data.data);

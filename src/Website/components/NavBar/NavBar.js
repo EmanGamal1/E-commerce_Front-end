@@ -20,12 +20,12 @@ const NavBar = () => {
     fetchProfileData();
     document.addEventListener("click", handleOutsideClickNav);
     return () => {
-    document.addEventListener("click", handleOutsideClickNav);
+      document.addEventListener("click", handleOutsideClickNav);
     };
-  }, []);
-
+  }, [navbarData, profileData]);
+  
   const fetchInfo = () => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem("token");
     setIsLoggedIn(!!user);
     axiosInstance
       .get("/info")
@@ -38,15 +38,19 @@ const NavBar = () => {
   };
 
   const fetchProfileData = () => {
-    axiosInstance
-      .get("/profile")
-      .then((response) => {
-        setProfileData(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // axiosInstance
+    //   .get("/profile")
+    //   .then((response) => {
+    //     setProfileData(response.data.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+    // const userData =localStorage.getItem("user");
+    // setProfileData(userData);
   };
+
+  const userName = JSON.parse(localStorage.getItem("user"));
   
   const hideNavbar = () => {
     setShowNavbar(false);
@@ -114,22 +118,7 @@ const NavBar = () => {
         </li> */}
       </ul>
       <div style={{ display: "flex", marginRight:"auto" }}>
-      {!isLoggedIn ? (
-        <ul className="navbar-nav mt--3">
-          <li className="nav-item">
-            <Link to="/login">
-              <FontAwesomeIcon icon={faUser} className="Icons" />
-              تسجيل الدخول
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/register">
-              <FontAwesomeIcon icon={faUser} className="Icons" />
-              حســـاب جديـد
-            </Link>
-          </li>
-        </ul>
-      ) : (
+      {isLoggedIn ? (
         <ul className="navbar-nav">
           <li className="nav-item">
             <Link to="/orders">طلباتـي</Link>
@@ -146,11 +135,11 @@ const NavBar = () => {
             <Link to="/profile">
             <li className="">
               <img
-                src={profileData.image}
+                src={userName.image}
                 className="navProfileImage"
                 alt="user profile img"
               />
-              <span className="col-6">{profileData.name}</span>
+              <span className="col-6">{userName.name}</span>
             </li>
             </Link>
             <li>
@@ -159,6 +148,21 @@ const NavBar = () => {
                  </p>
                 </li>           
          </ul>
+      ):(
+        <ul className="navbar-nav mt--3">
+          <li className="nav-item">
+            <Link to="/login">
+              <FontAwesomeIcon icon={faUser} className="Icons" />
+              تسجيل الدخول
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/register">
+              <FontAwesomeIcon icon={faUser} className="Icons" />
+              حســـاب جديـد
+            </Link>
+          </li>
+        </ul>
       )}
       </div>
       </div>

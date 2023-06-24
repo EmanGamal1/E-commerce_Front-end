@@ -11,7 +11,7 @@ export const Authentication = ({ children }) => {
   }, []);
   const setUserToken = useCallback((token) => {
     setToken(token);
-    localStorage.setItem("token", token);
+    localStorage.setItem("admin", token);
   }, []);
   return (
     <AuthContext.Provider value={{ user, setAuthUser, token, setUserToken }}>

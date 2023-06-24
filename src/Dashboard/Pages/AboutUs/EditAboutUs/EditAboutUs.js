@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import Btn from 'Dashboard/SharedUI/Btn/Btn';
-import { axiosInstance } from '../../../../Axios';
+import { axiosDashboard } from '../../../../Axios';
 import AboutUs from '../ShowAboutUs/ShowAboutUs';
 import MySwal from 'sweetalert2';
 
@@ -13,7 +13,7 @@ const EditAboutUs = ({ onUpdate }) => {
   useEffect(() => {
     const fetchTermsAndConditionsData = async () => {
       try {
-        const response = await axiosInstance.get("/api/v1/settings");
+        const response = await axiosDashboard.get("/api/v1/settings");
         setTermsAndConditionsData(response.data.data.about_us);
       } catch (error) {
         console.log(error);
@@ -24,7 +24,7 @@ const EditAboutUs = ({ onUpdate }) => {
 
   const handleSave = async () => {
    try {
-      const response = await axiosInstance.patch("/api/v1/settings", {
+      const response = await axiosDashboard.patch("/api/v1/settings", {
         about_us: editTermsAndConditionsData
       });
       console.log(response);

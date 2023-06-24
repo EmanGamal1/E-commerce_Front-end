@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import Tables from "../../../SharedUI/Table/Tables";
 import Btn from "Dashboard/SharedUI/Btn/Btn";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import PaginationAdmin from "../../../SharedUI/PaginationAdmin/PaginationAdmin";
 import DataTable from "../../../SharedUI/DataTable/DataTable";
 import handleErrors from "../../../../Errors";
@@ -26,7 +26,7 @@ const Orders = () => {
   // check that there is no page as argument and the url is clearly using pagination
   const fetch = async () => {
     setLoading(true);
-    axiosInstance
+    axiosDashboard
       .get(`/api/v1/orders?page=${page}&limit=${rows}`, {
         params: {
           keyword: search,
@@ -65,7 +65,7 @@ const Orders = () => {
       });
 
       if (result.isConfirmed) {
-        const res = await axiosInstance.patch(`/api/v1/orders/${id}/cancel`);
+        const res = await axiosDashboard.patch(`/api/v1/orders/${id}/cancel`);
         setOrderData((prevOrders) =>
           prevOrders.map((order) => {
             if (order._id === id) {
@@ -102,7 +102,7 @@ const Orders = () => {
       });
 
       if (result.isConfirmed) {
-        const res = await axiosInstance.patch(`/api/v1/orders/${id}/confirm`);
+        const res = await axiosDashboard.patch(`/api/v1/orders/${id}/confirm`);
         setOrderData((prevOrders) =>
           prevOrders.map((order) => {
             if (order._id === id) {

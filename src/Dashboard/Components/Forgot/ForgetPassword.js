@@ -9,14 +9,16 @@ import {
   InputGroupAddon,
   InputGroupText,
 } from "reactstrap";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Btn from "Dashboard/SharedUI/Btn/Btn";
-import { axiosInstance } from "Axios.js";
+import { axiosDashboard } from "Axios.js";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const ForgetPssword = () => {
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
   const ResetPassword_URL = "admin/reset-password-token";
   const formik = useFormik({
@@ -25,21 +27,32 @@ const ForgetPssword = () => {
     },
     validationSchema: Yup.object({
       email: Yup.string()
-        .email("invalid email format ")
-        .required("email required"),
+        .email("Invalid email format")
+        .required("Email required"),
     }),
     onSubmit: function (values) {
       const { email } = values;
-      axiosInstance
+      axiosDashboard
         .post(ResetPassword_URL, { email })
         .then((res) => {
-          console.log(res.data);
+          Swal.fire({
+            title: "Success",
+            text: "Password reset email sent!",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
         })
         .catch((err) => {
           console.error(err);
         });
-    },
+    },    
   });
+
+  useEffect(() => {
+    if (formik.touched.email && formik.errors.email) {
+      navigate("/error-page"); // Navigate to an error page if there are validation errors
+    }
+  }, [formik.touched.email, formik.errors.email, navigate]);
 
   return (
     <Col lg="5" md="7">

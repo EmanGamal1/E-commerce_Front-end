@@ -14,7 +14,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import MySwal from "sweetalert2";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import { FormLabel } from "react-bootstrap";
 import handleErrors from "../../../../Errors";
 
@@ -24,7 +24,7 @@ const UserEdit = () => {
 
   useEffect(() => {
     // Fetch the user data based on the ID and populate the form fields
-    axiosInstance
+    axiosDashboard
       .get(`/api/v1/users/${id}`)
       .then((res) => {
         const userData = res.data.data;
@@ -102,7 +102,7 @@ const UserEdit = () => {
         // is_active: values.is_active,
       };
 
-      axiosInstance
+      axiosDashboard
         .patch(`/api/v1/users/${id}`, userData, {
           headers: {
             "Content-Type": "multipart/form-data",

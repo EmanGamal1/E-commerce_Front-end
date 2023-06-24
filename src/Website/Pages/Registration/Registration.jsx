@@ -13,7 +13,7 @@ const Registration = () => {
   const navigate = useNavigate();
   const RegistrationURL = "register";
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem("token");
     if (user) navigate("/");
   }, []);
 
@@ -88,9 +88,9 @@ const Registration = () => {
             title: "success!",
             text: "account created successfully",
           });
-          localStorage.setItem("token", res.data.data.token);
-          localStorage.setItem("user", JSON.stringify(res.data.data.user));
-          navigate("/");
+          // localStorage.setItem("token", res.data.data.token);
+          // localStorage.setItem("user", JSON.stringify(res.data.data.user));
+          navigate("/login");
         })
         .catch((err) => {
           console.log(err);
@@ -99,8 +99,8 @@ const Registration = () => {
             title: "error!",
             text: Object.entries(err.response.data.error),
           });
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
+          // localStorage.removeItem("token");
+          // localStorage.removeItem("user");
         });
     },
   });

@@ -7,7 +7,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import MySwal from "sweetalert2";
-import { axiosInstance } from "../../../Axios";
+import { axiosDashboard } from "../../../Axios";
 import { CloudinaryContext, Image } from "cloudinary-react";
 import { cloudinaryConfig } from "../../../cloudinaryConfig";
 
@@ -36,7 +36,7 @@ const WebsiteInfo = () => {
   }, [webInfo]);
 
   const fetchTermsAndConditionsData = async () => {
-    await axiosInstance
+    await axiosDashboard
       .get("/api/v1/settings")
       .then((response) => {
         setWebInfo(response.data.data);
@@ -165,7 +165,7 @@ const WebsiteInfo = () => {
         banners: bannersData,
       };
 
-      await axiosInstance.patch("/api/v1/settings", updatedData, {
+      await axiosDashboard.patch("/api/v1/settings", updatedData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

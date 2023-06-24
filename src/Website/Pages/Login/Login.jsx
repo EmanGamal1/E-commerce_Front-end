@@ -1,7 +1,7 @@
 import NavBar from "../../components/NavBar/NavBar";
 import FooterSite from "../../components/Footer/FooterSite";
 import { Link, useNavigate } from "react-router-dom";
-import { Col, Container, Form, FormGroup, Row } from "reactstrap";
+import { Card, CardBody, Col, Container, Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { axiosInstance } from "../../../Axios";
@@ -60,64 +60,86 @@ const Login = () => {
   }, []);
   return (
     <>
-      <Container style={{ minHeight: "690px" }}>
-        <Row className="py-5 d-flex justify-content-center ">
-          <Col sm="12" className="d-flex flex-column ">
-            <label className="mx-auto title-login">تسجيل الدخول</label>
-            <Form onSubmit={formik.handleSubmit} className="mx-auto">
+     <Container fluid>
+      <Row className="mt-5">
+    <Col lg="5" md="5" className="m-auto">
+      <Card className=" shadow border-0">
+        <CardBody className="px-lg-5 py-lg-5">
+        <div className="text-center text-muted mb-4">
+            <h2>تسجيــل الدخــول</h2>
+          </div>
+            <Form onSubmit={formik.handleSubmit}>
               <FormGroup>
-                <input
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-email-83" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name="email"
-                  placeholder="الايميل..."
+                  placeholder="البريد الالكتروني..."
                   type="email"
-                  className="user-input my-3 text-center mx-auto"
                 />
+                </InputGroup>
                 {formik.touched.email && formik.errors.email && (
                   <p className="text-danger">{formik.errors.email}</p>
                 )}
               </FormGroup>
               <FormGroup>
-                <input
+              <InputGroup className="input-group-alternative">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="ni ni-lock-circle-open" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                  <Input
                   value={formik.values.password}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name="password"
-                  placeholder="كلمه السر..."
+                  placeholder="كلمــة المرور"
                   type="password"
-                  className="user-input text-center mx-auto"
-                />
+                 />
+                </InputGroup>
                 {formik.touched.password && formik.errors.password && (
                   <p className="text-danger">{formik.errors.password}</p>
                 )}
               </FormGroup>
+              <div className=" text-center">
               <button
                 onClick={formik.handleSubmit}
-                className="btn-login mx-auto mt-4"
+                className="btn btn-outline-primary mt-4"
                 type="submit"
               >
                 تسجيل الدخول
               </button>
-            </Form>
-            <label className="mx-auto my-4">
+              <label className="my-4">
               ليس لديك حساب ؟{" "}
               <Link to="/register" style={{ textDecoration: "none" }}>
-                <span style={{ cursor: "pointer" }} className="text-danger">
+                <span style={{ cursor: "pointer" }} className="text-primary">
                   اضغط هنا
                 </span>
               </Link>
             </label>
 
-            <label className="mx-auto my-4">
+            <label className="my-4">
               <Link
                 to="/forgot-password"
-                style={{ textDecoration: "none", color: "red" }}
+                style={{ textDecoration: "none" }}
+                className="text-primary"
               >
-                هل نسيت كلمه السر
+                هل نسيت كلمه المـرور؟
               </Link>
             </label>
+            
+              </div>
+            </Form>
+            </CardBody>
+            </Card>
           </Col>
         </Row>
       </Container>

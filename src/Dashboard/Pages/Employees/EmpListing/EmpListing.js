@@ -3,7 +3,7 @@ import DataTable from "./../../../SharedUI/DataTable/DataTable";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import handleErrors from "../../../../Errors";
 
 const Emps = () => {
@@ -24,7 +24,7 @@ const Emps = () => {
   // check that there is no page as argument and the url is clearly using pagination
   const fetch = () => {
     setLoading(true);
-    axiosInstance
+    axiosDashboard
       .get(`/api/v1/employees?page=${page}&limit=${rows}`, {
         params: {
           keyword: search,
@@ -64,7 +64,7 @@ const Emps = () => {
       });
 
       if (result.isConfirmed) {
-        const response = await axiosInstance.delete(`/api/v1/employees/${id}`);
+        const response = await axiosDashboard.delete(`/api/v1/employees/${id}`);
         setEmpData((prevUser) =>
           prevUser.filter((employee) => employee.id !== id)
         );
@@ -76,7 +76,7 @@ const Emps = () => {
     }
   };
   const handleActivate = async (userId) => {
-    await axiosInstance
+    await axiosDashboard
       .post(`/api/v1/employees/${userId}/ban`)
       .then((res) => {
         // Update the user data
@@ -98,7 +98,7 @@ const Emps = () => {
   };
 
   const handleDeactivate = async (userId) => {
-    await axiosInstance
+    await axiosDashboard
       .post(`/api/v1/employees/${userId}/unban`)
       .then((res) => {
         // Update the user data

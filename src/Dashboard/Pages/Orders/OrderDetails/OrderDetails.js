@@ -13,7 +13,7 @@ import { Link, useParams } from "react-router-dom";
 
 import "../OrderDetails/OrderDetails";
 import Btn from "Dashboard/SharedUI/Btn/Btn";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import Swal from "sweetalert2";
 import handleErrors from "../../../../Errors";
 
@@ -44,7 +44,7 @@ const OrderDetail = () => {
       });
 
       if (result.isConfirmed) {
-        const res = await axiosInstance.patch(`/api/v1/orders/${id}/cancel`);
+        const res = await axiosDashboard.patch(`/api/v1/orders/${id}/cancel`);
         setOrderData({ ...orderdata, status: "Cancelled" });
         Swal.fire("Cancelled!", "The order has been cancelled.", "success");
       }
@@ -70,7 +70,7 @@ const OrderDetail = () => {
       });
 
       if (result.isConfirmed) {
-        const res = await axiosInstance.patch(`/api/v1/orders/${id}/confirm`);
+        const res = await axiosDashboard.patch(`/api/v1/orders/${id}/confirm`);
         setOrderData({ ...orderdata, status: "Processing" });
         Swal.fire(
           "Updated!",
@@ -83,7 +83,7 @@ const OrderDetail = () => {
     }
   };
   useEffect(() => {
-    axiosInstance
+    axiosDashboard
       .get(`/api/v1/orders/${id}`)
       .then((res) => {
         console.log(res.data);
@@ -95,7 +95,7 @@ const OrderDetail = () => {
 
   const fetchProductData = async (products) => {
     const productId = products.map((product) => product.id);
-    const productResponse = await axiosInstance.get("/api/v1/products");
+    const productResponse = await axiosDashboard.get("/api/v1/products");
     console.log(productResponse.data); // Add this line to check the structure of the response
     const productDataWithImage = productResponse.data.data.map((product) => {
       if (productId.includes(product.id)) {

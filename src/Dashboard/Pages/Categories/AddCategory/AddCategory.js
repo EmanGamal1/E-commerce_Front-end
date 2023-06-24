@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../../../Axios";
+import { axiosDashboard } from "../../../../Axios";
 import "./AddCategory.css";
 import { Card, CardHeader, Container, Navbar, Row } from "reactstrap";
 import { useFormik } from "formik";
@@ -22,7 +22,7 @@ const AddCategory = () => {
       categoryData.append("image", values.image[0]);
 
       console.log(categoryData);
-      axiosInstance
+      axiosDashboard
         .post(CategoryURL, categoryData, {
           headers: {
             "Content-Type": "multipart/form-data",

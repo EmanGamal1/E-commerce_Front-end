@@ -22,7 +22,7 @@ import {
   chartExample1,
 } from "../../Variables/Charts.js";
 
-import { axiosInstance } from "../../../Axios";
+import { axiosDashboard } from "../../../Axios";
 import Header from "../../Components/Headers/Header";
 
 const Index = (props) => {
@@ -34,7 +34,7 @@ const Index = (props) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchStatics = async () => {
-    await axiosInstance
+    await axiosDashboard
       .get(`${StaticsUrl}`)
       .then((res) => {
         setStatistics(res.data.data);

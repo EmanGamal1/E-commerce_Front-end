@@ -2,7 +2,7 @@ import Btn from "Dashboard/SharedUI/Btn/Btn";
 import { useState, useEffect } from "react";
 import { Card, CardBody, CardFooter, CardHeader } from "reactstrap";
 import EditTermsAndConditions from "./EditTermsAndConditions/EditTermsAndConditions";
-import { axiosInstance } from "../../../Axios";
+import { axiosDashboard } from "../../../Axios";
 
 const TermsAndConditions = () => {
   const [showEditCard, setShowEditCard] = useState(false);
@@ -13,7 +13,7 @@ const TermsAndConditions = () => {
   });
 
   const fetchTermsAndConditionsData = async () => {
-    await axiosInstance
+    await axiosDashboard
       .get("/api/v1/settings")
       .then((res) => {
         setTermsAndConditionsData(res.data.data);

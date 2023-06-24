@@ -199,7 +199,7 @@ var routes = [
     layout: "/auth",
   },
   {
-    path: "/reset-password",
+    path: "/reset-password/:token",
     name: "New",
     icon: "ni ni-key-25 text-info",
     component: <ConfirmNewPassword />,
