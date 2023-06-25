@@ -29,7 +29,6 @@ const ConfirmNewPassword = () => {
     }),
     onSubmit: async (values) => {
       try {
-        console.log("values");
         // Verify the reCAPTCHA response
         if (!recaptchaValue) {
           setErrorMsg("Please complete the reCAPTCHA verification.");
