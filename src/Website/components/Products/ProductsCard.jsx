@@ -82,12 +82,16 @@ export const ProductsCard = ({ item }) => {
                   <div className="card-currency mx-1">جنيه</div>
                 </div>
                 {isUser && (
-                  <button
-                    className="btn-sm btn-outline-primary"
-                    onClick={addToCart}
-                  >
-                    <FontAwesomeIcon icon={faCartPlus} className="mx-1" />
-                  </button>
+                  <>
+                    {item.quantity > 0 && (
+                      <button
+                        className="btn-sm btn-outline-primary"
+                        onClick={addToCart}
+                      >
+                        <FontAwesomeIcon icon={faCartPlus} className="mx-1" />
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </CardText>
