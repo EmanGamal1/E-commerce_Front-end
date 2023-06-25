@@ -21,7 +21,6 @@ const ConfirmNewPassword = () => {
       password_confirm: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string().email("Invalid email address").required("Email is required"),
       password: Yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
       password_confirm: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
@@ -30,12 +29,12 @@ const ConfirmNewPassword = () => {
     }),
     onSubmit: async (values) => {
       try {
+        console.log("values");
         // Verify the reCAPTCHA response
         if (!recaptchaValue) {
           setErrorMsg("Please complete the reCAPTCHA verification.");
           return;
         }
-
         // Send a request to update the password
         const g_recaptcha_response = recaptchaValue;
         const response = await axiosDashboard.post("/admin/reset-password", {
@@ -71,6 +70,15 @@ const ConfirmNewPassword = () => {
             <small>Confirm New Password</small>
           </div>
           <Form role="form" onSubmit={formik.handleSubmit}>
+          <FormGroup className="mb-3">
+                <Input
+                  placeholder="Email"
+                  type="email"
+                  autoComplete="off"
+                  value={email}
+                  hidden
+                />
+              </FormGroup>
             <FormGroup className="mb-3">
               <InputGroup className="input-group-alternative">
                 <InputGroupAddon addonType="prepend">
