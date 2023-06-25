@@ -100,11 +100,11 @@ const Checkout = () => {
       }
     } catch (error) {
       console.log(error);
-      if (error.response.data.error.address_id) {
+      if (error.response?.data?.error.address_id) {
         Swal.fire("عذرا", "برجاء اختيار عنوان التوصيل.", "error");
-      } else if (error.response.data.error.payment_method) {
+      } else if (error.response?.data?.error.payment_method) {
         Swal.fire("عذرا", "برجاء اختيار طريقة الدفع.", "error");
-      } else if (typeof error.response.data.error === "string") {
+      } else if (typeof error.response?.data?.error === "string" && error.response.data.error==="من فضلك قم بتفعيل حسابك قبل اتمام عملية الشراء") {
         Swal.fire({
           icon: "error",
           title: "عذرا",
