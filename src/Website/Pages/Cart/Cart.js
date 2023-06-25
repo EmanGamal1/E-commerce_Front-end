@@ -62,7 +62,7 @@ const Cart = () => {
       calculateTotalPrice(response.data.data);
       setIsDisabled(false);
       response.data.data.forEach((item) => {
-        if (item?.product_id?.quantity <= 0) {
+        if (item?.product_id?.quantity <= 0 || !item?.product_id?.is_active) {
           setIsDisabled(true);
           console.log("isDisabled", isDisabled);
         }
