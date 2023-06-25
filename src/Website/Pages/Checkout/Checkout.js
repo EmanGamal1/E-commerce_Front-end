@@ -57,6 +57,14 @@ const Checkout = () => {
     fetchCartData();
     fetchUserData();
   }, []);
+
+  useEffect(() => {
+    // set the selected address to the ID of the first address in the list
+    if (userAddresses.length > 0) {
+      setSelectedAddress(userAddresses[0]._id);
+    }
+  }, [userAddresses]);
+  
   const calculateTotalPrice = (cartData) => {
     let total = 0;
     cartData.forEach((item) => {
@@ -90,11 +98,12 @@ const Checkout = () => {
               })
               .catch((error) => {
                 console.log(error.message);
-                Swal.fire("عذرا", "حدث خطأ برجاء المحاولة مرة أخرى.", "error");
-              });
+                  Swal.fire("عذرا", "حدث خطأ برجاء المحاولة مرة أخرى.", "error");
+                });
           }
         });
-      } else {
+      } 
+      else {
         await axiosInstance.post("/orders", orderData);
         Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "success");
       }
@@ -227,17 +236,22 @@ const Checkout = () => {
                   onChange={handleAddressSelect}
                   className="mb-3"
                 >
-                  <option value="">اختر العنوان</option>
-                  {userAddresses.length > 0 ? (
-                    userAddresses.map((address) => (
-                      <option key={address._id} value={address._id}>
-                        {address.area}, {address.city}, {address.governorate},{" "}
-                        {address.country}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled> لا يوجد عنوان </option>
-                  )}
+                  {/* <option value="">اختر العنوان</option> */}
+{userAddresses.length > 0 ? (
+  userAddresses.map((address, index) => (
+    <option
+      key={address._id}
+      value={address._id}
+      // set the selected attribute for the first address
+      selected={index === 0}
+    >
+      {address.area}, {address.city}, {address.governorate},{" "}
+      {address.country}
+    </option>
+  ))
+) : (
+  <option disabled> لا يوجد عنوان </option>
+)}
                 </Input>
               </Col>
             </Row>
@@ -254,6 +268,7 @@ const Checkout = () => {
                     id="Cash"
                     name="payment_method"
                     value="Cash"
+                    checked
                     onChange={handlePaymentMethodChange}
                   />
 
