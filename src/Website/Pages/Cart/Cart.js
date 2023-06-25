@@ -19,6 +19,7 @@ import handleErrors from "../../../Errors";
 const Cart = () => {
   const [loading, setLoading] = useState(true);
   const [cartData, setCartData] = useState([]);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [userData, setUserData] = useState({});
   // const [addressData, setAddressData] = useState({});
   const [totalPrice, setTotalPrice] = useState(0);
@@ -59,11 +60,19 @@ const Cart = () => {
       const response = await axiosInstance.get("/profile/cart");
       setCartData(response.data.data);
       calculateTotalPrice(response.data.data);
+      setIsDisabled(false);
+      response.data.data.forEach((item) => {
+        if (item?.product_id?.quantity <= 0) {
+          setIsDisabled(true);
+          console.log("isDisabled", isDisabled);
+        }
+        setLoading(false);
+      });
+      console.log(isDisabled);
     } catch (error) {
       console.log(error.message);
       // Handle error
     }
-    setLoading(false);
   };
   useEffect(() => {
     /*const fetchUserData = async () => {
@@ -131,32 +140,42 @@ const Cart = () => {
                     <p> اسم المنتج: {product.product_id.name.ar}</p>
                     <p>الكمية: {product.quantity}</p>
                     <p>
-                      <label>الكمية: </label>
-                      <select
-                        className="form-control"
-                        onChange={(e) => {
-                          console.log(e.target.value);
-                          updateQuantity(
-                            e.target.value,
-                            product.product_id._id
-                          );
-                        }}
-                      >
-                        {Array.from(
-                          {
-                            length: product.product_id.quantity,
-                          },
-                          (_, index) => (
-                            <option
-                              key={index + 1}
-                              value={index + 1}
-                              selected={index + 1 == product.quantity}
-                            >
-                              {index + 1}
-                            </option>
-                          )
-                        )}
-                      </select>
+                      {product.product_id.quantity > 0 ? (
+                        <>
+                          <label>الكمية: </label>
+                          <select
+                            className="form-control"
+                            onChange={(e) => {
+                              console.log(e.target.value);
+                              updateQuantity(
+                                e.target.value,
+                                product.product_id._id
+                              );
+                            }}
+                          >
+                            {Array.from(
+                              {
+                                length: product.product_id.quantity,
+                              },
+                              (_, index) => (
+                                <option
+                                  key={index + 1}
+                                  value={index + 1}
+                                  selected={index + 1 == product.quantity}
+                                >
+                                  {index + 1}
+                                </option>
+                              )
+                            )}
+                          </select>
+                        </>
+                      ) : (
+                        <>
+                          <span className={"text-danger"}>
+                            المنتج غير متوفر برجاء حذف هذا المنتج للاستمرار
+                          </span>
+                        </>
+                      )}
                     </p>
 
                     <p>
@@ -214,18 +233,26 @@ const Cart = () => {
                 <h2 className="mb-0">
                   السعر الكلي: {convertCurrency(totalPrice)}
                 </h2>
-                {totalPrice !== 0 ? (
-                  <Link to={`/checkout`}>
-                    <h3 className={"text-light btn btn-primary"}>
-                      تأكيد الطلب<i className="fa fa-arrow-left mr-3"></i>
-                    </h3>
-                  </Link>
+                {!isDisabled ? (
+                  <>
+                    {totalPrice !== 0 ? (
+                      <Link to={`/checkout`}>
+                        <h3 className={"text-light btn btn-primary"}>
+                          تأكيد الطلب<i className="fa fa-arrow-left mr-3"></i>
+                        </h3>
+                      </Link>
+                    ) : (
+                      <Link to={`/`}>
+                        <h3 className={"text-light btn btn-primary"}>
+                          تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
+                        </h3>
+                      </Link>
+                    )}
+                  </>
                 ) : (
-                  <Link to={`/`}>
-                    <h3 className={"text-light btn btn-primary"}>
-                      تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
-                    </h3>
-                  </Link>
+                  <button className="btn btn-danger " disabled>
+                    احذف المنتجات الغير متاحة للاستمرار
+                  </button>
                 )}
               </div>
             </CardHeader>
@@ -236,21 +263,27 @@ const Cart = () => {
                   <hr />
                   {renderContent()}
                   <h2>السعر الكلي: {convertCurrency(totalPrice)}</h2>
-                  <button className="btn btn-primary w-100">
-                    {totalPrice !== 0 ? (
-                      <Link to={`/checkout`}>
-                        <h3 className={"text-light"}>
-                          تأكيد الطلب<i className="fa fa-arrow-left mr-3"></i>
-                        </h3>
-                      </Link>
-                    ) : (
-                      <Link to={`/`}>
-                        <h3 className={"text-light"}>
-                          تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
-                        </h3>
-                      </Link>
-                    )}
-                  </button>
+                  {!isDisabled ? (
+                    <button className="btn btn-primary w-100">
+                      {totalPrice !== 0 ? (
+                        <Link to={`/checkout`}>
+                          <h3 className={"text-light"}>
+                            تأكيد الطلب<i className="fa fa-arrow-left mr-3"></i>
+                          </h3>
+                        </Link>
+                      ) : (
+                        <Link to={`/`}>
+                          <h3 className={"text-light"}>
+                            تسوق الآن<i className="fa fa-arrow-left mr-3"></i>
+                          </h3>
+                        </Link>
+                      )}
+                    </button>
+                  ) : (
+                    <button className="btn btn-danger w-100" disabled>
+                      احذف المنتجات الغير متاحة للاستمرار
+                    </button>
+                  )}
                 </div>
               </CardBody>
             </div>
