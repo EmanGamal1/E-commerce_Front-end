@@ -113,9 +113,9 @@ const NavBar = () => {
         <li className="nav-item">
           <Link to="/aboutus">عنّــا</Link>
         </li>
-        {/* <li className="nav-item">
+        <li className="nav-item">
           <Link to="/contactus">تواصل معنا</Link>
-        </li> */}
+        </li>
       </ul>
       <div style={{ display: "flex", marginRight:"auto" }}>
       {isLoggedIn ? (

@@ -218,29 +218,6 @@ const Index = (props) => {
               </CardBody>
             </Card>
           </Col>
-          {/*<Col xl="4">*/}
-          {/*  <Card className="shadow">*/}
-          {/*    <CardHeader className="bg-transparent">*/}
-          {/*      <Row className="align-items-center">*/}
-          {/*        <div className="col">*/}
-          {/*          <h6 className="text-uppercase text-muted ls-1 mb-1">*/}
-          {/*            Performance*/}
-          {/*          </h6>*/}
-          {/*          <h2 className="mb-0">Total orders</h2>*/}
-          {/*        </div>*/}
-          {/*      </Row>*/}
-          {/*    </CardHeader>*/}
-          {/*    <CardBody>*/}
-          {/*      Chart*/}
-          {/*      <div className="chart">*/}
-          {/*        <Bar*/}
-          {/*          data={chartExample2.data}*/}
-          {/*          options={chartExample2.options}*/}
-          {/*        />*/}
-          {/*      </div>*/}
-          {/*    </CardBody>*/}
-          {/*  </Card>*/}
-          {/*</Col>*/}
         </Row>
         <Row className="mt-5">
           <Col className="mb-5 mb-xl-0" xl="12">
@@ -255,8 +232,8 @@ const Index = (props) => {
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Product name</th>
+                    <th scope="col">Product arabic name</th>
+                    <th scope="col">Product english name</th>
                     <th scope="col">Price</th>
                     <th scope="col">Quantity Sold</th>
                   </tr>
@@ -265,8 +242,8 @@ const Index = (props) => {
                   {Array.isArray(statistics.topProducts) ? (
                     statistics.topProducts.map((product) => (
                       <tr key={product.id}>
-                        <th>{product.id}</th>
-                        <th scope="row">{product.name_en}</th>
+                        <th>{product.name_ar}</th>
+                        <th>{product.name_en}</th>
                         <td>{product.price}</td>
                         <td>{product.total_orders}</td>
                       </tr>

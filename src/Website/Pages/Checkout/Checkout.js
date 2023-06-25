@@ -100,12 +100,39 @@ const Checkout = () => {
       }
     } catch (error) {
       console.log(error);
-      if (error.response.data.error.address_id) {
+      if (error.response?.data?.error.address_id) {
         Swal.fire("عذرا", "برجاء اختيار عنوان التوصيل.", "error");
-      } else if (error.response.data.error.payment_method) {
+      } else if (error.response?.data?.error.payment_method) {
         Swal.fire("عذرا", "برجاء اختيار طريقة الدفع.", "error");
-      } else if (typeof error.response.data.error === "string") {
-        Swal.fire("عذرا", error.response.data.error, "error");
+      } else if (typeof error.response?.data?.error === "string" && error.response.data.error==="من فضلك قم بتفعيل حسابك قبل اتمام عملية الشراء") {
+        Swal.fire({
+          icon: "error",
+          title: "عذرا",
+          text: error.response.data.error,
+          showCancelButton: true,
+          confirmButtonText: "إعادة إرسال الكود",
+          cancelButtonText: "رجوع للصفحة",
+        }).then((result) => {
+          if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.close();
+          } else {
+            axiosInstance.post('/resend-verification-code')
+              .then(response => {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'تم إعادة إرسال كود التفعيل بنجاح',
+                  text: 'برجاء تفعيل الحسـاب من خلال بريدك الإلكتروني',
+                });
+              })
+              .catch(error => {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error resending verification code',
+                  text: 'Please try again later',
+                });
+              });
+          }
+        });
       } else {
         Swal.fire("عذرا", "حدث خطأ برجاء المحاولة مرة أخرى.", "error");
       }

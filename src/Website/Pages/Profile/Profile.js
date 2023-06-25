@@ -218,9 +218,6 @@ const Profile = () => {
       ...updatedProfileData
     } = profileData;
   
-    if (profileImage) {
-      const formData = new FormData();
-      formData.append("image", profileImage);
       try {
         if (profileImage) {
           const allowedExtensions = /\.(jpeg|png|jpg)$/i;
@@ -250,8 +247,6 @@ const Profile = () => {
       } catch (err) {
         console.log(err);
       }
-    }
-  
     if (newPassword !== "" && confirmNewPassword !== "") {
       updatedProfileData.password = newPassword;
     }

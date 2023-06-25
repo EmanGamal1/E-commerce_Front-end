@@ -149,7 +149,8 @@ const ProductsDetails = () => {
                   <span className="font-weight-bold mr-3">الـوصــــف: </span>
                   <span className="col"> {product.desc_ar}</span>
                 </p>
-                {isUser && (<p className="mt-3">
+                {isUser && quantityInStock > 0 && (
+                <p className="mt-3">
                   <span className="font-weight-bold ml-3">الكميــة: </span>
                   <span className="quantity-control shadow">
                     <span
@@ -166,7 +167,8 @@ const ProductsDetails = () => {
                       +
                     </span>
                   </span>
-                </p>)}
+                </p>
+              )}
                 <Row className="mt-5">
                   <Col lg="4">
                     <p>

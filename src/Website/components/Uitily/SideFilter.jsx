@@ -17,15 +17,17 @@ export const SideFilter = ({ updateCategory, updatePriceRange }) => {
     // No minus numbers
     let value = parseInt(event.target.value, 10);
     value = isNaN(value) ? 0 : Math.max(0, value);
-    setPriceFrom(value.toString());
-    updatePriceRange(value.toString(), priceTo);
+    const newValue = value === 0 ? '' : value.toString();
+    setPriceFrom(newValue);
+    updatePriceRange(newValue, priceTo);
   };
-
+  
   const handleChangePriceTo = (event) => {
     let value = parseInt(event.target.value, 10);
     value = isNaN(value) ? 0 : Math.max(0, value);
-    setPriceTo(value.toString());
-    updatePriceRange(priceFrom, value.toString());
+    const newValue = value === 0 ? '' : value.toString();
+    setPriceTo(newValue);
+    updatePriceRange(priceFrom, newValue);
   };
 
   return (

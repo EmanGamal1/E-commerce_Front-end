@@ -3,6 +3,7 @@ import TermsAndConditions from "Dashboard/Components/TermsAndConditions/TermsAnd
 import WebsiteInfo from "Dashboard/Components/WebsiteInfo/WebsiteInfo";
 import AboutUS from "../AboutUs/ShowAboutUs/ShowAboutUs";
 import ContactUs from "../ContactUs/ShowContactUs/ShowContactUs";
+import ContactUsForm from "../ContactUs/ContactUsForm/ContactUsForm";
 
 import "./Setting.css";
 
@@ -41,7 +42,7 @@ const Setting = () => {
               {/*end website info*/}
               {/*start terms-and-conditions */}
             </span>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;
             <span
               onClick={() => handleLinkClick("terms-and-conditions")}
               style={{ cursor: "pointer" }}
@@ -62,7 +63,7 @@ const Setting = () => {
             </span>
             {/*end terms-and-conditions */}
             {/*start AboutUS */}
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;
             <span
               onClick={() => handleLinkClick("about-us")}
               style={{ cursor: "pointer" }}
@@ -81,7 +82,7 @@ const Setting = () => {
             </span>
             {/*end AboutUS */}
             {/*start ContactUs */}
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;
             <span
               onClick={() => handleLinkClick("contact-us")}
               style={{ cursor: "pointer" }}
@@ -97,12 +98,30 @@ const Setting = () => {
                       : "linear-gradient(to right, white, white)",
                 }}
               />
+</span>
+&nbsp;
+<span
+              onClick={() => handleLinkClick("contact-us-form")}
+              style={{ cursor: "pointer" }}
+              className={activeLink === "contact-us" ? "active-link" : ""}
+            >
+                            <Btn
+                title="Contact Us Form"
+                className="btn"
+                style={{
+                  background:
+                    activeLink === "contact-us-form"
+                      ? "linear-gradient(to bottom, lightgray, white)"
+                      : "linear-gradient(to right, white, white)",
+                }}
+              />
             </span>
             {/*end ContactUs */}
             {activeLink === "website-info" && <WebsiteInfo />}
             {activeLink === "terms-and-conditions" && <TermsAndConditions />}
             {activeLink === "about-us" && <AboutUS />}
             {activeLink === "contact-us" && <ContactUs />}
+            {activeLink === "contact-us-form" && <ContactUsForm />}
           </div>
         </Row>
       </Container>
