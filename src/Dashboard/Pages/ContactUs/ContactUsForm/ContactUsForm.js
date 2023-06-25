@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, CardBody, Col, Row } from "reactstrap";
-import axios from "axios";
+import { axiosDashboard } from "./../../../../Axios";
 
 const ContactUsForm = () => {
   const [contactUsData, setContactUsData] = useState([]);
@@ -8,8 +8,8 @@ const ContactUsForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/data");
-        setContactUsData(response.data);
+        const response = await axiosDashboard.get("/api/v1/customers-contact");
+        setContactUsData(response.data.data);
       } catch (error) {
         console.log(error);
       }

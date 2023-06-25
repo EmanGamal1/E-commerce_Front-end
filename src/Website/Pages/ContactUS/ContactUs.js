@@ -1,7 +1,6 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
 import Buttons from "Website/SharedUI/Buttons/Buttons";
 import {
   Card,
@@ -20,6 +19,7 @@ import { faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
 import { axiosInstance } from "./../../../Axios";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 const ContactUs = () => {
   const [contactData, setContactData] = useState([]);
@@ -52,8 +52,13 @@ const ContactUs = () => {
   const onSubmit = async (values, { resetForm }) => {
     console.log("onSubmit called");
     try {
-      const response = await axios.post("http://localhost:8000/data", values);
-      console.log(response.data);
+      const response = await axiosInstance.post("/contact-us", values);
+      console.log(response.data.data);
+      Swal.fire({
+          icon: "success",
+          title: "تم إرسـال تعليقك بنجـاح",
+          confirmButtonText: "تـم",
+       })
       resetForm();
     } catch (error) {
       console.log(error);
