@@ -15,7 +15,7 @@ const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState([]);
   const [userAddresses, setUserAddresses] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState(""); // New state for payment method
+  const [paymentMethod, setPaymentMethod] = useState("Cash"); // New state for payment method
 
   const user = localStorage.getItem("user");
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ const Checkout = () => {
       setSelectedAddress(userAddresses[0]._id);
     }
   }, [userAddresses]);
-  
+
   const calculateTotalPrice = (cartData) => {
     let total = 0;
     cartData.forEach((item) => {
@@ -98,12 +98,11 @@ const Checkout = () => {
               })
               .catch((error) => {
                 console.log(error.message);
-                  Swal.fire("عذرا", "حدث خطأ برجاء المحاولة مرة أخرى.", "error");
-                });
+                Swal.fire("عذرا", "حدث خطأ برجاء المحاولة مرة أخرى.", "error");
+              });
           }
         });
-      } 
-      else {
+      } else {
         await axiosInstance.post("/orders", orderData);
         Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "success");
       }
@@ -113,7 +112,11 @@ const Checkout = () => {
         Swal.fire("عذرا", "برجاء اختيار عنوان التوصيل.", "error");
       } else if (error.response?.data?.error.payment_method) {
         Swal.fire("عذرا", "برجاء اختيار طريقة الدفع.", "error");
-      } else if (typeof error.response?.data?.error === "string" && error.response.data.error==="من فضلك قم بتفعيل حسابك قبل اتمام عملية الشراء") {
+      } else if (
+        typeof error.response?.data?.error === "string" &&
+        error.response.data.error ===
+          "من فضلك قم بتفعيل حسابك قبل اتمام عملية الشراء"
+      ) {
         Swal.fire({
           icon: "error",
           title: "عذرا",
@@ -125,19 +128,20 @@ const Checkout = () => {
           if (result.dismiss === Swal.DismissReason.cancel) {
             Swal.close();
           } else {
-            axiosInstance.post('/resend-verification-code')
-              .then(response => {
+            axiosInstance
+              .post("/resend-verification-code")
+              .then((response) => {
                 Swal.fire({
-                  icon: 'success',
-                  title: 'تم إعادة إرسال كود التفعيل بنجاح',
-                  text: 'برجاء تفعيل الحسـاب من خلال بريدك الإلكتروني',
+                  icon: "success",
+                  title: "تم إعادة إرسال كود التفعيل بنجاح",
+                  text: "برجاء تفعيل الحسـاب من خلال بريدك الإلكتروني",
                 });
               })
-              .catch(error => {
+              .catch((error) => {
                 Swal.fire({
-                  icon: 'error',
-                  title: 'Error resending verification code',
-                  text: 'Please try again later',
+                  icon: "error",
+                  title: "Error resending verification code",
+                  text: "Please try again later",
                 });
               });
           }
@@ -237,21 +241,21 @@ const Checkout = () => {
                   className="mb-3"
                 >
                   {/* <option value="">اختر العنوان</option> */}
-{userAddresses.length > 0 ? (
-  userAddresses.map((address, index) => (
-    <option
-      key={address._id}
-      value={address._id}
-      // set the selected attribute for the first address
-      selected={index === 0}
-    >
-      {address.area}, {address.city}, {address.governorate},{" "}
-      {address.country}
-    </option>
-  ))
-) : (
-  <option disabled> لا يوجد عنوان </option>
-)}
+                  {userAddresses.length > 0 ? (
+                    userAddresses.map((address, index) => (
+                      <option
+                        key={address._id}
+                        value={address._id}
+                        // set the selected attribute for the first address
+                        selected={index === 0}
+                      >
+                        {address.area}, {address.city}, {address.governorate},{" "}
+                        {address.country}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled> لا يوجد عنوان </option>
+                  )}
                 </Input>
               </Col>
             </Row>
