@@ -1,4 +1,4 @@
-import { Col, Container, Form, FormGroup, Input, Row } from "reactstrap";
+import { Card, CardBody, Col, Container, Form, FormGroup, Input, Row } from "reactstrap";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import NavBar from "../../components/NavBar/NavBar";
@@ -111,8 +111,9 @@ const Registration = () => {
   };
   return (
     <>
-      {/*<NavBar />*/}
       <Container style={{ minHeight: "680px" }}>
+        <Card className="mt-4">
+          <CardBody>
         <Row className="py-5 d-flex justify-content-center hieght-search">
           <Col sm="12" className="d-flex flex-column ">
             <label className="mx-auto title-login">تسجيل حساب جديد</label>
@@ -195,8 +196,7 @@ const Registration = () => {
                 {formik.touched.bio && formik.errors.bio && (
                   <p className="text-danger">{formik.errors.bio}</p>
                 )}
-              </Col>
-              <FormGroup>
+              <FormGroup >
                 <FormGroup>
                   <FormLabel>الصوره الشخصيه </FormLabel>
                   <FormLabel
@@ -273,7 +273,7 @@ const Registration = () => {
                           </p>
                         )}
                     </Col>
-                    <Col xs="6">
+                    <Col xs="6" className="mb-5">
                       <Input
                         value={formik.values.address.area}
                         onChange={formik.handleChange}
@@ -290,18 +290,15 @@ const Registration = () => {
                           </p>
                         )}
                     </Col>
-                  </Row>
-                </Container>
-              </FormGroup>
+                    
               <button
                 type="submit"
-                className="btn-login mx-auto mt-4 "
+                className="btn-login m-auto mt-4 "
                 onClick={formik.handleSubmit}
               >
                 تسجيل الحساب
               </button>
-            </Form>
-            <label className="mx-auto my-4">
+              <label className="mx-auto my-4">
               لديك حساب بالفعل؟{" "}
               <Link to="/login" style={{ textDecoration: "none" }}>
                 <span style={{ cursor: "pointer" }} className="text-danger">
@@ -309,8 +306,17 @@ const Registration = () => {
                 </span>
               </Link>
             </label>
+
+                  </Row>
+                </Container>
+              </FormGroup>
+              </Col>
+            </Form>
           </Col>
         </Row>
+        
+        </CardBody>
+        </Card>
       </Container>
       {/*<FooterSite />*/}
     </>

@@ -61,7 +61,8 @@ const OrderDetail = () => {
       const result = await Swal.fire({
         title: "Are you sure?",
         text: "You are about to update the order status!",
-        html: `<p>تم اتمام الطلب بنجاح !</p><img src="" alt="Success Image" style="width: 100px; height: 100px;">`,
+        // html: `<p>تم اتمام الطلب بنجاح !</p><img src="" alt="Success Image" style="width: 100px; height: 100px;">`,
+        icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",

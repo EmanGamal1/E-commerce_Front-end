@@ -132,16 +132,11 @@ const NavBar = () => {
               عربـة التسـوق
             </Link>
           </li>
+          <li className="nav-item">
             <Link to="/profile">
-            <li className="">
-              <img
-                src={userName.image}
-                className="navProfileImage"
-                alt="user profile img"
-              />
-              <span className="col-6">{userName.name}</span>
-            </li>
-            </Link>
+           الصفحـة الشخصيـة
+                       </Link>
+                       </li>
             <li>
                   <p className="logout" onClick={handleLogout}>
                   <FontAwesomeIcon icon={faSignOutAlt} />
