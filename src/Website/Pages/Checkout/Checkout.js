@@ -116,8 +116,11 @@ const Checkout = () => {
           }
         });
       } else {
-        await axiosInstance.post("/orders", orderData);
-        Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "success");
+        await axiosInstance.post("/orders", orderData).then(() => {
+          Swal.fire("تم الطلب!", "تم اتمام الطلب بنجاح !", "success").then(() => {
+            navigate("/products"); // navigate to products page
+          });
+        });
       }
     } catch (error) {
       console.log(error);
