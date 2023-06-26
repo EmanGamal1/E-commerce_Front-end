@@ -62,17 +62,26 @@ const Cart = () => {
       calculateTotalPrice(response.data.data);
       setIsDisabled(false);
       response.data.data.forEach((item) => {
-        if (item?.product_id?.quantity <= 0 || !item?.product_id?.is_active) {
+        if (
+          item?.product_id?.quantity <= 0 ||
+          !item?.product_id?.is_active ||
+          item.quantity > item?.product_id?.quantity
+        ) {
           setIsDisabled(true);
           console.log("isDisabled", isDisabled);
         }
-        setLoading(false);
       });
-      console.log(isDisabled);
+      // console.log(isDisabled);
     } catch (error) {
-      console.log(error.message);
+      Swal.fire({
+        html: `<p>حدث خطأ ما برجاء المحاولة مرة أخرى </p><img src="${imageSrc}" alt="Success Image" style="width: 100px; height: 100px;">`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      console.log(error);
       // Handle error
     }
+    setLoading(false);
   };
   useEffect(() => {
     /*const fetchUserData = async () => {
@@ -115,18 +124,13 @@ const Cart = () => {
     }
   };
   const renderContent = () => {
-    if (cartData.length === 0) {
+    if (loading)
       return (
-        <div className="text-center mt-4 mb-4">
-          <h2>لا يوجد منتجات في العربة</h2>
-          <img
-            src={imageSrc}
-            alt="No Orders"
-            style={{ width: "250px", height: "250px" }}
-          />
+        <div className={"text-center"}>
+          <Spinner className={"h1 p-5 m-4"} />
         </div>
       );
-    } else {
+    else {
       return (
         <>
           {cartData.length ? (
@@ -144,6 +148,13 @@ const Cart = () => {
                     {/*<p>{product.product_id._id}</p>*/}
                     <p> اسم المنتج: {product.product_id.name.ar}</p>
                     <p>الكمية: {product.quantity}</p>
+                    {product.quantity > product?.product_id?.quantity ? (
+                      <p className={"text-danger"}>
+                        لا يوجد كمية كافية من هذا المنتج
+                      </p>
+                    ) : (
+                      <></>
+                    )}
                     <p>
                       {product?.product_id?.quantity > 0 &&
                       product?.product_id?.is_active ? (
