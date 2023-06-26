@@ -145,7 +145,8 @@ const Cart = () => {
                     <p> اسم المنتج: {product.product_id.name.ar}</p>
                     <p>الكمية: {product.quantity}</p>
                     <p>
-                      {product.product_id.quantity > 0 ? (
+                      {product?.product_id?.quantity > 0 &&
+                      product?.product_id?.is_active ? (
                         <>
                           <label>الكمية: </label>
                           <select
