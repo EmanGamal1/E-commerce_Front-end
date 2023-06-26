@@ -115,13 +115,18 @@ const Cart = () => {
     }
   };
   const renderContent = () => {
-    if (loading)
+    if (cartData.length === 0) {
       return (
-        <div className={"text-center"}>
-          <Spinner className={"h1 p-5 m-4"} />
+        <div className="text-center mt-4 mb-4">
+          <h2>لا يوجد منتجات في العربة</h2>
+          <img
+            src={imageSrc}
+            alt="No Orders"
+            style={{ width: "250px", height: "250px" }}
+          />
         </div>
       );
-    else {
+    } else {
       return (
         <>
           {cartData.length ? (

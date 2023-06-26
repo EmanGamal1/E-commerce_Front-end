@@ -42,6 +42,8 @@ const ForgetPassword = () => {
             text: "Password reset email sent!",
             icon: "success",
             confirmButtonText: "OK",
+          }).then(() => {
+            navigate("/login");
           });
         })
         .catch((err) => {

@@ -40,6 +40,8 @@ const ForgetPssword = () => {
             text: "Password reset email sent!",
             icon: "success",
             confirmButtonText: "OK",
+          }).then(() => {
+            navigate("/admin/login");
           });
         })
         .catch((err) => {
