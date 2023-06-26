@@ -175,6 +175,9 @@ const Roles = () => {
           {
             header: "Actions",
             body: (rowData) => {
+              if (rowData.name === "super-admin") {
+                return null;
+              }
               return (
                 <div className="d-flex justify-content-around">
                   {!rowData.is_active ? (

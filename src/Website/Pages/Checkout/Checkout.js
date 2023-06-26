@@ -15,7 +15,7 @@ const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState([]);
   const [userAddresses, setUserAddresses] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState(""); // New state for payment method
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   const user = localStorage.getItem("user");
   const navigate = useNavigate();
@@ -66,6 +66,26 @@ const Checkout = () => {
     setTotalPrice(total);
   };
 
+  const handleResendVerificationCode = () => {
+    axiosInstance
+      .post("/resend-verification-code")
+      .then((response) => {
+        Swal.fire(
+          "تمت إعادة إرسال الكود!",
+          "تم إعادة إرسال رمز التحقق بنجاح!",
+          "success"
+        );
+      })
+      .catch((error) => {
+        console.log(error.message);
+        Swal.fire(
+          "حدث خطأ أثناء إعادة إرسال الكود!",
+          "برجاء المحاولة مرة أخرى.",
+          "error"
+        );
+      });
+  };
+
   const handlePlaceOrder = async () => {
     try {
       const orderData = {
@@ -105,6 +125,18 @@ const Checkout = () => {
         Swal.fire("عذرا", "برجاء اختيار عنوان التوصيل.", "error");
       } else if (error.response.data.error.payment_method) {
         Swal.fire("عذرا", "برجاء اختيار طريقة الدفع.", "error");
+      } else if (error.response.data.error === 'من فضلك قم بتفعيل حسابك قبل اتمام عملية الشراء') {
+        Swal.fire({
+          title: "الحسـاب غير مفعل!",
+          text: error.response.data.error,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "إعادة الإرسـال",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleResendVerificationCode();
+          }
+        });
       } else if (typeof error.response.data.error === "string") {
         Swal.fire("عذرا", error.response.data.error, "error");
       } else {
