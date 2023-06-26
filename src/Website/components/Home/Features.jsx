@@ -18,7 +18,7 @@ export const Features = () => {
                 <FontAwesomeIcon icon={faTruck} size="2xl" color="#fd4b6b" />
               </div>
               <div>
-                <div className="h2 bold text-dark"> توصيل مجاني</div>
+                <div className="h2 bold text-dark"> خدمة التوصيـل</div>
                 <div className="h6 text-dark">
                   علي جميع المنتجات و جيمع الطلبات
                 </div>
@@ -35,8 +35,8 @@ export const Features = () => {
                 />
               </div>
               <div>
-                <div className="h2 bold text-dark"> استرداد للطبات</div>
-                <div className="h6 text-dark">ضمان استعادة الاموال</div>
+                <div className="h2 bold text-dark">خصومـات متكررة</div>
+                <div className="h6 text-dark">تابع عروضنـا</div>
               </div>
             </div>
           </Col>
