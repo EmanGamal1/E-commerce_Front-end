@@ -1,0 +1,16 @@
+.custom-input {
+    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    margin-bottom: 20px;
+    /* Add any other desired styles */
+  }
+  
+  .custom-input label {
+    font-weight: bold;
+    /* Add any other desired styles for the label */
+  }

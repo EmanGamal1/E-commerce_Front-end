@@ -273,7 +273,7 @@ function chartOptions() {
       beginAtZero: true,
       padding: 10,
       callback: function (value) {
-        if (!(value % 10)) {
+        if (!(value % 2)) {
           return value;
         }
       },
@@ -318,8 +318,8 @@ let chartExample1 = {
           },
           ticks: {
             callback: function (value) {
-              if (!(value % 10)) {
-                return "$" + value + "k";
+              if (!(value % 2)) {
+                return value;
               }
             },
           },
@@ -337,30 +337,41 @@ let chartExample1 = {
             content += label;
           }
 
-          content += "$" + yLabel + "k";
+          content += yLabel;
           return content;
         },
       },
     },
   },
-  data1: (canvas) => {
+  data1: () => {
     return {
-      labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      labels: [],
       datasets: [
         {
-          label: "Performance",
-          data: [0, 20, 10, 30, 15, 40, 20, 60, 60],
+          label: "Completed",
+          data: [],
         },
       ],
     };
   },
-  data2: (canvas) => {
+  data2: () => {
     return {
-      labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      labels: [],
       datasets: [
         {
-          label: "Performance",
-          data: [0, 20, 5, 25, 10, 30, 15, 40, 40],
+          label: "Cancelled",
+          data: [],
+        },
+      ],
+    };
+  },
+  data3: () => {
+    return {
+      labels: [],
+      datasets: [
+        {
+          label: "Processing",
+          data: [],
         },
       ],
     };
@@ -375,7 +386,7 @@ let chartExample2 = {
         {
           ticks: {
             callback: function (value) {
-              if (!(value % 10)) {
+              if (!(value % 2)) {
                 //return '$' + value + 'k'
                 return value;
               }

@@ -1,0 +1,92 @@
+body {
+    font-family: var(--font-family);
+}
+
+.allCard {
+    position: relative;
+    height: 130px;
+    width: 130px;
+}
+
+.categoty-card {
+    height: 140px;
+    width: 100%;
+    border-radius: 50%;
+    opacity: 0.3;
+}
+
+.categoty-card-img {
+    max-width: 110px;
+    max-height: 100px;
+    position: absolute;
+    top: 20%;
+    left: 10%;
+}
+
+.categoty-card-text {
+    color: #555550;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.card-title {
+    color: #555550;
+    font-size: 16px;
+    letter-spacing: 0;
+    line-height: 20px;
+    text-align: right;
+}
+
+.card-price {
+    color: #272727;
+    font-size: 21px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 28px;
+}
+
+.card-currency {
+    color: #555550;
+    font-size: 18px;
+    letter-spacing: 0;
+    line-height: 24px;
+}
+
+.features-card {
+    background-color: #f6f7f9 !important;
+}
+
+/*register --  login*/
+.user-input {
+    box-sizing: border-box;
+    height: 37px;
+    width: 375px;
+    border: 1px solid #979797;
+    border-radius: 8px;
+}
+
+.title-login {
+    color: #555550;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 28px;
+    text-align: right;
+}
+
+.btn-login {
+    height: 46px;
+    width: 374px;
+    border-radius: 9px;
+    border: none;
+    color: white;
+    background-color: #272727;
+}
+
+.btn-login:hover {
+    color: rgb(206, 204, 204);
+}
+.filter-sub{
+    font-size: 1rem !important;
+}

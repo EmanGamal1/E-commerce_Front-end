@@ -1,0 +1,35 @@
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+    height: 24px;
+    overflow: hidden;
+  }
+  
+  .progress-item {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #ffffff;
+    text-transform: uppercase;
+    pointer-events: auto;
+  }
+  
+  .progress-item.pending {
+    background-color: #ffc107;
+  }
+  
+  .progress-item.processing {
+    background-color: #007bff;
+  }
+  
+  .progress-item.completed {
+    background-color: #28a745;
+  }
+  

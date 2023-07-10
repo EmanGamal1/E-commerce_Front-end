@@ -1,0 +1,30 @@
+*{
+    font-family: 'Almarai', sans-serif;
+}
+
+.websitePages{
+    text-align: right;
+}
+
+/* setting pages */
+
+.settingBanner{
+    width: 100%;   
+    position: relative;
+}
+
+.settingTitle{
+    position: absolute;
+    right: 70%;
+    padding-top: 10%;
+}
+
+.settingContent{
+    width: 46%;
+    margin: auto;
+    margin-top: 5%;
+    font-size: 18px;
+    text-align: justify;
+    text-align-last: right;
+    min-width:400px;
+}

@@ -1,0 +1,8 @@
+.sideBar{
+    list-style: none;
+}
+
+.sideBar li{
+    color: black;
+    margin-bottom: 15%;
+}

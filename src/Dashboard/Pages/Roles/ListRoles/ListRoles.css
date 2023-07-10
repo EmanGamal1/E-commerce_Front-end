@@ -1,0 +1,9 @@
+  .pagination button {
+    border: 1px solid #ccc;
+   }
+  
+  .pagination button:hover {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+  }

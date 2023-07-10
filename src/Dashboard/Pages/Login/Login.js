@@ -1,46 +1,80 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.3
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
-// reactstrap components
 import {
-  Button,
   Card,
   CardBody,
-  FormGroup,
+  Col,
   Form,
+  FormGroup,
   Input,
+  InputGroup,
   InputGroupAddon,
   InputGroupText,
-  InputGroup,
   Row,
-  Col,
 } from "reactstrap";
+import { useContext, useEffect, useRef, useState } from "react";
+import AuthContext from "Context/Authentication ";
+import { axiosDashboard } from "Axios.js";
+import { Link, useNavigate } from "react-router-dom";
+import Btn from "Dashboard/SharedUI/Btn/Btn";
 
+const Login_URL = "admin/auth";
 const Login = () => {
+  const navigate = useNavigate();
+  const { setAuthUser, setUserToken } = useContext(AuthContext);
+  const userRef = useRef();
+  const errRef = useRef();
+
+  const [user, setuser] = useState("");
+  const [password, setpassword] = useState("");
+  const [errmsg, seterrmsg] = useState("");
+
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    seterrmsg("");
+  }, [user, password]);
+
+  const handelSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axiosDashboard.post(
+        Login_URL,
+        { email: user, password },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(response?.data.data.user);
+      const authUser = response?.data.data.user;
+      const accessToken = response?.data.data.token;
+      setAuthUser(authUser);
+      localStorage.setItem("admin", accessToken);
+      setUserToken(accessToken);
+      setuser("");
+      setpassword("");
+      navigate("/admin/auth");
+    } catch (err) {
+      console.error(err.response.data.message);
+      const erorr = err.response.data.message;
+      seterrmsg(erorr || "please Enter your email Password Correctly");
+      errRef.current.focus();
+    }
+  };
+
   return (
     <>
-      <Col lg="5" md="7">
-        <Card className="bg-secondary shadow border-0">
+      <div className={"text-center"} style={{paddingTop:"10%"}}>
+        <Card className="bg-secondary shadow border-0 col-lg-5 col-md-7 m-auto">
           <CardBody className="px-lg-5 py-lg-5">
             <div className="text-center text-muted mb-4">
+              <p ref={errRef} className="text-danger" aria-live="assertive">
+                {errmsg}
+              </p>
               <small>Sign in</small>
             </div>
-            <Form role="form">
+            <Form role="form" onSubmit={handelSubmit}>
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -51,7 +85,14 @@ const Login = () => {
                   <Input
                     placeholder="Email"
                     type="email"
-                    autoComplete="new-email"
+                    id="email"
+                    autoComplete="off"
+                    ref={userRef}
+                    onChange={(e) => {
+                      setuser(e.target.value);
+                    }}
+                    value={user}
+                    required
                   />
                 </InputGroup>
               </FormGroup>
@@ -65,43 +106,28 @@ const Login = () => {
                   <Input
                     placeholder="Password"
                     type="password"
-                    autoComplete="new-password"
+                    id="password"
+                    onChange={(e) => {
+                      setpassword(e.target.value);
+                    }}
+                    value={password}
+                    required
                   />
                 </InputGroup>
               </FormGroup>
-              <div className="custom-control custom-control-alternative custom-checkbox">
-                <input
-                  className="custom-control-input"
-                  id=" customCheckLogin"
-                  type="checkbox"
-                />
-                <label
-                  className="custom-control-label"
-                  htmlFor=" customCheckLogin"
-                >
-                  <span className="text-muted">Remember me</span>
-                </label>
-              </div>
+              <Link to="/admin/ForgetPssword"><p>Forgot Password?</p></Link>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
-                  Sign in
-                </Button>
+                <Btn className="btn btn-info" type="submit" title=" Sign in " />
               </div>
+              <Row className="mt-3">
+                <Col xs="6">
+                  <Link to="/auth/reset-password-token"></Link>
+                </Col>
+              </Row>
             </Form>
           </CardBody>
         </Card>
-        <Row className="mt-3">
-          <Col xs="6">
-            <a
-              className="text-light"
-              href="#pablo"
-              onClick={(e) => e.preventDefault()}
-            >
-              <small>Forgot password?</small>
-            </a>
-          </Col>
-         </Row>
-      </Col>
+      </div>
     </>
   );
 };

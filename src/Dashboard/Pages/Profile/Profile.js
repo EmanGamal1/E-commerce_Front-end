@@ -1,328 +1,464 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.3
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
-// reactstrap components
+import React, { useEffect, useState } from "react";
 import {
-  Button,
+  Alert,
   Card,
-  CardHeader,
   CardBody,
-  FormGroup,
-  Form,
-  Input,
-  Container,
-  Row,
+  CardHeader,
   Col,
+  Container,
+  Form,
+  FormGroup,
+  Input,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  Row,
 } from "reactstrap";
-// core components
-import UserHeader from "../../Components/Headers/UserHeader.js";
+import { axiosDashboard } from "Axios.js";
+import Btn from "Dashboard/SharedUI/Btn/Btn.js";
+import "./Profile.css";
+import jwtDecode from "jwt-decode";
+import MySwal from "sweetalert2";
 
 const Profile = () => {
+  const [editMode, setEditMode] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    role: "",
+  });
+  const [showModal, setShowModal] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [matchError, setMatchError] = useState(false);
+  const [inputError, setInputError] = useState(false);
+  const [originalProfileData, setOriginalProfileData] = useState(null);
+  const [phoneError, setPhoneError] = useState(false);
+  const [errorEmpty, setErrorEmpty] = useState(false);
+  const jwt = localStorage.getItem("admin");
+  const [decodedToken, setDecodedToken] = useState(jwtDecode(jwt));
+  const userId = decodedToken.id;
+
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+
+  const fetchProfileData = async () => {
+    try {
+      const res = await axiosDashboard.get(`/api/v1/employees/${userId}`);
+      setProfileData(res.data.data);
+      setOriginalProfileData(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const openModal = (e) => {
+    e.preventDefault();
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+    setInputError(false);
+  };
+
+  const cancelMode = () => {
+    setEditMode(false);
+    setInputError(false);
+    setProfileData(originalProfileData);
+  };
+
+  const handleInputChange = (e) => {
+    const { id, name, value } = e.target;
+    if (id === "new_password") {
+      setNewPassword(value);
+    } else if (id === "current_password") {
+      setPassword(value);
+    } else if (id === "confirm_new_password") {
+      setConfirmNewPassword(value);
+    } else if (name === "phone") {
+      // Validate mobile number format
+      if (/^\d+$/.test(value) || value === "") {
+        setProfileData((prevState) => ({
+          ...prevState,
+          [name]: value,
+        }));
+        setPhoneError(false);
+      } else {
+        setPhoneError(true);
+      }
+    } else {
+      setProfileData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleModalOk = async () => {
+    if (newPassword === "" || confirmNewPassword === "") {
+      setMatchError(false);
+      setShowModal(true);
+      setErrorEmpty(true);
+    } else if (newPassword !== confirmNewPassword) {
+      setMatchError(true);
+      setErrorEmpty(false);
+    } else {
+      setMatchError(false);
+      setShowModal(false);
+      setErrorEmpty(false);
+      console.log(newPassword);
+      try {
+        await axiosDashboard
+          .patch(`/api/v1/employees/update-password`, {
+            password: password,
+            new_password: newPassword,
+            confirm_new_password: confirmNewPassword,
+          })
+          .then((res) => {
+            console.log(res.data.data);
+            localStorage.setItem("admin", res.data.data.token);
+            //setJWT(localStorage.getItem("admin"));
+            setDecodedToken(jwtDecode(jwt));
+            setOriginalProfileData(res.data.data.user);
+            setProfileData(res.data.data.user);
+            MySwal.fire({
+              icon: "success",
+              title: "Password updated successfully",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            toggleEditMode();
+          })
+          .catch((err) => {
+            console.log(err);
+            console.log(err.response.data);
+            MySwal.fire({
+              icon: "error",
+              title: err.response.data.message,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+  const saveProfileData = async () => {
+    if (profileData.name.trim() === "" || profileData.phone.trim() === "") {
+      setInputError(true);
+      return;
+    }
+    const updatedProfileData = { ...profileData };
+    delete updatedProfileData.id;
+    delete updatedProfileData.permissions;
+    delete updatedProfileData.is_banned;
+    delete updatedProfileData.createdAt;
+    delete updatedProfileData.last_password_changed_at;
+
+    if (newPassword !== "" && confirmNewPassword !== "") {
+      updatedProfileData.password = newPassword;
+    }
+    try {
+      await axiosDashboard.patch(`/api/v1/employees/${userId}`, {
+        name: updatedProfileData.name,
+        phone: updatedProfileData.phone,
+      });
+      toggleEditMode();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
-    <>
-      <UserHeader />
-      {/* Page content */}
-      <Container className="mt--7" fluid>
-        <Row>
-          <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
-            <Card className="card-profile shadow">
-              <Row className="justify-content-center">
-                <Col className="order-lg-2" lg="3">
-                  <div className="card-profile-image">
-                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                      <img
-                        alt="..."
-                        className="rounded-circle"
-                        src={require("../../Assets/img/theme/team-4-800x800.jpg")}
-                      />
-                    </a>
-                  </div>
+    <div>
+      <>
+        {/* Page content */}
+        <Container className="mt--7" fluid>
+          <Card className="bg-secondary shadow pl-4 pr-4">
+            <CardHeader className="bg-white rounded shadow border-0">
+              <Row className="align-items-center">
+                <Col xs="8">
+                  <h3 className="mb-0">My account</h3>
+                </Col>
+                <Col className="text-right" xs="4">
+                  {!editMode ? (
+                    <Btn
+                      title="Edit Profile"
+                      className="btn btn-primary"
+                      onClick={toggleEditMode}
+                    />
+                  ) : (
+                    ""
+                  )}
+                  <Col className="text-right" xs="12">
+                    {editMode ? (
+                      <>
+                        <Btn
+                          title="Save"
+                          className="btn btn-primary"
+                          onClick={saveProfileData}
+                        />
+                        <Btn
+                          title="Cancel"
+                          className="btn btn-secondary"
+                          onClick={cancelMode}
+                        />
+                      </>
+                    ) : (
+                      ""
+                    )}
+                  </Col>
                 </Col>
               </Row>
-              <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                <div className="d-flex justify-content-between">
-                  <Button
-                    className="mr-4"
-                    color="info"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                    size="sm"
-                  >
-                    Connect
-                  </Button>
-                  <Button
-                    className="float-right"
-                    color="default"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                    size="sm"
-                  >
-                    Message
-                  </Button>
+            </CardHeader>
+            <CardBody>
+              <Form>
+                <div>
+                  <Row>
+                    <Col>
+                      <h6 className="heading-small text-muted mb-4">
+                        My information
+                      </h6>
+                    </Col>
+                  </Row>
+                  {/* <div className="pl-lg-4"> */}
+                  {/* <Row>
+                      <Col lg="2" style={{ height: "150px" }} className="mt-5">
+                        <div className="card-profile-image">
+                          <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                            <img
+                              alt="..."
+                              className="rounded-circle"
+                              src={profileData.image}
+                            />
+                          </a>
+                        </div>
+                      </Col>
+                    </Row> */}
+                  {/* <Row className="mb-4">
+                      <Col lg="4">
+                        {editMode ? (
+                          <input type="file" className="form-control" />
+                        ) : (
+                          ""
+                        )}
+                      </Col>
+                    </Row> */}
+                  {/* </div> */}
                 </div>
-              </CardHeader>
-              <CardBody className="pt-0 pt-md-4">
-                <Row>
-                  <div className="col">
-                    <div className="card-profile-stats d-flex justify-content-center mt-md-5">
-                      <div>
-                        <span className="heading">22</span>
-                        <span className="description">Friends</span>
-                      </div>
-                      <div>
-                        <span className="heading">10</span>
-                        <span className="description">Photos</span>
-                      </div>
-                      <div>
-                        <span className="heading">89</span>
-                        <span className="description">Comments</span>
-                      </div>
-                    </div>
-                  </div>
-                </Row>
-                <div className="text-center">
-                  <h3>
-                    Jessica Jones
-                    <span className="font-weight-light">, 27</span>
-                  </h3>
-                  <div className="h5 font-weight-300">
-                    <i className="ni location_pin mr-2" />
-                    Bucharest, Romania
-                  </div>
-                  <div className="h5 mt-4">
-                    <i className="ni business_briefcase-24 mr-2" />
-                    Solution Manager - Creative Tim Officer
-                  </div>
-                  <div>
-                    <i className="ni education_hat mr-2" />
-                    University of Computer Science
-                  </div>
-                  <hr className="my-4" />
-                  <p>
-                    Ryan — the name taken by Melbourne-raised, Brooklyn-based
-                    Nick Murphy — writes, performs and records all of his own
-                    music.
-                  </p>
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                    Show more
-                  </a>
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
-          <Col className="order-xl-1" xl="8">
-            <Card className="bg-secondary shadow">
-              <CardHeader className="bg-white border-0">
-                <Row className="align-items-center">
-                  <Col xs="8">
-                    <h3 className="mb-0">My account</h3>
-                  </Col>
-                  <Col className="text-right" xs="4">
-                    <Button
-                      color="primary"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      size="sm"
+                <>
+                  <Row>
+                    <Col>
+                      {editMode && inputError && (
+                        <Alert color="danger" className="alert-transparent">
+                          Complete all required fields
+                        </Alert>
+                      )}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col lg="6">
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-username"
+                        >
+                          Name{editMode ? <span class="required">*</span> : ""}
+                        </label>
+                        <Col lg="8">
+                          {editMode ? (
+                            <Input
+                              className="form-control-alternative"
+                              id="input-username"
+                              type="text"
+                              name="name"
+                              value={profileData.name}
+                              onChange={handleInputChange}
+                            />
+                          ) : (
+                            <p>{profileData.name}</p>
+                          )}
+                        </Col>
+                      </FormGroup>
+                    </Col>
+
+                    <Col lg="6">
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-mobile-number"
+                        >
+                          Mobile Number
+                          {editMode ? <span class="required">*</span> : ""}
+                        </label>
+                        <Col lg="8">
+                          {editMode ? (
+                            <Input
+                              className="form-control-alternative"
+                              id="input-mobile-number"
+                              type="tel"
+                              name="phone"
+                              value={profileData.phone}
+                              onChange={handleInputChange}
+                            />
+                          ) : (
+                            <p>{profileData.phone}</p>
+                          )}
+                          {phoneError ? (
+                            <span className="text-danger">
+                              Phone Number must be only numbers
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                        </Col>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col lg="6">
+                      {/* Description */}
+                      <label className="form-control-label" htmlFor="input-Bio">
+                        Role
+                      </label>
+                      {/*<Col lg="6">
+                        {editMode ? (
+                          <Input
+                            className="form-control-alternative"
+                            rows="4"
+                            type="text"
+                            name="role"
+                            value={profileData.role}
+                            onChange={handleInputChange}
+                          />
+                        ) : (*/}
+                      <Col lg="8">
+                        <p>{profileData.role}</p>
+                      </Col>
+                      {/*)}
+                      </Col>*/}
+                    </Col>
+                    <Col lg="6">
+                      <FormGroup>
+                        <label
+                          className="form-control-label"
+                          htmlFor="input-email"
+                        >
+                          Email address
+                        </label>
+                        <Col lg="8">
+                          <p>{profileData.email}</p>
+                        </Col>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </>
+
+                <hr className="my-4" />
+                <h6 className="heading-small text-muted mb-4">
+                  Additional Info
+                </h6>
+
+                <Col lg="6">
+                  <FormGroup>
+                    {/*{
+                                            editMode ?
+                                            (
+                                                <>*/}
+                    <label
+                      className="form-control-label"
+                      htmlFor="input-password"
                     >
-                      Settings
-                    </Button>
-                  </Col>
-                </Row>
-              </CardHeader>
-              <CardBody>
-                <Form>
-                  <h6 className="heading-small text-muted mb-4">
-                    User information
-                  </h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-username"
+                      Password
+                    </label>
+                    <Btn
+                      title="Change Password"
+                      className="btn btn-primary ml-3"
+                      onClick={openModal}
+                    />
+                    <Modal
+                      isOpen={showModal}
+                      toggle={() => setShowModal(false)}
+                    >
+                      <ModalBody>
+                        <span className="close" onClick={closeModal}>
+                          &times;
+                        </span>
+                        <h2>Change Password</h2>
+                        <Input
+                          type="password"
+                          name="password"
+                          id="current_password"
+                          className="form-control mt-5"
+                          placeholder="Current Password"
+                          onChange={handleInputChange}
+                        />
+                        <Input
+                          type="password"
+                          name="password"
+                          id="new_password"
+                          className="form-control mt-3"
+                          placeholder="New Password"
+                          onChange={handleInputChange}
+                        />
+                        <Input
+                          type="password"
+                          name="password"
+                          id="confirm_new_password"
+                          className="form-control mt-3"
+                          placeholder="Confirm new password"
+                          onChange={handleInputChange}
+                        />
+                        {matchError && (
+                          <div
+                            className="alert alert-danger mt-3 alert-transparent"
+                            role="alert"
                           >
-                            Username
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue="lucky.jesse"
-                            id="input-username"
-                            placeholder="Username"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-email"
+                            New password and confirm new password do not match.
+                          </div>
+                        )}
+                        {errorEmpty && (
+                          <div
+                            className="alert alert-danger mt-3 alert-transparent"
+                            role="alert"
                           >
-                            Email address
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-email"
-                            placeholder="jesse@example.com"
-                            type="email"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-first-name"
-                          >
-                            First name
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue="Lucky"
-                            id="input-first-name"
-                            placeholder="First name"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-last-name"
-                          >
-                            Last name
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue="Jesse"
-                            id="input-last-name"
-                            placeholder="Last name"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
-                  <hr className="my-4" />
-                  {/* Address */}
-                  <h6 className="heading-small text-muted mb-4">
-                    Contact information
-                  </h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col md="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-address"
-                          >
-                            Address
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                            id="input-address"
-                            placeholder="Home Address"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-city"
-                          >
-                            City
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue="New York"
-                            id="input-city"
-                            placeholder="City"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                            Country
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue="United States"
-                            id="input-country"
-                            placeholder="Country"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                            Postal code
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-postal-code"
-                            placeholder="Postal code"
-                            type="number"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
-                  <hr className="my-4" />
-                  {/* Description */}
-                  <h6 className="heading-small text-muted mb-4">About me</h6>
-                  <div className="pl-lg-4">
-                    <FormGroup>
-                      <label>About Me</label>
-                      <Input
-                        className="form-control-alternative"
-                        placeholder="A few words about you ..."
-                        rows="4"
-                        defaultValue="A beautiful Dashboard for Bootstrap 4. It is Free and
-                        Open Source."
-                        type="textarea"
-                      />
-                    </FormGroup>
-                  </div>
-                </Form>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </>
+                            Please fill in all the fields.
+                          </div>
+                        )}
+                      </ModalBody>
+                      <ModalFooter>
+                        <Btn
+                          title="Save"
+                          className="btn btn-primary"
+                          onClick={handleModalOk}
+                        />
+                        <Btn
+                          title="Cancel"
+                          className="btn btn-secondary"
+                          onClick={closeModal}
+                        />
+                      </ModalFooter>
+                    </Modal>
+                    {/* </>)
+                                            : ("")*/}
+                  </FormGroup>
+                </Col>
+              </Form>
+            </CardBody>
+          </Card>
+        </Container>
+      </>
+    </div>
   );
 };
 

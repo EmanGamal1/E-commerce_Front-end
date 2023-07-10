@@ -1,0 +1,246 @@
+import React, { useEffect, useState } from "react";
+import { Card, CardHeader, CardBody, CardFooter, Container, Col, Row, Navbar, Table, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input } from "reactstrap";
+import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { axiosInstance } from "Axios.js";
+import "./OrderDetail";
+import Swal from 'sweetalert2';
+
+const OrderDetail = () => {
+  const { id } = useParams();
+  const [orderdata, setOrderData] = useState({});
+  const [productData, setProductData] = useState([]);
+  const [userData, setUserData] = useState({});
+  const [paymentStatus, setPaymentStatus] = useState(orderdata.payment_status);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [userAddresses, setUserAddresses] = useState([]);
+
+  useEffect(() => {
+    axiosInstance
+      .get(`/orders/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        setOrderData(res.data.data);
+        fetchProductData(res.data.data.products);
+        const updatedOrderData = res.data.data;
+        setPaymentStatus(updatedOrderData.payment_status);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+
+    const fetchUserData = async () => {
+      try {
+        const response = await axiosInstance.get("/profile");
+        setUserData(response.data.data);
+        setUserAddresses(response.data.data.address);
+      } catch (error) {
+        console.log(error.message);
+        // Handle error
+      }
+    };
+    fetchUserData();
+  }, [id]);
+
+  const fetchProductData = async (products) => {
+    const productId = products.map((product) => product.id);
+    const productResponse = await axiosInstance.get("/products");
+    console.log(productResponse.data); // Add this line to check the structure of the response
+    const productDataWithImage = productResponse.data.data.map((product) => {
+      if (productId.includes(product.id)) {
+        const productImage = product.images[0] || "";
+        return { ...product, image: productImage };
+      }
+      return product;
+    });
+    setProductData(productDataWithImage);
+  };
+
+  const getProductImageById = (productId) => {
+    const product = productData.find((product) => product.id === productId);
+    return product ? product.image : "";
+  };
+
+  const getProductNameById = (productId) => {
+    const product = productData.find((product) => product.id === productId);
+    return product ? product.name_ar : "";
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Completed":
+        return "text-success";
+      case "Cancelled":
+        return "text-danger";
+      case "Pending":
+        return "text-primary";
+      case "Processing":
+        return "text-warning";
+      default:
+        return "";
+    }
+  };
+
+  const handleStatusChange = async () => {
+    try {
+      const { value } = await Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to ${
+          orderdata.status === 'Completed' ? 'reorder' : 'cancel'
+        } this order?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+      });
+
+      if (value) {
+        const newStatus = orderdata.status === 'Completed' ? 'Reordered' : 'Cancelled';
+        const response = await axiosInstance.patch(`/orders/${id}`, { status: newStatus });
+        if (response.status === 200) {
+          Swal.fire({
+            title: 'Success!',
+            text: `Order has been ${newStatus.toLowerCase()} successfully.`,
+            icon: 'success',
+          });
+          setOrderData({ ...orderdata, status: newStatus });
+        }
+      }
+    } catch (error) {
+      Swal.fire({
+        title: 'Error!',
+        text: `Failed to update order status. Please try again.`,
+        icon: 'error',
+      });
+    }
+  };
+
+  const handleReorder = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
+  const handleAddressSelect = (event) => {
+    setSelectedAddress(event.target.value);
+  };
+
+  const handleReorderConfirm = async () => {
+    try {
+      const response = await axiosInstance.post('/orders', {
+        products: orderdata.products.map((product) => ({
+          id: product.id,
+          quantity: product.quantity,
+        })),
+        address: selectedAddress,
+        payment_method: orderdata.payment_method,
+        total: orderdata.total,
+      });
+      if (response.status === 201) {
+        Swal.fire({
+          title: 'Success!',
+          text: 'Order has been placed successfully.',
+          icon: 'success',
+        });
+        setModalOpen(false);
+      }
+    } catch (error) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to place the order. Please try again.',
+        icon: 'error',
+      });
+    }
+  };
+
+  return (
+    <Container>
+      <Card>
+        <CardHeader>Order Details</CardHeader>
+        <CardBody>
+          <Table striped responsive>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orderdata.products &&
+                orderdata.products.map((product) => (
+                  <tr key={product.id}>
+                    <td>
+                      <img
+                        src={getProductImageById(product.id)}
+                        alt={getProductNameById(product.id)}
+                        className="img-fluid rounded"
+                        width="100"
+                      />
+                      <span className="ml-2">{getProductNameById(product.id)}</span>
+                    </td>
+                    <td>{product.quantity}</td>
+                    <td>{product.price}</td>
+                    <td>{product.total}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </CardBody>
+        <CardFooter>
+          <Row>
+            <Col md={6}>
+              <p>
+                <strong>Status:</strong>{" "}
+                <span className={getStatusColor(orderdata.status)}>{orderdata.status}</span>
+              </p>
+            </Col>
+            <Col md={6} className="text-right">
+              {orderdata.status === 'Completed' && (
+                <Button color="primary" onClick={handleReorder}>
+                  Reorder
+                </Button>
+              )}
+              {orderdata.status === 'Pending' && (
+                <Button color="danger" onClick={handleStatusChange}>
+                  Cancel Order
+                </Button>
+              )}
+            </Col>
+          </Row>
+        </CardFooter>
+      </Card>
+
+      <Modal isOpen={modalOpen} toggle={handleModalClose}>
+        <ModalHeader toggle={handleModalClose}>Reorder</ModalHeader>
+        <ModalBody>
+          <p>Please select the shipping address for your reorder:</p>
+          <Input type="select" value={selectedAddress} onChange={handleAddressSelect}>
+            {userData.address.map((address) => (
+              <option key={address._id} value={address._id}>
+                {address._id}
+              </option>
+            ))}
+          </Input>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={handleReorderConfirm}>
+            Reorder
+          </Button>
+          <Button color="secondary" onClick={handleModalClose}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+    </Container>
+  );
+};
+
+export default OrderDetail;
+

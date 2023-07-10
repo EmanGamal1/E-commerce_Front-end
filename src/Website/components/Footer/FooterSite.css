@@ -1,0 +1,44 @@
+#footerWebsite{
+    background-color: white;
+    box-shadow: 0 -2px 4px 0 rgba(0,0,0,.2);
+    margin-top: 20vh;
+    text-align: right;
+    padding-top: 3%;
+    padding-bottom: 1%;
+    position: relative;
+}
+
+.socialMediaIcons{
+    color: black;
+    margin-left: 10px;
+}
+
+.FollowUsSocialMedia{
+    color: black;
+    font-size: 30px;
+    margin-right: 15px;
+}
+
+.FollowUsSocialMedia:hover{
+    color: rgba(0, 0, 0, 0.653);
+}
+
+.EnglishWords{
+    text-align: left;
+}
+
+.copyRights{
+    font-size: 13px;
+}
+
+.copyrightsLine{
+    justify-content: center;
+}
+
+.hrFooter{
+    margin-top: 4%;
+}
+
+.more{
+    color: black;
+}
